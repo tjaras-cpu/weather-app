@@ -31,51 +31,44 @@ body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667e
 <div class="search-box">
 <input type="text" id="city" placeholder="Enter city name...">
 <button onclick="search()">Search</button>
-<button onclick="getLocation()">My Location</button>
 </div>
 <div id="result"></div>
 </div>
 <script>
-var API_KEY = "e6f43714ba7e4cb9b53055d0869b3e59";
 function search() {
 var city = document.getElementById("city").value.trim();
 if (city) fetchWeather(city);
 }
-function getLocation() {
-if (navigator.geolocation) {
-document.getElementById("result").innerHTML = "<div class=loading>Finding location...</div>";
-navigator.geolocation.getCurrentPosition(function(pos) {
-fetch("https://api.openweathermap.org/data/2.5/weather?lat=" + pos.coords.latitude + "&lon=" + pos.coords.longitude + "&appid=" + API_KEY + "&units=metric")
-.then(function(r) { return r.json(); })
-.then(function(data) { displayWeather(data); });
-}, function() { showError("Cannot find location"); });
-}
-}
+document.getElementById("city").addEventListener("keypress", function(e) {
+if (e.key === "Enter") search();
+});
 function fetchWeather(city) {
-document.getElementById("result").innerHTML = "<div class=loading>Loading...</div>";
-fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + API_KEY + "&units=metric")
+document.getElementById("result").innerHTML = '<div class="loading">Loading...</div>';
+fetch("https://wttr.in/" + encodeURIComponent(city) + "?format=j1")
 .then(function(r) { return r.json(); })
 .then(function(data) {
-if (data.cod === 200) { displayWeather(data); }
-else { showError("City not found"); }
-});
-}
-function displayWeather(data) {
-var h = "<div class=card>";
-h += "<div class=city-name>" + data.name + ", " + data.sys.country + "</div>";
-h += "<div class=temp>" + Math.round(data.main.temp) + "\u00B0C</div>";
-h += "<div class=desc>" + data.weather[0].description + "</div>";
-h += "<div class=details>";
-h += "<div class=detail><strong>Feels Like</strong><span>" + Math.round(data.main.feels_like) + "\u00B0C</span></div>";
-h += "<div class=detail><strong>Humidity</strong><span>" + data.main.humidity + "%</span></div>";
-h += "<div class=detail><strong>Pressure</strong><span>" + data.main.pressure + " hPa</span></div>";
-h += "<div class=detail><strong>Wind</strong><span>" + Math.round(data.wind.speed) + " m/s</span></div>";
-h += "</div></div>";
+if (data.current_condition && data.current_condition.length > 0) {
+var c = data.current_condition[0];
+var area = data.nearest_area ? data.nearest_area[0] : null;
+var name = area ? area.areaName[0].value : city;
+var country = area ? area.country[0].value : "";
+var h = '<div class="card">';
+h += '<div class="city-name">' + name + (country ? ", " + country : "") + '</div>';
+h += '<div class="temp">' + c.temp_C + '\u00B0C</div>';
+h += '<div class="desc">' + c.weatherDesc[0].value + '</div>';
+h += '<div class="details">';
+h += '<div class="detail"><strong>Feels Like</strong><span>' + c.FeelsLikeC + '\u00B0C</span></div>';
+h += '<div class="detail"><strong>Humidity</strong><span>' + c.humidity + '%</span></div>';
+h += '<div class="detail"><strong>Pressure</strong><span>' + c.pressure + ' hPa</span></div>';
+h += '<div class="detail"><strong>Wind</strong><span>' + c.windspeedKmph + ' km/h</span></div>';
+h += '</div></div>';
 document.getElementById("result").innerHTML = h;
 document.getElementById("city").value = "";
+} else { showError("City not found"); }
+}).catch(function() { showError("Error loading weather"); });
 }
 function showError(msg) {
-document.getElementById("result").innerHTML = "<div class=error>" + msg + "</div>";
+document.getElementById("result").innerHTML = '<div class="error">' + msg + '</div>';
 }
 fetchWeather("Bangkok");
 </script>
