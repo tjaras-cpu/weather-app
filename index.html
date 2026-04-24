@@ -23,6 +23,17 @@ body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667e
 .detail span { font-size: 1.4em; color: #333; font-weight: bold; }
 .error { background: #ff6b6b; color: white; padding: 15px; border-radius: 10px; }
 .loading { text-align: center; color: white; font-size: 1.2em; }
+.share-section { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
+.share-title { color: #999; font-size: 0.9em; margin-bottom: 12px; }
+.share-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.share-btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95em; color: white; transition: opacity 0.2s; }
+.share-btn:hover { opacity: 0.85; }
+.line-btn { background: #00B900; }
+.lark-btn { background: #1456F0; }
+.email-btn { background: #EA4335; }
+.calendar-btn { background: #4285F4; }
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: white; padding: 10px 22px; border-radius: 20px; font-size: 0.95em; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.toast.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -34,7 +45,10 @@ body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667e
 </div>
 <div id="result"></div>
 </div>
+<div class="toast" id="toast"></div>
 <script>
+var currentWeather = null;
+
 function search() {
 var city = document.getElementById("city").value.trim();
 if (city) fetchWeather(city);
@@ -42,6 +56,7 @@ if (city) fetchWeather(city);
 document.getElementById("city").addEventListener("keypress", function(e) {
 if (e.key === "Enter") search();
 });
+
 function fetchWeather(city) {
 document.getElementById("result").innerHTML = '<div class="loading">Loading...</div>';
 fetch("https://wttr.in/" + encodeURIComponent(city) + "?format=j1")
@@ -52,24 +67,94 @@ var c = data.current_condition[0];
 var area = data.nearest_area ? data.nearest_area[0] : null;
 var name = area ? area.areaName[0].value : city;
 var country = area ? area.country[0].value : "";
+currentWeather = {
+name: name + (country ? ", " + country : ""),
+temp: c.temp_C,
+feelsLike: c.FeelsLikeC,
+desc: c.weatherDesc[0].value,
+humidity: c.humidity,
+pressure: c.pressure,
+wind: c.windspeedKmph
+};
 var h = '<div class="card">';
-h += '<div class="city-name">' + name + (country ? ", " + country : "") + '</div>';
-h += '<div class="temp">' + c.temp_C + '\u00B0C</div>';
+h += '<div class="city-name">' + currentWeather.name + '</div>';
+h += '<div class="temp">' + c.temp_C + '°C</div>';
 h += '<div class="desc">' + c.weatherDesc[0].value + '</div>';
 h += '<div class="details">';
-h += '<div class="detail"><strong>Feels Like</strong><span>' + c.FeelsLikeC + '\u00B0C</span></div>';
+h += '<div class="detail"><strong>Feels Like</strong><span>' + c.FeelsLikeC + '°C</span></div>';
 h += '<div class="detail"><strong>Humidity</strong><span>' + c.humidity + '%</span></div>';
 h += '<div class="detail"><strong>Pressure</strong><span>' + c.pressure + ' hPa</span></div>';
 h += '<div class="detail"><strong>Wind</strong><span>' + c.windspeedKmph + ' km/h</span></div>';
-h += '</div></div>';
+h += '</div>';
+h += '<div class="share-section">';
+h += '<div class="share-title">Share &amp; Save</div>';
+h += '<div class="share-buttons">';
+h += '<button class="share-btn line-btn" onclick="shareToLINE()">LINE</button>';
+h += '<button class="share-btn lark-btn" onclick="shareToLark()">Lark</button>';
+h += '<button class="share-btn email-btn" onclick="shareByEmail()">Email</button>';
+h += '<button class="share-btn calendar-btn" onclick="addToCalendar()">Calendar</button>';
+h += '</div></div></div>';
 document.getElementById("result").innerHTML = h;
 document.getElementById("city").value = "";
 } else { showError("City not found"); }
 }).catch(function() { showError("Error loading weather"); });
 }
+
+function getWeatherText() {
+if (!currentWeather) return '';
+return 'Weather in ' + currentWeather.name + '\n' +
+'Temperature: ' + currentWeather.temp + '°C\n' +
+'Feels Like: ' + currentWeather.feelsLike + '°C\n' +
+'Condition: ' + currentWeather.desc + '\n' +
+'Humidity: ' + currentWeather.humidity + '%\n' +
+'Pressure: ' + currentWeather.pressure + ' hPa\n' +
+'Wind: ' + currentWeather.wind + ' km/h';
+}
+
+function shareToLINE() {
+if (!currentWeather) return;
+window.open('https://line.me/R/msg/text/?' + encodeURIComponent(getWeatherText()), '_blank');
+}
+
+function shareToLark() {
+if (!currentWeather) return;
+navigator.clipboard.writeText(getWeatherText()).then(function() {
+showToast('Copied! Open Lark and paste to share.');
+}).catch(function() {
+showToast('Copy failed. Please copy manually.');
+});
+}
+
+function shareByEmail() {
+if (!currentWeather) return;
+window.location.href = 'mailto:?subject=' + encodeURIComponent('Weather: ' + currentWeather.name) +
+'&body=' + encodeURIComponent(getWeatherText());
+}
+
+function addToCalendar() {
+if (!currentWeather) return;
+var today = new Date();
+var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+var dateStr = today.getFullYear() + '' + pad(today.getMonth() + 1) + '' + pad(today.getDate());
+var url = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+'&text=' + encodeURIComponent('Weather: ' + currentWeather.name + ' ' + currentWeather.temp + '°C') +
+'&details=' + encodeURIComponent(getWeatherText()) +
+'&dates=' + dateStr + '/' + dateStr;
+window.open(url, '_blank');
+}
+
+function showToast(msg) {
+var t = document.getElementById('toast');
+t.textContent = msg;
+t.classList.add('show');
+setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
 function showError(msg) {
+currentWeather = null;
 document.getElementById("result").innerHTML = '<div class="error">' + msg + '</div>';
 }
+
 fetchWeather("Bangkok");
 </script>
 </body>
