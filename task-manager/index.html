@@ -8,11 +8,17 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; padding: 30px 20px; color: #333; }
 .container { max-width: 700px; margin: 0 auto; }
-.header { text-align: center; margin-bottom: 30px; }
-.header h1 { font-size: 2em; color: #4a4a8a; }
-.header p { color: #888; margin-top: 6px; font-size: 0.95em; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+.header-text h1 { font-size: 2em; color: #4a4a8a; }
+.header-text p { color: #888; margin-top: 4px; font-size: 0.9em; }
+.btn-settings { background: white; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 8px 14px; cursor: pointer; font-size: 0.9em; color: #666; display: flex; align-items: center; gap: 6px; transition: border-color 0.2s; }
+.btn-settings:hover { border-color: #667eea; color: #667eea; }
+.integrations-status { display: flex; gap: 8px; margin-bottom: 16px; }
+.int-badge { font-size: 0.78em; padding: 3px 10px; border-radius: 12px; font-weight: bold; }
+.int-badge.on { background: #e8f5e9; color: #2e7d32; }
+.int-badge.off { background: #f5f5f5; color: #aaa; }
 .add-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; }
-.add-card h2 { font-size: 1em; color: #888; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+.add-card h2 { font-size: 0.85em; color: #aaa; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
 .input-row { display: flex; gap: 10px; margin-bottom: 12px; }
 .input-row input { flex: 1; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 1em; outline: none; transition: border-color 0.2s; }
 .input-row input:focus { border-color: #667eea; }
@@ -21,12 +27,13 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; p
 .options-row select:focus, .options-row input[type="date"]:focus { border-color: #667eea; }
 .btn-add { padding: 10px 22px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1em; transition: opacity 0.2s; white-space: nowrap; }
 .btn-add:hover { opacity: 0.88; }
+.btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
 .filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
 .filter-btn { padding: 7px 18px; border: 1.5px solid #e0e0e0; border-radius: 20px; background: white; cursor: pointer; font-size: 0.9em; color: #666; transition: all 0.2s; }
 .filter-btn.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-color: transparent; }
 .task-count { margin-left: auto; color: #aaa; font-size: 0.85em; }
 .task-list { display: flex; flex-direction: column; gap: 10px; }
-.task-item { background: white; border-radius: 14px; padding: 16px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 14px; transition: opacity 0.2s; }
+.task-item { background: white; border-radius: 14px; padding: 16px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 14px; }
 .task-item.done { opacity: 0.55; }
 .task-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .task-check.checked { background: #4CAF50; border-color: #4CAF50; }
@@ -44,14 +51,45 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; p
 .btn-delete { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1.2em; padding: 2px 6px; border-radius: 6px; transition: color 0.2s; flex-shrink: 0; }
 .btn-delete:hover { color: #e53935; }
 .empty { text-align: center; color: #bbb; padding: 40px 20px; font-size: 1em; }
+
+/* Settings Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+.modal-overlay.hidden { display: none; }
+.modal { background: white; border-radius: 20px; padding: 30px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal h2 { font-size: 1.2em; color: #4a4a8a; margin-bottom: 6px; }
+.modal .subtitle { font-size: 0.85em; color: #aaa; margin-bottom: 24px; }
+.field-group { margin-bottom: 20px; }
+.field-group label { display: block; font-size: 0.85em; font-weight: bold; color: #555; margin-bottom: 6px; }
+.field-group .hint { font-size: 0.78em; color: #aaa; margin-bottom: 6px; }
+.field-group input { width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 0.95em; outline: none; transition: border-color 0.2s; }
+.field-group input:focus { border-color: #667eea; }
+.int-section { background: #f8f8ff; border-radius: 12px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #667eea; }
+.int-section.line-section { border-left-color: #00B900; }
+.int-section h3 { font-size: 0.95em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.int-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; display: inline-block; }
+.int-dot.on { background: #4CAF50; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+.btn-cancel { padding: 10px 20px; background: #f5f5f5; border: none; border-radius: 10px; cursor: pointer; font-size: 0.95em; color: #666; }
+.btn-save { padding: 10px 22px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.95em; }
+
+/* Toast */
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(30,30,30,0.88); color: white; padding: 11px 22px; border-radius: 20px; font-size: 0.9em; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; max-width: 340px; text-align: center; white-space: pre-line; }
+.toast.show { opacity: 1; }
+.toast.success { background: rgba(46,125,50,0.9); }
+.toast.error { background: rgba(198,40,40,0.9); }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>Task Manager</h1>
-    <p>Stay organized and get things done</p>
+    <div class="header-text">
+      <h1>Task Manager</h1>
+      <p>Stay organized and keep your team in sync</p>
+    </div>
+    <button class="btn-settings" onclick="openSettings()">&#9881; Settings</button>
   </div>
+
+  <div class="integrations-status" id="intStatus"></div>
 
   <div class="add-card">
     <h2>New Task</h2>
@@ -65,7 +103,7 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; p
         <option value="low">Low Priority</option>
       </select>
       <input type="date" id="taskDue">
-      <button class="btn-add" onclick="addTask()">+ Add Task</button>
+      <button class="btn-add" id="btnAdd" onclick="addTask()">+ Add Task</button>
     </div>
   </div>
 
@@ -79,48 +117,154 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; min-height: 100vh; p
   <div class="task-list" id="taskList"></div>
 </div>
 
+<!-- Settings Modal -->
+<div class="modal-overlay hidden" id="settingsModal">
+  <div class="modal">
+    <h2>&#9881; Integration Settings</h2>
+    <p class="subtitle">Connect your task manager to Lark and LINE for instant team notifications.</p>
+
+    <div class="int-section">
+      <h3><span class="int-dot" id="larkDot"></span> Lark (Feishu) Webhook</h3>
+      <div class="field-group">
+        <label>Incoming Webhook URL</label>
+        <div class="hint">From Lark: Group Settings &rarr; Bots &rarr; Add Bot &rarr; Custom Bot &rarr; copy Webhook URL</div>
+        <input type="text" id="larkWebhook" placeholder="https://open.larksuite.com/open-apis/bot/v2/hook/...">
+      </div>
+    </div>
+
+    <div class="int-section line-section">
+      <h3><span class="int-dot" id="lineDot"></span> LINE Notify</h3>
+      <div class="field-group">
+        <label>LINE Notify Access Token</label>
+        <div class="hint">From notify.line.me &rarr; Generate token &rarr; choose a group or 1-on-1 chat</div>
+        <input type="text" id="lineToken" placeholder="Paste your LINE Notify token here">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+      <button class="btn-save" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
 var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+var settings = JSON.parse(localStorage.getItem('taskSettings') || '{}');
 var currentFilter = 'all';
+var toastTimer = null;
 
-function saveTasks() {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-}
+function saveTasks() { localStorage.setItem('tasks', JSON.stringify(tasks)); }
+function saveSettingsData() { localStorage.setItem('taskSettings', JSON.stringify(settings)); }
 
-function handleKey(e) {
-  if (e.key === 'Enter') addTask();
-}
+function handleKey(e) { if (e.key === 'Enter') addTask(); }
 
 function addTask() {
   var title = document.getElementById('taskTitle').value.trim();
-  if (!title) return;
-  tasks.unshift({
+  if (!title) { showToast('Please enter a task title.', 'error'); return; }
+
+  var task = {
     id: Date.now(),
     title: title,
     priority: document.getElementById('taskPriority').value,
     due: document.getElementById('taskDue').value,
     done: false,
     created: new Date().toISOString()
-  });
+  };
+  tasks.unshift(task);
   document.getElementById('taskTitle').value = '';
   document.getElementById('taskDue').value = '';
   document.getElementById('taskPriority').value = 'medium';
   saveTasks();
   render();
+  notifyTeam(task);
+}
+
+function notifyTeam(task) {
+  var msg = buildMessage(task);
+  var promises = [];
+  if (settings.larkWebhook) promises.push(sendToLark(task, msg));
+  if (settings.lineToken) promises.push(sendToLINE(msg));
+  if (promises.length === 0) return;
+
+  document.getElementById('btnAdd').disabled = true;
+  Promise.allSettled(promises).then(function(results) {
+    document.getElementById('btnAdd').disabled = false;
+    var ok = results.filter(function(r) { return r.status === 'fulfilled'; }).length;
+    var fail = results.filter(function(r) { return r.status === 'rejected'; }).length;
+    if (ok > 0 && fail === 0) showToast('Team notified via ' + (settings.larkWebhook && settings.lineToken ? 'Lark & LINE' : settings.larkWebhook ? 'Lark' : 'LINE') + ' ✓', 'success');
+    else if (ok > 0 && fail > 0) showToast('Partially sent. Check settings for failed service.', '');
+    else showToast('Notification failed. Check your settings.', 'error');
+  });
+}
+
+function buildMessage(task) {
+  var priority = { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' };
+  var lines = [
+    '📋 New Task Added',
+    '─────────────────',
+    'Task: ' + task.title,
+    'Priority: ' + (priority[task.priority] || task.priority)
+  ];
+  if (task.due) lines.push('Due: ' + formatDate(task.due));
+  return lines.join('\n');
+}
+
+function sendToLark(task, msg) {
+  return fetch(settings.larkWebhook, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      msg_type: 'interactive',
+      card: {
+        header: {
+          title: { tag: 'plain_text', content: '📋 New Task: ' + task.title },
+          template: task.priority === 'high' ? 'red' : task.priority === 'low' ? 'green' : 'orange'
+        },
+        elements: [
+          {
+            tag: 'div',
+            fields: [
+              { is_short: true, text: { tag: 'lark_md', content: '**Priority**\n' + task.priority.charAt(0).toUpperCase() + task.priority.slice(1) } },
+              { is_short: true, text: { tag: 'lark_md', content: '**Due Date**\n' + (task.due ? formatDate(task.due) : '—') } }
+            ]
+          }
+        ]
+      }
+    })
+  }).then(function(r) {
+    if (!r.ok) return r.json().then(function(e) { throw new Error(e.msg || 'Lark error'); });
+    return r.json();
+  }).then(function(data) {
+    if (data.code && data.code !== 0) throw new Error(data.msg || 'Lark error');
+  });
+}
+
+function sendToLINE(msg) {
+  var body = new URLSearchParams();
+  body.append('message', msg);
+  return fetch('https://notify-api.line.me/api/notify', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + settings.lineToken,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: body.toString()
+  }).then(function(r) {
+    if (!r.ok) return r.json().then(function(e) { throw new Error(e.message || 'LINE error ' + r.status); });
+  });
 }
 
 function toggleTask(id) {
-  tasks = tasks.map(function(t) {
-    return t.id === id ? Object.assign({}, t, { done: !t.done }) : t;
-  });
-  saveTasks();
-  render();
+  tasks = tasks.map(function(t) { return t.id === id ? Object.assign({}, t, { done: !t.done }) : t; });
+  saveTasks(); render();
 }
 
 function deleteTask(id) {
   tasks = tasks.filter(function(t) { return t.id !== id; });
-  saveTasks();
-  render();
+  saveTasks(); render();
 }
 
 function setFilter(f, btn) {
@@ -130,15 +274,15 @@ function setFilter(f, btn) {
   render();
 }
 
-function isOverdue(due) {
-  if (!due) return false;
-  return new Date(due) < new Date(new Date().toDateString());
-}
+function isOverdue(due) { return due && new Date(due) < new Date(new Date().toDateString()); }
 
 function formatDate(due) {
   if (!due) return '';
-  var d = new Date(due + 'T00:00:00');
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  return new Date(due + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function render() {
@@ -147,16 +291,11 @@ function render() {
     if (currentFilter === 'completed') return t.done;
     return true;
   });
-
   var activeCount = tasks.filter(function(t) { return !t.done; }).length;
   document.getElementById('taskCount').textContent = activeCount + ' remaining';
 
   var list = document.getElementById('taskList');
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty">No tasks here.</div>';
-    return;
-  }
-
+  if (filtered.length === 0) { list.innerHTML = '<div class="empty">No tasks here.</div>'; return; }
   list.innerHTML = filtered.map(function(t) {
     var overdue = !t.done && isOverdue(t.due);
     return '<div class="task-item' + (t.done ? ' done' : '') + '">' +
@@ -171,11 +310,49 @@ function render() {
       '<button class="btn-delete" onclick="deleteTask(' + t.id + ')" title="Delete">&#x2715;</button>' +
     '</div>';
   }).join('');
+
+  renderIntStatus();
 }
 
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function renderIntStatus() {
+  var html = '';
+  html += '<span class="int-badge ' + (settings.larkWebhook ? 'on' : 'off') + '">&#9679; Lark ' + (settings.larkWebhook ? 'Connected' : 'Not set') + '</span>';
+  html += '<span class="int-badge ' + (settings.lineToken ? 'on' : 'off') + '">&#9679; LINE ' + (settings.lineToken ? 'Connected' : 'Not set') + '</span>';
+  document.getElementById('intStatus').innerHTML = html;
 }
+
+function openSettings() {
+  document.getElementById('larkWebhook').value = settings.larkWebhook || '';
+  document.getElementById('lineToken').value = settings.lineToken || '';
+  document.getElementById('larkDot').className = 'int-dot ' + (settings.larkWebhook ? 'on' : '');
+  document.getElementById('lineDot').className = 'int-dot ' + (settings.lineToken ? 'on' : '');
+  document.getElementById('settingsModal').classList.remove('hidden');
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.add('hidden');
+}
+
+function saveSettings() {
+  settings.larkWebhook = document.getElementById('larkWebhook').value.trim();
+  settings.lineToken = document.getElementById('lineToken').value.trim();
+  saveSettingsData();
+  closeSettings();
+  renderIntStatus();
+  showToast('Settings saved.', 'success');
+}
+
+function showToast(msg, type) {
+  clearTimeout(toastTimer);
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3500);
+}
+
+document.getElementById('settingsModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
 
 render();
 </script>
