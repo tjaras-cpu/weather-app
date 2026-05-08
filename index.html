@@ -5,806 +5,650 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#08080f">
-<title>FastTrack — Intermittent Fasting</title>
+<meta name="theme-color" content="#090618">
+<title>FastTrack</title>
 <style>
 :root {
-  --bg:        #08080f;
-  --bg2:       #10101e;
-  --card:      rgba(255,255,255,0.055);
-  --border:    rgba(255,255,255,0.09);
-  --teal:      #4ecdc4;
-  --teal-dim:  rgba(78,205,196,0.15);
-  --orange:    #ff6b35;
-  --orange-dim:rgba(255,107,53,0.15);
-  --text:      #ffffff;
-  --text2:     rgba(255,255,255,0.55);
-  --text3:     rgba(255,255,255,0.3);
-  --safe-top:  env(safe-area-inset-top,  44px);
-  --safe-bot:  env(safe-area-inset-bottom, 34px);
+  --bg:    #090618;
+  --card:  rgba(255,255,255,0.07);
+  --card2: rgba(255,255,255,0.04);
+  --b1:    rgba(255,255,255,0.1);
+  --b2:    rgba(255,255,255,0.06);
+  --p:     #8b5cf6;
+  --pk:    #e879f9;
+  --co:    #f97316;
+  --go:    #f59e0b;
+  --gr:    #22c55e;
+  --te:    #14b8a6;
+  --t1:    #ffffff;
+  --t2:    rgba(255,255,255,0.55);
+  --t3:    rgba(255,255,255,0.3);
+  --safe-top: env(safe-area-inset-top,  44px);
+  --safe-bot: env(safe-area-inset-bottom, 34px);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-html, body {
-  height:100%;
-  overflow:hidden;
-  background:var(--bg);
-  color:var(--text);
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--t1);
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased; }
+
+/* purple radial glow */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse 90% 55% at 50% 18%, rgba(100,30,220,.28) 0%, transparent 68%);
 }
 
-#app {
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  max-width:430px;
-  margin:0 auto;
-  position:relative;
-}
+#app { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; max-width:430px; margin:0 auto; }
 
-.status-bar { height:var(--safe-top); min-height:44px; }
+.sb { height:var(--safe-top); min-height:44px; }
 
-.tab-content {
-  flex:1;
-  overflow-y:auto;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
-.tab-content::-webkit-scrollbar { display:none; }
+.tc { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.tc::-webkit-scrollbar { display:none; }
 
-/* ── Bottom Nav ── */
-.bottom-nav {
-  display:flex;
-  background:rgba(8,8,15,0.92);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  border-top:1px solid var(--border);
-  padding-bottom:max(var(--safe-bot), 8px);
-  flex-shrink:0;
+/* Bottom nav */
+.bnav {
+  display:flex; flex-shrink:0;
+  background:rgba(9,6,24,.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--b2); padding-bottom:max(var(--safe-bot),8px);
 }
-.nav-item {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:10px 0 6px;
-  gap:4px;
-  cursor:pointer;
-  color:var(--text3);
-  transition:color .2s;
-  font-size:10px;
-  font-weight:600;
-  letter-spacing:.3px;
-  user-select:none;
+.ni {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:10px 0 6px; gap:4px; cursor:pointer; color:var(--t3);
+  transition:color .2s; font-size:10px; font-weight:600; letter-spacing:.3px; user-select:none;
 }
-.nav-item.active { color:var(--teal); }
-.nav-item svg { width:22px; height:22px; }
+.ni.on { color:var(--p); }
+.ni svg { width:22px; height:22px; }
 
-/* ── Screens ── */
 .screen { display:none; padding:0 20px 32px; }
 .screen.active { display:block; }
 
-/* ══════════════════════════
-   HOME SCREEN
-══════════════════════════ */
-.home-header {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:20px 0 6px;
-  gap:14px;
+/* ═══════════════════════════
+   HOME
+═══════════════════════════ */
+.h-top {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:18px 0 0;
 }
+.greeting { font-size:16px; font-weight:600; color:var(--t2); }
+.greeting b { color:var(--t1); font-weight:700; }
 
-.protocol-pill {
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:7px 16px 7px 18px;
-  font-size:14px;
-  font-weight:600;
-  color:var(--text2);
-  cursor:pointer;
-  transition:all .15s;
+.proto-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--card); border:1px solid var(--b1);
+  border-radius:20px; padding:6px 14px;
+  font-size:13px; font-weight:700; cursor:pointer;
+  color:var(--p); transition:all .15s;
 }
-.protocol-pill:active { transform:scale(.97); background:rgba(255,255,255,0.09); }
-.protocol-pill svg { width:14px; height:14px; opacity:.6; }
+.proto-pill:active { transform:scale(.97); }
+.proto-pill svg { width:12px; height:12px; opacity:.7; }
 
-.status-badge {
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  border-radius:22px;
-  padding:6px 16px;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.6px;
-  text-transform:uppercase;
+/* Ring */
+.ring-sec { display:flex; flex-direction:column; align-items:center; padding:12px 0 6px; }
+.ring-wrap { position:relative; }
+.ring-wrap svg { width:252px; height:252px; display:block; overflow:visible; }
+.r-bg   { fill:none; stroke:rgba(255,255,255,0.045); stroke-width:17; }
+.r-fill {
+  fill:none; stroke-width:17; stroke-linecap:round;
+  transition:stroke-dashoffset .95s linear;
+  filter:drop-shadow(0 0 12px rgba(139,92,246,.45));
 }
-.status-badge.idle    { background:rgba(255,255,255,0.07); color:var(--text2); }
-.status-badge.fasting { background:var(--teal-dim); color:var(--teal); }
-.status-badge.eating  { background:var(--orange-dim); color:var(--orange); }
+.ring-inner {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1px; text-align:center; padding:0 12px;
+}
+.ri-emoji { font-size:28px; line-height:1; margin-bottom:4px; }
+.ri-time  { font-size:44px; font-weight:800; letter-spacing:-2.5px; font-variant-numeric:tabular-nums; line-height:1; }
+.ri-sub   { font-size:12px; color:var(--t2); font-weight:500; margin-top:3px; }
+.ri-pct   { font-size:13px; font-weight:700; margin-top:2px; }
 
-.status-dot { width:6px; height:6px; border-radius:50%; }
-.fasting .status-dot { background:var(--teal);   animation:blink 2s ease-in-out infinite; }
-.eating  .status-dot { background:var(--orange);  animation:blink 2s ease-in-out infinite; }
+/* Phase row below ring */
+.phase-row {
+  display:flex; align-items:center; gap:7px; margin-top:8px;
+  font-size:13px; font-weight:600; color:var(--t2);
+}
+.ph-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.ph-name { font-weight:700; }
 
-@keyframes blink {
-  0%,100% { opacity:1; transform:scale(1); }
-  50%      { opacity:.4; transform:scale(.8); }
+/* Phase info card */
+.phase-card {
+  background:var(--card); border:1px solid var(--b2);
+  border-radius:20px; padding:16px 18px;
+  margin:12px 0 10px;
+  display:flex; align-items:flex-start; gap:14px;
+  position:relative; overflow:hidden;
 }
+.phase-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  border-radius:3px 0 0 3px; background:var(--phase-clr, var(--p));
+}
+.pc-ico  { font-size:30px; flex-shrink:0; }
+.pc-info { flex:1; }
+.pc-name { font-size:15px; font-weight:700; margin-bottom:5px; }
+.pc-desc { font-size:13px; color:var(--t2); line-height:1.5; }
 
-/* ── Timer Ring ── */
-.ring-wrap {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
-  padding:20px 0 12px;
+/* Milestones scroll */
+.ms-title { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:10px; }
+.ms-scroll {
+  display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  margin:0 -20px; padding:0 20px 4px;
 }
-.ring-wrap svg { width:270px; height:270px; }
+.ms-scroll::-webkit-scrollbar { display:none; }
+.ms-chip {
+  flex-shrink:0; background:var(--card); border:1px solid var(--b2);
+  border-radius:14px; padding:10px 14px;
+  display:flex; align-items:center; gap:8px; white-space:nowrap;
+}
+.ms-chip-emoji { font-size:16px; }
+.ms-chip-name  { font-size:12px; font-weight:700; }
+.ms-chip-time  { font-size:11px; color:var(--t2); }
 
-.ring-bg  { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:14; }
-.ring-track {
-  fill:none;
-  stroke:rgba(255,255,255,0.035);
-  stroke-width:14;
-}
-.ring-fill {
-  fill:none;
-  stroke-width:14;
-  stroke-linecap:round;
-  transition:stroke-dashoffset .95s linear, stroke .5s ease;
-}
+/* Motivation */
+.moti { text-align:center; font-size:14px; color:var(--t2); font-weight:500; padding:10px 0 14px; line-height:1.55; }
 
-.ring-center {
-  position:absolute;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
+/* Buttons */
+.btn {
+  width:100%; padding:19px; border:none; border-radius:18px;
+  font-size:17px; font-weight:700; cursor:pointer; letter-spacing:.2px;
+  transition:all .12s; margin-bottom:13px; font-family:inherit;
 }
-.ring-time {
-  font-size:48px;
-  font-weight:700;
-  letter-spacing:-2px;
-  font-variant-numeric:tabular-nums;
-  line-height:1;
-}
-.ring-sublabel { font-size:13px; color:var(--text2); font-weight:500; }
-.ring-pct      { font-size:14px; font-weight:600; opacity:.6; margin-top:1px; }
+.btn:active { transform:scale(.98); opacity:.87; }
+.btn-start { background:linear-gradient(135deg, #8b5cf6 0%, #d946ef 60%, #f97316 100%); color:#fff; }
+.btn-stop  { background:rgba(255,255,255,0.08); border:1px solid var(--b1); color:var(--t1); }
+.btn-eat   { background:linear-gradient(135deg, #f97316, #f59e0b); color:#1a0700; }
 
-/* ── Time Info Cards ── */
-.time-cards {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:11px;
-  margin:6px 0 22px;
-}
-.time-card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:15px;
-}
-.time-card .tc-label { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; }
-.time-card .tc-value { font-size:17px; font-weight:700; }
-.time-card .tc-sub   { font-size:12px; color:var(--text2); margin-top:2px; }
+/* Stats */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 10px; text-align:center; }
+.sv { font-size:22px; font-weight:700; margin-bottom:4px; }
+.sl { font-size:10px; color:var(--t3); font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
 
-/* ── Buttons ── */
-.main-btn {
-  width:100%;
-  padding:19px;
-  border:none;
-  border-radius:18px;
-  font-size:17px;
-  font-weight:700;
-  cursor:pointer;
-  transition:all .12s;
-  letter-spacing:.2px;
-  margin-bottom:13px;
-}
-.main-btn:active { transform:scale(.98); opacity:.88; }
-
-.btn-start { background:linear-gradient(135deg, #4ecdc4, #2bbdb4); color:#051a19; }
-.btn-stop  { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.11); color:var(--text); }
-.btn-eat   { background:linear-gradient(135deg, #ff6b35, #ff8c42); color:#1f0d05; }
-
-/* ── Stats Row ── */
-.stats-row {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-.stat-card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:15px 10px;
-  text-align:center;
-}
-.stat-val { font-size:22px; font-weight:700; margin-bottom:4px; }
-.stat-lbl { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.3px; line-height:1.4; }
-
-/* ══════════════════════════
-   PLANS SCREEN
-══════════════════════════ */
-.screen-title { font-size:28px; font-weight:700; padding:22px 0 18px; }
-
+/* ═══════════════════════════
+   PLANS
+═══════════════════════════ */
+.scr-title { font-size:28px; font-weight:800; padding:22px 0 18px; }
 .plan-card {
-  background:var(--card);
-  border:1.5px solid var(--border);
-  border-radius:20px;
-  padding:18px;
-  margin-bottom:11px;
-  cursor:pointer;
-  transition:all .18s;
-  display:flex;
-  align-items:center;
-  gap:15px;
+  background:var(--card); border:1.5px solid var(--b2);
+  border-radius:20px; padding:18px; margin-bottom:11px;
+  cursor:pointer; transition:all .18s; display:flex; align-items:center; gap:14px;
 }
 .plan-card:active { transform:scale(.98); }
-.plan-card.selected { border-color:var(--teal); background:var(--teal-dim); }
+.plan-card.sel { border-color:var(--p); background:rgba(139,92,246,.08); }
+.pln-ico  { width:52px; height:52px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.pln-inf  { flex:1; }
+.pln-name { font-size:18px; font-weight:700; margin-bottom:3px; }
+.pln-desc { font-size:13px; color:var(--t2); line-height:1.45; }
+.pln-meta { font-size:12px; color:var(--p); font-weight:600; margin-top:5px; }
+.pln-ck   { width:26px; height:26px; border-radius:50%; border:2px solid var(--b1); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+.plan-card.sel .pln-ck { background:var(--p); border-color:var(--p); }
 
-.plan-icon {
-  width:52px; height:52px;
-  border-radius:15px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:24px;
-  flex-shrink:0;
-}
-.plan-info { flex:1; min-width:0; }
-.plan-name  { font-size:18px; font-weight:700; margin-bottom:3px; }
-.plan-desc  { font-size:13px; color:var(--text2); line-height:1.45; }
-.plan-meta  { font-size:12px; color:var(--teal); font-weight:600; margin-top:5px; }
-.plan-check {
-  width:26px; height:26px;
-  border-radius:50%;
-  border:2px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0;
-  transition:all .2s;
-}
-.plan-card.selected .plan-check { background:var(--teal); border-color:var(--teal); }
-
-/* ══════════════════════════
-   HISTORY SCREEN
-══════════════════════════ */
-.history-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  padding:22px 0 18px;
-}
-.clear-btn {
-  background:none; border:none;
-  color:var(--text2); font-size:14px; cursor:pointer;
-  padding:4px; font-family:inherit;
-}
+/* ═══════════════════════════
+   HISTORY
+═══════════════════════════ */
+.hist-top { display:flex; justify-content:space-between; align-items:flex-end; padding:22px 0 18px; }
+.clr-btn  { background:none; border:none; color:var(--t2); font-size:14px; cursor:pointer; padding:4px; font-family:inherit; }
 
 .streak-card {
-  background:linear-gradient(135deg, rgba(78,205,196,.14), rgba(78,205,196,.05));
-  border:1px solid rgba(78,205,196,.22);
-  border-radius:22px;
-  padding:20px;
-  display:flex;
-  align-items:center;
-  gap:18px;
-  margin-bottom:14px;
+  background:linear-gradient(135deg, rgba(139,92,246,.18), rgba(232,121,249,.07));
+  border:1px solid rgba(139,92,246,.28); border-radius:22px;
+  padding:20px; display:flex; align-items:center; gap:18px; margin-bottom:13px;
 }
-.streak-emoji { font-size:38px; }
-.streak-num { font-size:40px; font-weight:800; color:var(--teal); line-height:1; }
-.streak-txt { font-size:14px; color:var(--text2); margin-top:4px; }
+.str-ico { font-size:42px; }
+.str-num {
+  font-size:44px; font-weight:800; line-height:1;
+  background:linear-gradient(135deg, var(--p), var(--pk));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.str-txt { font-size:14px; color:var(--t2); margin-top:4px; }
 
-.mini-stats {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:24px;
-}
-.mini-stat {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:17px;
-  padding:16px;
-}
-.mini-stat .ms-val { font-size:24px; font-weight:700; margin-bottom:4px; }
-.mini-stat .ms-lbl { font-size:12px; color:var(--text2); }
+.mn-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+.mn-card { background:var(--card); border:1px solid var(--b2); border-radius:17px; padding:16px; }
+.mn-val  { font-size:24px; font-weight:700; margin-bottom:4px; }
+.mn-lbl  { font-size:12px; color:var(--t2); }
 
-.section-label {
-  font-size:11px; font-weight:700;
-  color:var(--text3);
-  text-transform:uppercase;
-  letter-spacing:.7px;
-  margin-bottom:11px;
-}
+.sec-lbl { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:11px; }
 
-.hist-item {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:14px 16px;
-  margin-bottom:9px;
-  display:flex;
-  align-items:center;
-  gap:12px;
+.hi {
+  background:var(--card); border:1px solid var(--b2); border-radius:16px;
+  padding:14px 16px; margin-bottom:9px;
+  display:flex; align-items:center; gap:12px;
 }
-.hist-icon {
-  width:42px; height:42px;
-  border-radius:13px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:19px;
-  flex-shrink:0;
-}
-.hist-icon.fasting { background:var(--teal-dim); }
-.hist-icon.eating  { background:var(--orange-dim); }
+.hi-ico { width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+.hi-ico.fasting { background:rgba(139,92,246,.2); }
+.hi-ico.eating  { background:rgba(249,115,22,.18); }
+.hi-inf  { flex:1; }
+.hi-date { font-size:12px; color:var(--t2); margin-bottom:2px; }
+.hi-dur  { font-size:15px; font-weight:700; }
+.hi-res  { text-align:right; flex-shrink:0; }
+.hi-pct  { font-size:20px; font-weight:700; }
+.hi-tag  { font-size:11px; font-weight:600; }
+.hi-tag.ok  { color:#a78bfa; }
+.hi-tag.pt  { color:var(--co); }
 
-.hist-info { flex:1; min-width:0; }
-.hist-date     { font-size:12px; color:var(--text2); margin-bottom:2px; }
-.hist-duration { font-size:15px; font-weight:700; }
-
-.hist-result { text-align:right; flex-shrink:0; }
-.hist-pct  { font-size:20px; font-weight:700; }
-.hist-done { font-size:11px; font-weight:600; }
-.hist-done.ok  { color:var(--teal); }
-.hist-done.partial { color:var(--orange); }
-
-.empty-state {
-  text-align:center;
-  padding:56px 16px;
-  color:var(--text2);
-}
-.empty-state .ee { font-size:52px; margin-bottom:16px; }
-.empty-state p   { font-size:15px; line-height:1.6; }
+.empty { text-align:center; padding:52px 16px; color:var(--t2); }
+.empty .ee { font-size:56px; margin-bottom:16px; }
+.empty p   { font-size:15px; line-height:1.6; }
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="status-bar"></div>
+  <div class="sb"></div>
 
-  <div class="tab-content">
+  <div class="tc">
 
-    <!-- ═══ HOME ═══ -->
+    <!-- ══ HOME ══ -->
     <div class="screen active" id="screen-home">
-      <div class="home-header">
-        <div class="protocol-pill" onclick="switchTab('plans')" id="protocol-pill">
-          <span id="pill-name">16:8</span>
+      <div class="h-top">
+        <div class="greeting" id="greeting"><b>Good morning</b></div>
+        <div class="proto-pill" onclick="switchTab('plans')">
+          <span id="pill-nm">16:8</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <span class="status-badge idle" id="status-badge">
-          <span class="status-dot"></span>
-          <span id="status-text">Ready</span>
-        </span>
       </div>
 
       <!-- Ring -->
-      <div class="ring-wrap">
-        <svg viewBox="0 0 290 290" xmlns="http://www.w3.org/2000/svg">
-          <circle class="ring-bg"    cx="145" cy="145" r="126"/>
-          <circle class="ring-track" cx="145" cy="145" r="126"/>
-          <circle class="ring-fill" id="ring-fill"
-            cx="145" cy="145" r="126"
-            stroke="#4ecdc4"
-            stroke-dasharray="791.68"
-            stroke-dashoffset="791.68"
-            transform="rotate(-90 145 145)"
-          />
-        </svg>
-        <div class="ring-center">
-          <div class="ring-time" id="ring-time">00:00:00</div>
-          <div class="ring-sublabel" id="ring-sublabel">tap to start fasting</div>
-          <div class="ring-pct" id="ring-pct" style="display:none"></div>
+      <div class="ring-sec">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stop-color="#6d28d9"/>
+                <stop offset="40%"  stop-color="#d946ef"/>
+                <stop offset="100%" stop-color="#f97316"/>
+              </linearGradient>
+              <linearGradient id="rg2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stop-color="#f59e0b"/>
+                <stop offset="100%" stop-color="#10b981"/>
+              </linearGradient>
+            </defs>
+            <circle class="r-bg" cx="140" cy="140" r="122"/>
+            <circle class="r-fill" id="r-fill"
+              cx="140" cy="140" r="122"
+              stroke="url(#rg)"
+              stroke-dasharray="766.55"
+              stroke-dashoffset="766.55"
+              transform="rotate(-90 140 140)"
+            />
+          </svg>
+          <div class="ring-inner">
+            <div class="ri-emoji" id="ri-emoji">🐝</div>
+            <div class="ri-time"  id="ri-time">00:00:00</div>
+            <div class="ri-sub"   id="ri-sub">tap to begin</div>
+            <div class="ri-pct"   id="ri-pct" style="display:none;color:var(--p)"></div>
+          </div>
+        </div>
+
+        <!-- Phase row -->
+        <div class="phase-row" id="phase-row" style="display:none">
+          <div class="ph-dot" id="ph-dot"></div>
+          <span class="t2">Phase ·</span>
+          <span class="ph-name" id="ph-nm"></span>
         </div>
       </div>
 
-      <!-- Time info cards (hidden when idle) -->
-      <div class="time-cards" id="time-cards" style="display:none">
-        <div class="time-card">
-          <div class="tc-label">Started</div>
-          <div class="tc-value" id="tc-start">—</div>
-          <div class="tc-sub"   id="tc-start-day"></div>
-        </div>
-        <div class="time-card">
-          <div class="tc-label" id="tc-end-label">Goal End</div>
-          <div class="tc-value" id="tc-end">—</div>
-          <div class="tc-sub"   id="tc-end-day"></div>
+      <!-- Phase info card -->
+      <div class="phase-card" id="phase-card" style="display:none">
+        <div class="pc-ico" id="pc-ico">🔥</div>
+        <div class="pc-info">
+          <div class="pc-name" id="pc-nm"></div>
+          <div class="pc-desc" id="pc-desc"></div>
         </div>
       </div>
 
-      <button class="main-btn btn-start" id="main-btn" onclick="handleBtn()">Start Fasting</button>
+      <!-- Milestones -->
+      <div id="ms-wrap" style="display:none">
+        <div class="ms-title">Upcoming Phases</div>
+        <div class="ms-scroll" id="ms-scroll"></div>
+      </div>
 
+      <!-- Motivation -->
+      <div class="moti" id="moti" style="display:none"></div>
+
+      <!-- CTA button -->
+      <button class="btn btn-start" id="main-btn" onclick="handleBtn()">Start Fasting</button>
+
+      <!-- Stats -->
       <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-val" id="s-streak">0</div>
-          <div class="stat-lbl">Day Streak</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val" id="s-total">0</div>
-          <div class="stat-lbl">Total Fasts</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val" id="s-hours">0h</div>
-          <div class="stat-lbl">Hours Fasted</div>
-        </div>
+        <div class="sc"><div class="sv" id="s-str">0</div><div class="sl">🔥 Streak</div></div>
+        <div class="sc"><div class="sv" id="s-tot">0</div><div class="sl">Fasts</div></div>
+        <div class="sc"><div class="sv" id="s-hrs">0h</div><div class="sl">Hours</div></div>
       </div>
     </div>
 
-    <!-- ═══ PLANS ═══ -->
+    <!-- ══ PLANS ══ -->
     <div class="screen" id="screen-plans">
-      <div class="screen-title">Fasting Plans</div>
+      <div class="scr-title">Plans</div>
       <div id="plans-list"></div>
     </div>
 
-    <!-- ═══ HISTORY ═══ -->
+    <!-- ══ HISTORY ══ -->
     <div class="screen" id="screen-history">
-      <div class="history-top">
-        <div class="screen-title" style="padding:0">History</div>
-        <button class="clear-btn" onclick="clearHistory()">Clear All</button>
+      <div class="hist-top">
+        <div class="scr-title" style="padding:0">History</div>
+        <button class="clr-btn" onclick="clearHistory()">Clear All</button>
       </div>
-      <div id="hist-content"></div>
+      <div id="hist-body"></div>
     </div>
 
-  </div><!-- /tab-content -->
+  </div>
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+  <nav class="bnav">
+    <div class="ni on" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <circle cx="12" cy="12" r="10"/>
-        <polyline points="12 6 12 12 16 14"/>
-      </svg>
-      Timer
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>Timer
     </div>
-    <div class="nav-item" id="nav-plans" onclick="switchTab('plans')">
+    <div class="ni" id="nav-plans" onclick="switchTab('plans')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-        <path d="M2 17l10 5 10-5"/>
-        <path d="M2 12l10 5 10-5"/>
-      </svg>
-      Plans
+        <path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>Plans
     </div>
-    <div class="nav-item" id="nav-history" onclick="switchTab('history')">
+    <div class="ni" id="nav-history" onclick="switchTab('history')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-      </svg>
-      History
+      </svg>History
     </div>
   </nav>
 </div>
 
 <script>
 const KEY = 'fasttrack_v2';
-const C   = 2 * Math.PI * 126; // stroke circumference ≈ 791.68
+const C   = 2 * Math.PI * 122; // ≈ 766.55
 
-const PROTOCOLS = [
-  { id:'12-12', name:'12:12', fast:12, eat:12, icon:'🌱', color:'#2ECC71',
-    tag:'Beginner', desc:'Equal fasting and eating windows — a gentle introduction to intermittent fasting.' },
-  { id:'16-8',  name:'16:8',  fast:16, eat:8,  icon:'⚡', color:'#4ECDC4',
-    tag:'Most Popular', desc:'Fast 16 hours, eat within an 8-hour window. The gold standard for most people.' },
-  { id:'18-6',  name:'18:6',  fast:18, eat:6,  icon:'🔥', color:'#FF6B35',
-    tag:'Intermediate', desc:'Fast 18 hours with a 6-hour eating window for accelerated metabolic benefits.' },
-  { id:'20-4',  name:'20:4',  fast:20, eat:4,  icon:'💪', color:'#9B59B6',
-    tag:'Advanced', desc:'The Warrior Diet — fast 20 hours and feast within a 4-hour window.' },
-  { id:'omad',  name:'OMAD',  fast:23, eat:1,  icon:'🏆', color:'#F39C12',
-    tag:'Expert', desc:'One Meal A Day. 23 hours fasting, 1-hour eating window for maximum discipline.' },
+const PROTOS = [
+  { id:'12-12', name:'12:12', fast:12, eat:12, icon:'🌱', color:'#22c55e', tag:'Beginner',
+    desc:'Equal fasting and eating windows — the gentlest way to start intermittent fasting.' },
+  { id:'16-8',  name:'16:8',  fast:16, eat:8,  icon:'⚡', color:'#8b5cf6', tag:'Popular',
+    desc:'Fast 16 hours, eat within 8. The gold standard protocol for most people.' },
+  { id:'18-6',  name:'18:6',  fast:18, eat:6,  icon:'🔥', color:'#e879f9', tag:'Intermediate',
+    desc:'Fast 18 hours with a 6-hour eating window for accelerated results.' },
+  { id:'20-4',  name:'20:4',  fast:20, eat:4,  icon:'💪', color:'#f97316', tag:'Advanced',
+    desc:'The Warrior Diet — fast 20 hours, feast within a 4-hour window.' },
+  { id:'omad',  name:'OMAD',  fast:23, eat:1,  icon:'🏆', color:'#f59e0b', tag:'Expert',
+    desc:'One Meal A Day. 23 hours fasting with a 1-hour eating window.' },
 ];
 
-function blank() {
-  return { protocolId:'16-8', session:null, history:[], totalSecs:0 };
-}
+const PHASES = [
+  { h: 0,  name:'Fed State',      emoji:'🍽️', color:'#94a3b8',
+    desc:'Your body is digesting and absorbing nutrients from your last meal.' },
+  { h: 4,  name:'Early Fasting',  emoji:'⏳',  color:'#a78bfa',
+    desc:'Blood sugar is normalizing and your body is transitioning to fasting mode.' },
+  { h: 8,  name:'Fat Mobilizing', emoji:'💧',  color:'#8b5cf6',
+    desc:'Glycogen stores are nearly depleted. Your body is mobilizing fat for energy.' },
+  { h: 12, name:'Fat Burning',    emoji:'🔥',  color:'#d946ef',
+    desc:'Fat is now your primary fuel source. Stored body fat is actively being burned!' },
+  { h: 16, name:'Ketosis',        emoji:'⚡',  color:'#f97316',
+    desc:'Ketone production ramps up. Expect enhanced mental clarity and sustained energy.' },
+  { h: 18, name:'Autophagy',      emoji:'✨',  color:'#f59e0b',
+    desc:'Cellular cleanup begins. Your body is repairing and recycling damaged cells.' },
+  { h: 24, name:'Deep Autophagy', emoji:'🌟',  color:'#14b8a6',
+    desc:'Peak cellular renewal and anti-aging autophagy. Maximum fasting benefits!' },
+];
 
+const MOTOS = [
+  'You\'ve got this! Every hour is a victory. 🐝',
+  'Great start! Your body is already working its magic. ✨',
+  'You\'re in the zone! Keep that momentum going. 🔥',
+  'Halfway there — you\'re absolutely crushing it! 💪',
+  'More than halfway! Your future self is grateful. ⭐',
+  'Almost there! The finish line is within reach. 🏁',
+  'Final stretch — you are unstoppable! 🚀',
+  'Goal reached! You\'re a fasting champion! 🏆',
+];
+
+function blank() { return { protocolId:'16-8', session:null, history:[], totalSecs:0 }; }
 let S = blank();
-try {
-  const raw = localStorage.getItem(KEY);
-  if (raw) S = Object.assign(blank(), JSON.parse(raw));
-} catch {}
+try { const r=localStorage.getItem(KEY); if(r) S=Object.assign(blank(),JSON.parse(r)); } catch{}
+let tick = null;
 
-let ticker = null;
+const save  = () => { try{localStorage.setItem(KEY,JSON.stringify(S));}catch{} };
+const proto = id  => PROTOS.find(p=>p.id===id)||PROTOS[1];
+const phase = h   => { let p=PHASES[0]; for(const x of PHASES){if(h>=x.h)p=x;else break;} return p; };
+const nextP = h   => PHASES.filter(p=>p.h>h);
 
-function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {}
+function greet() {
+  const h=new Date().getHours();
+  if(h>=5&&h<12)  return '☀️ Good morning';
+  if(h>=12&&h<17) return '🌤 Good afternoon';
+  if(h>=17&&h<21) return '🌆 Good evening';
+  return '🌙 Good night';
 }
 
-function proto(id) {
-  return PROTOCOLS.find(p => p.id === id) || PROTOCOLS[1];
-}
-
-// ── Tab switching ──
-function switchTab(tab) {
-  ['home','plans','history'].forEach(t => {
-    document.getElementById('screen-' + t).classList.toggle('active', t === tab);
-    document.getElementById('nav-'    + t).classList.toggle('active', t === tab);
+function switchTab(t) {
+  ['home','plans','history'].forEach(x=>{
+    document.getElementById('screen-'+x).classList.toggle('active',x===t);
+    document.getElementById('nav-'+x).classList.toggle('on',x===t);
   });
-  if (tab === 'plans')   renderPlans();
-  if (tab === 'history') renderHistory();
+  if(t==='plans')   renderPlans();
+  if(t==='history') renderHist();
 }
 
-// ── Formatting helpers ──
-function fmt12(ts) {
-  const d = new Date(ts);
-  let h = d.getHours(), m = d.getMinutes();
-  const ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return `${h}:${String(m).padStart(2,'0')} ${ap}`;
-}
+const fmt12 = ts => {
+  const d=new Date(ts); let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
+  h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+};
+const fmtDay = ts => {
+  const d=new Date(ts),td=new Date(),yd=new Date(td); yd.setDate(yd.getDate()-1);
+  if(d.toDateString()===td.toDateString()) return 'Today';
+  if(d.toDateString()===yd.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+};
+const fmtHMS = s => {
+  s=Math.max(0,Math.floor(s));
+  return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+};
+const fmtH = s => {
+  if(!s||s<=0) return '0h'; const h=s/3600;
+  return h<1 ? Math.round(h*60)+'m' : (Math.round(h*10)/10)+'h';
+};
+const fmtCd = s => {
+  s=Math.max(0,Math.floor(s)); const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  return h>0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${m}m ${String(ss).padStart(2,'0')}s`;
+};
 
-function fmtDay(ts) {
-  const d  = new Date(ts);
-  const td = new Date();
-  const yd = new Date(td); yd.setDate(yd.getDate() - 1);
-  if (d.toDateString() === td.toDateString()) return 'Today';
-  if (d.toDateString() === yd.toDateString()) return 'Yesterday';
-  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-}
-
-function fmtHMS(sec) {
-  sec = Math.max(0, Math.floor(sec));
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  const s = sec % 60;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function fmtHours(sec) {
-  if (!sec || sec <= 0) return '0h';
-  const h = sec / 3600;
-  if (h < 1) return Math.round(h * 60) + 'm';
-  return (Math.round(h * 10) / 10) + 'h';
-}
-
-// ── Streak calculation ──
 function streak() {
-  const fasts = S.history.filter(h => h.type === 'fasting');
-  if (!fasts.length) return 0;
-  let n = 0, last = null;
-  for (const f of fasts) {
-    const day = new Date(f.endTime).toDateString();
-    if (!last) { n = 1; last = new Date(f.endTime); continue; }
-    const diff = (last - new Date(f.endTime)) / 86400000;
-    if (diff <= 1.05) { n++; last = new Date(f.endTime); } else break;
+  const fs=S.history.filter(h=>h.type==='fasting'); if(!fs.length) return 0;
+  let n=0,last=null;
+  for(const f of fs){
+    if(!last){n=1;last=new Date(f.endTime);continue;}
+    if((last-new Date(f.endTime))/86400000<=1.05){n++;last=new Date(f.endTime);}else break;
   }
   return n;
 }
 
-// ── Main button ──
 function handleBtn() {
-  const p = proto(S.protocolId);
-
-  if (!S.session) {
-    S.session = { startTime: Date.now(), type:'fasting', protoId: S.protocolId };
-    vibrate(10);
-  } else if (S.session.type === 'fasting') {
-    const elapsed = (Date.now() - S.session.startTime) / 1000;
-    const goal    = p.fast * 3600;
-    const pct     = elapsed / goal;
-    if (pct < 0.5 && !confirm(`You've completed ${Math.round(pct*100)}% of your fast.\nEnd early?`)) return;
+  const p=proto(S.protocolId);
+  if(!S.session) {
+    S.session={startTime:Date.now(),type:'fasting',protoId:S.protocolId};
+    vibe(10);
+  } else if(S.session.type==='fasting') {
+    const el=(Date.now()-S.session.startTime)/1000,g=p.fast*3600,pct=el/g;
+    if(pct<0.5&&!confirm(`You've completed ${Math.round(pct*100)}% of your fast.\nEnd early?`)) return;
     endFast();
-  } else {
-    endEating();
-  }
-
-  save();
-  render();
-  startTick();
+  } else { endEat(); }
+  save(); render(); startTick();
 }
 
 function endFast() {
-  const { startTime, protoId } = S.session;
-  const p       = proto(protoId);
-  const elapsed = (Date.now() - startTime) / 1000;
-  const goal    = p.fast * 3600;
-
-  S.history.unshift({ id:Date.now(), type:'fasting', startTime, endTime:Date.now(), duration:elapsed, goal, protoId });
-  if (S.history.length > 120) S.history = S.history.slice(0,120);
-  S.totalSecs = (S.totalSecs || 0) + elapsed;
-  S.session   = { startTime:Date.now(), type:'eating', protoId };
-
-  vibrate([12,60,12]);
+  const {startTime,protoId}=S.session,p=proto(protoId),el=(Date.now()-startTime)/1000,g=p.fast*3600;
+  S.history.unshift({id:Date.now(),type:'fasting',startTime,endTime:Date.now(),duration:el,goal:g,protoId});
+  if(S.history.length>120) S.history=S.history.slice(0,120);
+  S.totalSecs=(S.totalSecs||0)+el;
+  S.session={startTime:Date.now(),type:'eating',protoId};
+  vibe([12,60,12]);
 }
-
-function endEating() {
-  const { startTime, protoId } = S.session;
-  const p       = proto(protoId);
-  const elapsed = (Date.now() - startTime) / 1000;
-
-  S.history.unshift({ id:Date.now(), type:'eating', startTime, endTime:Date.now(), duration:elapsed, goal:p.eat*3600, protoId });
-  if (S.history.length > 120) S.history = S.history.slice(0,120);
-  S.session = { startTime:Date.now(), type:'fasting', protoId: S.protocolId };
-
-  vibrate(10);
+function endEat() {
+  const {startTime,protoId}=S.session,p=proto(protoId),el=(Date.now()-startTime)/1000;
+  S.history.unshift({id:Date.now(),type:'eating',startTime,endTime:Date.now(),duration:el,goal:p.eat*3600,protoId});
+  if(S.history.length>120) S.history=S.history.slice(0,120);
+  S.session={startTime:Date.now(),type:'fasting',protoId:S.protocolId};
+  vibe(10);
 }
+const vibe = p => { try{navigator.vibrate&&navigator.vibrate(p);}catch{} };
 
-function vibrate(pat) {
-  try { navigator.vibrate && navigator.vibrate(pat); } catch {}
-}
-
-// ── Render home ──
 function render() {
-  const p     = proto(S.protocolId);
-  const ring  = document.getElementById('ring-fill');
-  const badge = document.getElementById('status-badge');
-  const sText = document.getElementById('status-text');
-  const cards = document.getElementById('time-cards');
-  const btn   = document.getElementById('main-btn');
-  const rTime = document.getElementById('ring-time');
-  const rSub  = document.getElementById('ring-sublabel');
-  const rPct  = document.getElementById('ring-pct');
+  const p=proto(S.protocolId);
+  document.getElementById('pill-nm').textContent=p.name;
+  document.getElementById('greeting').innerHTML=`<b>${greet()}</b>`;
+  document.getElementById('s-str').textContent=streak();
+  document.getElementById('s-tot').textContent=S.history.filter(h=>h.type==='fasting').length;
+  document.getElementById('s-hrs').textContent=fmtH(S.totalSecs);
 
-  document.getElementById('pill-name').textContent = p.name;
+  const ring=document.getElementById('r-fill');
+  const btn=document.getElementById('main-btn');
+  const phRow=document.getElementById('phase-row');
+  const phCard=document.getElementById('phase-card');
+  const msWrap=document.getElementById('ms-wrap');
+  const moti=document.getElementById('moti');
 
-  // Stats
-  document.getElementById('s-streak').textContent = streak();
-  document.getElementById('s-total').textContent  = S.history.filter(h=>h.type==='fasting').length;
-  document.getElementById('s-hours').textContent  = fmtHours(S.totalSecs);
-
-  if (!S.session) {
-    badge.className     = 'status-badge idle';
-    sText.textContent   = 'Ready';
-    cards.style.display = 'none';
-    btn.className       = 'main-btn btn-start';
-    btn.textContent     = 'Start Fasting';
-    rTime.textContent   = '00:00:00';
-    rTime.style.color   = 'var(--text)';
-    rSub.textContent    = 'tap to start fasting';
-    rPct.style.display  = 'none';
-    ring.style.strokeDashoffset = C;
-    ring.style.stroke   = 'var(--teal)';
+  if(!S.session) {
+    ring.style.strokeDashoffset=C; ring.setAttribute('stroke','url(#rg)');
+    document.getElementById('ri-emoji').textContent='🐝';
+    document.getElementById('ri-time').textContent='00:00:00';
+    document.getElementById('ri-sub').textContent='tap to begin fasting';
+    document.getElementById('ri-pct').style.display='none';
+    phRow.style.display='none'; phCard.style.display='none';
+    msWrap.style.display='none'; moti.style.display='none';
+    btn.className='btn btn-start'; btn.textContent='Start Fasting';
     return;
   }
 
-  const { type, startTime, protoId } = S.session;
-  const sp      = proto(protoId);
-  const goal    = (type === 'fasting' ? sp.fast : sp.eat) * 3600;
-  const elapsed = (Date.now() - startTime) / 1000;
-  const remain  = Math.max(0, goal - elapsed);
-  const prog    = Math.min(1, elapsed / goal);
+  const {type,startTime,protoId}=S.session;
+  const sp=proto(protoId);
+  const goal=(type==='fasting'?sp.fast:sp.eat)*3600;
+  const elapsed=(Date.now()-startTime)/1000;
+  const remain=Math.max(0,goal-elapsed);
+  const prog=Math.min(1,elapsed/goal);
 
-  ring.style.strokeDashoffset = C * (1 - prog);
-  ring.style.stroke = type === 'fasting' ? 'var(--teal)' : 'var(--orange)';
+  ring.style.strokeDashoffset=C*(1-prog);
+  document.getElementById('ri-pct').style.display='block';
+  document.getElementById('ri-pct').textContent=Math.round(prog*100)+'%';
 
-  rPct.style.display  = 'block';
-  rPct.textContent    = Math.round(prog * 100) + '%';
+  if(type==='fasting') {
+    const elH=elapsed/3600;
+    const ph=phase(elH);
+    const nx=nextP(elH);
 
-  if (type === 'fasting') {
-    badge.className = 'status-badge fasting';
-    if (prog >= 1) {
-      sText.textContent = 'Goal reached! 🎉';
-      btn.className     = 'main-btn btn-stop';
-      btn.textContent   = 'Break Fast';
-      rSub.textContent  = 'fasting goal complete';
-      rTime.style.color = 'var(--teal)';
-      rTime.textContent = '+' + fmtHMS(elapsed - goal);
-    } else {
-      sText.textContent = 'Fasting';
-      btn.className     = 'main-btn btn-stop';
-      btn.textContent   = 'Break Fast Early';
-      rSub.textContent  = 'remaining';
-      rTime.style.color = 'var(--text)';
-      rTime.textContent = fmtHMS(remain);
-    }
+    ring.setAttribute('stroke', prog>=1 ? 'url(#rg2)' : 'url(#rg)');
+
+    document.getElementById('ri-emoji').textContent=ph.emoji;
+    document.getElementById('ri-time').textContent=fmtHMS(remain>0?remain:elapsed-goal);
+    document.getElementById('ri-sub').textContent=
+      remain>0 ? 'remaining' : (prog>=1 ? 'goal reached! 🎉' : 'fasting');
+    document.getElementById('ri-pct').style.color=ph.color;
+
+    phRow.style.display='flex';
+    document.getElementById('ph-dot').style.background=ph.color;
+    document.getElementById('ph-nm').textContent=ph.name;
+    document.getElementById('ph-nm').style.color=ph.color;
+
+    phCard.style.display='flex';
+    phCard.style.setProperty('--phase-clr',ph.color);
+    document.getElementById('pc-ico').textContent=ph.emoji;
+    document.getElementById('pc-nm').textContent=ph.name;
+    document.getElementById('pc-desc').textContent=ph.desc;
+
+    if(nx.length) {
+      msWrap.style.display='block';
+      document.getElementById('ms-scroll').innerHTML=nx.slice(0,5).map(n=>`
+        <div class="ms-chip">
+          <div class="ms-chip-emoji">${n.emoji}</div>
+          <div>
+            <div class="ms-chip-name">${n.name}</div>
+            <div class="ms-chip-time">in ${fmtCd((n.h*3600)-elapsed)}</div>
+          </div>
+        </div>`).join('');
+    } else { msWrap.style.display='none'; }
+
+    const mi=Math.min(Math.floor(prog*MOTOS.length),MOTOS.length-1);
+    moti.style.display='block'; moti.textContent=MOTOS[mi];
+
+    btn.className='btn btn-stop';
+    btn.textContent=prog>=1 ? 'Break Fast 🎉' : 'Break Fast Early';
+
   } else {
-    badge.className     = 'status-badge eating';
-    sText.textContent   = 'Eating Window';
-    btn.className       = 'main-btn btn-eat';
-    btn.textContent     = remain > 0 ? 'Start Next Fast' : 'Start Next Fast';
-    rSub.textContent    = remain > 0 ? 'eating window left' : 'window ended';
-    rTime.style.color   = 'var(--text)';
-    rTime.textContent   = fmtHMS(remain);
+    ring.setAttribute('stroke','url(#rg)');
+    document.getElementById('ri-emoji').textContent='🍽️';
+    document.getElementById('ri-time').textContent=fmtHMS(remain);
+    document.getElementById('ri-sub').textContent=remain>0?'eating window left':'window ended';
+    document.getElementById('ri-pct').style.color='var(--co)';
+    phRow.style.display='none'; phCard.style.display='none'; msWrap.style.display='none';
+    moti.style.display='block';
+    moti.textContent='Enjoy your eating window! Eat mindfully and nourish your body. 🥗';
+    btn.className='btn btn-eat'; btn.textContent='Start Next Fast';
   }
-
-  cards.style.display = 'grid';
-  document.getElementById('tc-start').textContent    = fmt12(startTime);
-  document.getElementById('tc-start-day').textContent = fmtDay(startTime);
-
-  const goalEnd = startTime + goal * 1000;
-  document.getElementById('tc-end-label').textContent = type === 'fasting' ? 'Break Fast' : 'Window Ends';
-  document.getElementById('tc-end').textContent       = fmt12(goalEnd);
-  document.getElementById('tc-end-day').textContent   = fmtDay(goalEnd);
 }
 
 function startTick() {
-  if (ticker) clearInterval(ticker);
-  if (S.session) ticker = setInterval(render, 1000);
+  if(tick) clearInterval(tick);
+  if(S.session) tick=setInterval(render,1000);
 }
 
-// ── Render plans ──
 function renderPlans() {
-  document.getElementById('plans-list').innerHTML = PROTOCOLS.map(p => `
-    <div class="plan-card ${S.protocolId === p.id ? 'selected' : ''}" onclick="pickPlan('${p.id}')">
-      <div class="plan-icon" style="background:${p.color}20">${p.icon}</div>
-      <div class="plan-info">
-        <div class="plan-name">${p.name}</div>
-        <div class="plan-desc">${p.desc}</div>
-        <div class="plan-meta">${p.fast}h fast · ${p.eat}h eat · ${p.tag}</div>
+  document.getElementById('plans-list').innerHTML=PROTOS.map(p=>`
+    <div class="plan-card ${S.protocolId===p.id?'sel':''}" onclick="pickPlan('${p.id}')">
+      <div class="pln-ico" style="background:${p.color}22">${p.icon}</div>
+      <div class="pln-inf">
+        <div class="pln-name">${p.name}</div>
+        <div class="pln-desc">${p.desc}</div>
+        <div class="pln-meta">${p.fast}h fast · ${p.eat}h eat · ${p.tag}</div>
       </div>
-      <div class="plan-check">
-        ${S.protocolId === p.id
-          ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
-          : ''}
+      <div class="pln-ck">
+        ${S.protocolId===p.id?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':''}
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function pickPlan(id) {
-  if (S.session && !confirm('Changing plan will not affect your active session. Continue?')) return;
-  S.protocolId = id;
-  save();
-  renderPlans();
-  render();
+  if(S.session&&!confirm('Changing plan won\'t affect your active session. Continue?')) return;
+  S.protocolId=id; save(); renderPlans(); render();
 }
 
-// ── Render history ──
-function renderHistory() {
-  const fasts   = S.history.filter(h => h.type === 'fasting');
-  const str     = streak();
-  const avg     = fasts.length ? fasts.reduce((a,b)=>a+b.duration,0)/fasts.length : 0;
-  const met     = fasts.filter(f=>f.duration>=f.goal).length;
-
-  let html = `
+function renderHist() {
+  const fs=S.history.filter(h=>h.type==='fasting');
+  const str=streak(),avg=fs.length?fs.reduce((a,b)=>a+b.duration,0)/fs.length:0;
+  let html=`
     <div class="streak-card">
-      <div class="streak-emoji">🔥</div>
-      <div>
-        <div class="streak-num">${str}</div>
-        <div class="streak-txt">day streak</div>
-      </div>
+      <div class="str-ico">🔥</div>
+      <div><div class="str-num">${str}</div><div class="str-txt">day streak</div></div>
     </div>
-    <div class="mini-stats">
-      <div class="mini-stat"><div class="ms-val">${fasts.length}</div><div class="ms-lbl">Total Fasts</div></div>
-      <div class="mini-stat"><div class="ms-val">${fmtHours(S.totalSecs)}</div><div class="ms-lbl">Hours Fasted</div></div>
-      <div class="mini-stat"><div class="ms-val">${fmtHours(avg)}</div><div class="ms-lbl">Average Fast</div></div>
-      <div class="mini-stat"><div class="ms-val">${met}</div><div class="ms-lbl">Goals Met</div></div>
-    </div>
-  `;
-
-  if (!S.history.length) {
-    html += `
-      <div class="empty-state">
-        <div class="ee">⏱️</div>
-        <p>No history yet.<br>Start your first fast to<br>begin tracking progress.</p>
-      </div>`;
+    <div class="mn-grid">
+      <div class="mn-card"><div class="mn-val">${fs.length}</div><div class="mn-lbl">Total Fasts</div></div>
+      <div class="mn-card"><div class="mn-val">${fmtH(S.totalSecs)}</div><div class="mn-lbl">Hours Fasted</div></div>
+      <div class="mn-card"><div class="mn-val">${fmtH(avg)}</div><div class="mn-lbl">Average Fast</div></div>
+      <div class="mn-card"><div class="mn-val">${fs.filter(f=>f.duration>=f.goal).length}</div><div class="mn-lbl">Goals Met</div></div>
+    </div>`;
+  if(!S.history.length) {
+    html+=`<div class="empty"><div class="ee">🐝</div><p>No history yet.<br>Start your first fast to<br>track your progress!</p></div>`;
   } else {
-    html += `<div class="section-label">Recent Sessions</div>`;
-    html += S.history.map(item => {
-      const pct  = Math.round(Math.min(100, (item.duration / item.goal) * 100));
-      const done = pct >= 100;
-      return `
-        <div class="hist-item">
-          <div class="hist-icon ${item.type}">${item.type === 'fasting' ? '⚡' : '🍽️'}</div>
-          <div class="hist-info">
-            <div class="hist-date">${fmtDay(item.startTime)} · ${fmt12(item.startTime)}</div>
-            <div class="hist-duration">${fmtHMS(item.duration)} ${item.type}</div>
-          </div>
-          <div class="hist-result">
-            <div class="hist-pct">${pct}%</div>
-            <div class="hist-done ${done ? 'ok' : 'partial'}">${done ? 'Complete' : 'Partial'}</div>
-          </div>
-        </div>`;
+    html+=`<div class="sec-lbl">Recent Sessions</div>`;
+    html+=S.history.map(item=>{
+      const pct=Math.round(Math.min(100,(item.duration/item.goal)*100)),done=pct>=100;
+      return `<div class="hi">
+        <div class="hi-ico ${item.type}">${item.type==='fasting'?'⚡':'🍽️'}</div>
+        <div class="hi-inf">
+          <div class="hi-date">${fmtDay(item.startTime)} · ${fmt12(item.startTime)}</div>
+          <div class="hi-dur">${fmtHMS(item.duration)} ${item.type}</div>
+        </div>
+        <div class="hi-res">
+          <div class="hi-pct">${pct}%</div>
+          <div class="hi-tag ${done?'ok':'pt'}">${done?'Complete':'Partial'}</div>
+        </div>
+      </div>`;
     }).join('');
   }
-
-  document.getElementById('hist-content').innerHTML = html;
+  document.getElementById('hist-body').innerHTML=html;
 }
 
 function clearHistory() {
-  if (!S.history.length) return;
-  if (!confirm('Clear all fasting history?\nThis cannot be undone.')) return;
-  S.history  = [];
-  S.totalSecs = 0;
-  save();
-  renderHistory();
-  render();
+  if(!S.history.length) return;
+  if(!confirm('Clear all fasting history?\nThis cannot be undone.')) return;
+  S.history=[]; S.totalSecs=0; save(); renderHist(); render();
 }
 
-// ── Boot ──
-render();
-startTick();
+render(); startTick();
 </script>
 </body>
 </html>
