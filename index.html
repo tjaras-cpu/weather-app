@@ -1,76 +1,810 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weather App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#08080f">
+<title>FastTrack — Intermittent Fasting</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-.container { width: 100%; max-width: 800px; }
-.header { text-align: center; color: white; margin-bottom: 30px; }
-.header h1 { font-size: 2.5em; margin-bottom: 10px; }
-.search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-.search-box input { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 16px; }
-.search-box button { padding: 12px 20px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; color: #667eea; }
-.card { background: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.city-name { font-size: 2em; color: #333; margin-bottom: 20px; }
-.temp { font-size: 3.5em; color: #667eea; font-weight: bold; }
-.desc { font-size: 1.2em; color: #666; margin-top: 10px; text-transform: capitalize; }
-.details { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-.detail { padding: 15px; background: #f5f5f5; border-radius: 10px; text-align: center; }
-.detail strong { display: block; color: #999; font-size: 0.9em; margin-bottom: 5px; }
-.detail span { font-size: 1.4em; color: #333; font-weight: bold; }
-.error { background: #ff6b6b; color: white; padding: 15px; border-radius: 10px; }
-.loading { text-align: center; color: white; font-size: 1.2em; }
+:root {
+  --bg:        #08080f;
+  --bg2:       #10101e;
+  --card:      rgba(255,255,255,0.055);
+  --border:    rgba(255,255,255,0.09);
+  --teal:      #4ecdc4;
+  --teal-dim:  rgba(78,205,196,0.15);
+  --orange:    #ff6b35;
+  --orange-dim:rgba(255,107,53,0.15);
+  --text:      #ffffff;
+  --text2:     rgba(255,255,255,0.55);
+  --text3:     rgba(255,255,255,0.3);
+  --safe-top:  env(safe-area-inset-top,  44px);
+  --safe-bot:  env(safe-area-inset-bottom, 34px);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+#app {
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+}
+
+.status-bar { height:var(--safe-top); min-height:44px; }
+
+.tab-content {
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.tab-content::-webkit-scrollbar { display:none; }
+
+/* ── Bottom Nav ── */
+.bottom-nav {
+  display:flex;
+  background:rgba(8,8,15,0.92);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  padding-bottom:max(var(--safe-bot), 8px);
+  flex-shrink:0;
+}
+.nav-item {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:10px 0 6px;
+  gap:4px;
+  cursor:pointer;
+  color:var(--text3);
+  transition:color .2s;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.3px;
+  user-select:none;
+}
+.nav-item.active { color:var(--teal); }
+.nav-item svg { width:22px; height:22px; }
+
+/* ── Screens ── */
+.screen { display:none; padding:0 20px 32px; }
+.screen.active { display:block; }
+
+/* ══════════════════════════
+   HOME SCREEN
+══════════════════════════ */
+.home-header {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 0 6px;
+  gap:14px;
+}
+
+.protocol-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:7px 16px 7px 18px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text2);
+  cursor:pointer;
+  transition:all .15s;
+}
+.protocol-pill:active { transform:scale(.97); background:rgba(255,255,255,0.09); }
+.protocol-pill svg { width:14px; height:14px; opacity:.6; }
+
+.status-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border-radius:22px;
+  padding:6px 16px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+}
+.status-badge.idle    { background:rgba(255,255,255,0.07); color:var(--text2); }
+.status-badge.fasting { background:var(--teal-dim); color:var(--teal); }
+.status-badge.eating  { background:var(--orange-dim); color:var(--orange); }
+
+.status-dot { width:6px; height:6px; border-radius:50%; }
+.fasting .status-dot { background:var(--teal);   animation:blink 2s ease-in-out infinite; }
+.eating  .status-dot { background:var(--orange);  animation:blink 2s ease-in-out infinite; }
+
+@keyframes blink {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.4; transform:scale(.8); }
+}
+
+/* ── Timer Ring ── */
+.ring-wrap {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  padding:20px 0 12px;
+}
+.ring-wrap svg { width:270px; height:270px; }
+
+.ring-bg  { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:14; }
+.ring-track {
+  fill:none;
+  stroke:rgba(255,255,255,0.035);
+  stroke-width:14;
+}
+.ring-fill {
+  fill:none;
+  stroke-width:14;
+  stroke-linecap:round;
+  transition:stroke-dashoffset .95s linear, stroke .5s ease;
+}
+
+.ring-center {
+  position:absolute;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+}
+.ring-time {
+  font-size:48px;
+  font-weight:700;
+  letter-spacing:-2px;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.ring-sublabel { font-size:13px; color:var(--text2); font-weight:500; }
+.ring-pct      { font-size:14px; font-weight:600; opacity:.6; margin-top:1px; }
+
+/* ── Time Info Cards ── */
+.time-cards {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+  margin:6px 0 22px;
+}
+.time-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:15px;
+}
+.time-card .tc-label { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; }
+.time-card .tc-value { font-size:17px; font-weight:700; }
+.time-card .tc-sub   { font-size:12px; color:var(--text2); margin-top:2px; }
+
+/* ── Buttons ── */
+.main-btn {
+  width:100%;
+  padding:19px;
+  border:none;
+  border-radius:18px;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .12s;
+  letter-spacing:.2px;
+  margin-bottom:13px;
+}
+.main-btn:active { transform:scale(.98); opacity:.88; }
+
+.btn-start { background:linear-gradient(135deg, #4ecdc4, #2bbdb4); color:#051a19; }
+.btn-stop  { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.11); color:var(--text); }
+.btn-eat   { background:linear-gradient(135deg, #ff6b35, #ff8c42); color:#1f0d05; }
+
+/* ── Stats Row ── */
+.stats-row {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.stat-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:15px 10px;
+  text-align:center;
+}
+.stat-val { font-size:22px; font-weight:700; margin-bottom:4px; }
+.stat-lbl { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.3px; line-height:1.4; }
+
+/* ══════════════════════════
+   PLANS SCREEN
+══════════════════════════ */
+.screen-title { font-size:28px; font-weight:700; padding:22px 0 18px; }
+
+.plan-card {
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:11px;
+  cursor:pointer;
+  transition:all .18s;
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+.plan-card:active { transform:scale(.98); }
+.plan-card.selected { border-color:var(--teal); background:var(--teal-dim); }
+
+.plan-icon {
+  width:52px; height:52px;
+  border-radius:15px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+  flex-shrink:0;
+}
+.plan-info { flex:1; min-width:0; }
+.plan-name  { font-size:18px; font-weight:700; margin-bottom:3px; }
+.plan-desc  { font-size:13px; color:var(--text2); line-height:1.45; }
+.plan-meta  { font-size:12px; color:var(--teal); font-weight:600; margin-top:5px; }
+.plan-check {
+  width:26px; height:26px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  transition:all .2s;
+}
+.plan-card.selected .plan-check { background:var(--teal); border-color:var(--teal); }
+
+/* ══════════════════════════
+   HISTORY SCREEN
+══════════════════════════ */
+.history-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding:22px 0 18px;
+}
+.clear-btn {
+  background:none; border:none;
+  color:var(--text2); font-size:14px; cursor:pointer;
+  padding:4px; font-family:inherit;
+}
+
+.streak-card {
+  background:linear-gradient(135deg, rgba(78,205,196,.14), rgba(78,205,196,.05));
+  border:1px solid rgba(78,205,196,.22);
+  border-radius:22px;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-bottom:14px;
+}
+.streak-emoji { font-size:38px; }
+.streak-num { font-size:40px; font-weight:800; color:var(--teal); line-height:1; }
+.streak-txt { font-size:14px; color:var(--text2); margin-top:4px; }
+
+.mini-stats {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:24px;
+}
+.mini-stat {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:16px;
+}
+.mini-stat .ms-val { font-size:24px; font-weight:700; margin-bottom:4px; }
+.mini-stat .ms-lbl { font-size:12px; color:var(--text2); }
+
+.section-label {
+  font-size:11px; font-weight:700;
+  color:var(--text3);
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:11px;
+}
+
+.hist-item {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px 16px;
+  margin-bottom:9px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.hist-icon {
+  width:42px; height:42px;
+  border-radius:13px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px;
+  flex-shrink:0;
+}
+.hist-icon.fasting { background:var(--teal-dim); }
+.hist-icon.eating  { background:var(--orange-dim); }
+
+.hist-info { flex:1; min-width:0; }
+.hist-date     { font-size:12px; color:var(--text2); margin-bottom:2px; }
+.hist-duration { font-size:15px; font-weight:700; }
+
+.hist-result { text-align:right; flex-shrink:0; }
+.hist-pct  { font-size:20px; font-weight:700; }
+.hist-done { font-size:11px; font-weight:600; }
+.hist-done.ok  { color:var(--teal); }
+.hist-done.partial { color:var(--orange); }
+
+.empty-state {
+  text-align:center;
+  padding:56px 16px;
+  color:var(--text2);
+}
+.empty-state .ee { font-size:52px; margin-bottom:16px; }
+.empty-state p   { font-size:15px; line-height:1.6; }
 </style>
 </head>
 <body>
-<div class="container">
-<div class="header"><h1>Weather App</h1><p>Search weather in any city</p></div>
-<div class="search-box">
-<input type="text" id="city" placeholder="Enter city name...">
-<button onclick="search()">Search</button>
+<div id="app">
+  <div class="status-bar"></div>
+
+  <div class="tab-content">
+
+    <!-- ═══ HOME ═══ -->
+    <div class="screen active" id="screen-home">
+      <div class="home-header">
+        <div class="protocol-pill" onclick="switchTab('plans')" id="protocol-pill">
+          <span id="pill-name">16:8</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <span class="status-badge idle" id="status-badge">
+          <span class="status-dot"></span>
+          <span id="status-text">Ready</span>
+        </span>
+      </div>
+
+      <!-- Ring -->
+      <div class="ring-wrap">
+        <svg viewBox="0 0 290 290" xmlns="http://www.w3.org/2000/svg">
+          <circle class="ring-bg"    cx="145" cy="145" r="126"/>
+          <circle class="ring-track" cx="145" cy="145" r="126"/>
+          <circle class="ring-fill" id="ring-fill"
+            cx="145" cy="145" r="126"
+            stroke="#4ecdc4"
+            stroke-dasharray="791.68"
+            stroke-dashoffset="791.68"
+            transform="rotate(-90 145 145)"
+          />
+        </svg>
+        <div class="ring-center">
+          <div class="ring-time" id="ring-time">00:00:00</div>
+          <div class="ring-sublabel" id="ring-sublabel">tap to start fasting</div>
+          <div class="ring-pct" id="ring-pct" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Time info cards (hidden when idle) -->
+      <div class="time-cards" id="time-cards" style="display:none">
+        <div class="time-card">
+          <div class="tc-label">Started</div>
+          <div class="tc-value" id="tc-start">—</div>
+          <div class="tc-sub"   id="tc-start-day"></div>
+        </div>
+        <div class="time-card">
+          <div class="tc-label" id="tc-end-label">Goal End</div>
+          <div class="tc-value" id="tc-end">—</div>
+          <div class="tc-sub"   id="tc-end-day"></div>
+        </div>
+      </div>
+
+      <button class="main-btn btn-start" id="main-btn" onclick="handleBtn()">Start Fasting</button>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="s-streak">0</div>
+          <div class="stat-lbl">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="s-total">0</div>
+          <div class="stat-lbl">Total Fasts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="s-hours">0h</div>
+          <div class="stat-lbl">Hours Fasted</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PLANS ═══ -->
+    <div class="screen" id="screen-plans">
+      <div class="screen-title">Fasting Plans</div>
+      <div id="plans-list"></div>
+    </div>
+
+    <!-- ═══ HISTORY ═══ -->
+    <div class="screen" id="screen-history">
+      <div class="history-top">
+        <div class="screen-title" style="padding:0">History</div>
+        <button class="clear-btn" onclick="clearHistory()">Clear All</button>
+      </div>
+      <div id="hist-content"></div>
+    </div>
+
+  </div><!-- /tab-content -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Timer
+    </div>
+    <div class="nav-item" id="nav-plans" onclick="switchTab('plans')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+      Plans
+    </div>
+    <div class="nav-item" id="nav-history" onclick="switchTab('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      History
+    </div>
+  </nav>
 </div>
-<div id="result"></div>
-</div>
+
 <script>
-function search() {
-var city = document.getElementById("city").value.trim();
-if (city) fetchWeather(city);
+const KEY = 'fasttrack_v2';
+const C   = 2 * Math.PI * 126; // stroke circumference ≈ 791.68
+
+const PROTOCOLS = [
+  { id:'12-12', name:'12:12', fast:12, eat:12, icon:'🌱', color:'#2ECC71',
+    tag:'Beginner', desc:'Equal fasting and eating windows — a gentle introduction to intermittent fasting.' },
+  { id:'16-8',  name:'16:8',  fast:16, eat:8,  icon:'⚡', color:'#4ECDC4',
+    tag:'Most Popular', desc:'Fast 16 hours, eat within an 8-hour window. The gold standard for most people.' },
+  { id:'18-6',  name:'18:6',  fast:18, eat:6,  icon:'🔥', color:'#FF6B35',
+    tag:'Intermediate', desc:'Fast 18 hours with a 6-hour eating window for accelerated metabolic benefits.' },
+  { id:'20-4',  name:'20:4',  fast:20, eat:4,  icon:'💪', color:'#9B59B6',
+    tag:'Advanced', desc:'The Warrior Diet — fast 20 hours and feast within a 4-hour window.' },
+  { id:'omad',  name:'OMAD',  fast:23, eat:1,  icon:'🏆', color:'#F39C12',
+    tag:'Expert', desc:'One Meal A Day. 23 hours fasting, 1-hour eating window for maximum discipline.' },
+];
+
+function blank() {
+  return { protocolId:'16-8', session:null, history:[], totalSecs:0 };
 }
-document.getElementById("city").addEventListener("keypress", function(e) {
-if (e.key === "Enter") search();
-});
-function fetchWeather(city) {
-document.getElementById("result").innerHTML = '<div class="loading">Loading...</div>';
-fetch("https://wttr.in/" + encodeURIComponent(city) + "?format=j1")
-.then(function(r) { return r.json(); })
-.then(function(data) {
-if (data.current_condition && data.current_condition.length > 0) {
-var c = data.current_condition[0];
-var area = data.nearest_area ? data.nearest_area[0] : null;
-var name = area ? area.areaName[0].value : city;
-var country = area ? area.country[0].value : "";
-var h = '<div class="card">';
-h += '<div class="city-name">' + name + (country ? ", " + country : "") + '</div>';
-h += '<div class="temp">' + c.temp_C + '\u00B0C</div>';
-h += '<div class="desc">' + c.weatherDesc[0].value + '</div>';
-h += '<div class="details">';
-h += '<div class="detail"><strong>Feels Like</strong><span>' + c.FeelsLikeC + '\u00B0C</span></div>';
-h += '<div class="detail"><strong>Humidity</strong><span>' + c.humidity + '%</span></div>';
-h += '<div class="detail"><strong>Pressure</strong><span>' + c.pressure + ' hPa</span></div>';
-h += '<div class="detail"><strong>Wind</strong><span>' + c.windspeedKmph + ' km/h</span></div>';
-h += '</div></div>';
-document.getElementById("result").innerHTML = h;
-document.getElementById("city").value = "";
-} else { showError("City not found"); }
-}).catch(function() { showError("Error loading weather"); });
+
+let S = blank();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) S = Object.assign(blank(), JSON.parse(raw));
+} catch {}
+
+let ticker = null;
+
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {}
 }
-function showError(msg) {
-document.getElementById("result").innerHTML = '<div class="error">' + msg + '</div>';
+
+function proto(id) {
+  return PROTOCOLS.find(p => p.id === id) || PROTOCOLS[1];
 }
-fetchWeather("Bangkok");
+
+// ── Tab switching ──
+function switchTab(tab) {
+  ['home','plans','history'].forEach(t => {
+    document.getElementById('screen-' + t).classList.toggle('active', t === tab);
+    document.getElementById('nav-'    + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'plans')   renderPlans();
+  if (tab === 'history') renderHistory();
+}
+
+// ── Formatting helpers ──
+function fmt12(ts) {
+  const d = new Date(ts);
+  let h = d.getHours(), m = d.getMinutes();
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+}
+
+function fmtDay(ts) {
+  const d  = new Date(ts);
+  const td = new Date();
+  const yd = new Date(td); yd.setDate(yd.getDate() - 1);
+  if (d.toDateString() === td.toDateString()) return 'Today';
+  if (d.toDateString() === yd.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+function fmtHMS(sec) {
+  sec = Math.max(0, Math.floor(sec));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function fmtHours(sec) {
+  if (!sec || sec <= 0) return '0h';
+  const h = sec / 3600;
+  if (h < 1) return Math.round(h * 60) + 'm';
+  return (Math.round(h * 10) / 10) + 'h';
+}
+
+// ── Streak calculation ──
+function streak() {
+  const fasts = S.history.filter(h => h.type === 'fasting');
+  if (!fasts.length) return 0;
+  let n = 0, last = null;
+  for (const f of fasts) {
+    const day = new Date(f.endTime).toDateString();
+    if (!last) { n = 1; last = new Date(f.endTime); continue; }
+    const diff = (last - new Date(f.endTime)) / 86400000;
+    if (diff <= 1.05) { n++; last = new Date(f.endTime); } else break;
+  }
+  return n;
+}
+
+// ── Main button ──
+function handleBtn() {
+  const p = proto(S.protocolId);
+
+  if (!S.session) {
+    S.session = { startTime: Date.now(), type:'fasting', protoId: S.protocolId };
+    vibrate(10);
+  } else if (S.session.type === 'fasting') {
+    const elapsed = (Date.now() - S.session.startTime) / 1000;
+    const goal    = p.fast * 3600;
+    const pct     = elapsed / goal;
+    if (pct < 0.5 && !confirm(`You've completed ${Math.round(pct*100)}% of your fast.\nEnd early?`)) return;
+    endFast();
+  } else {
+    endEating();
+  }
+
+  save();
+  render();
+  startTick();
+}
+
+function endFast() {
+  const { startTime, protoId } = S.session;
+  const p       = proto(protoId);
+  const elapsed = (Date.now() - startTime) / 1000;
+  const goal    = p.fast * 3600;
+
+  S.history.unshift({ id:Date.now(), type:'fasting', startTime, endTime:Date.now(), duration:elapsed, goal, protoId });
+  if (S.history.length > 120) S.history = S.history.slice(0,120);
+  S.totalSecs = (S.totalSecs || 0) + elapsed;
+  S.session   = { startTime:Date.now(), type:'eating', protoId };
+
+  vibrate([12,60,12]);
+}
+
+function endEating() {
+  const { startTime, protoId } = S.session;
+  const p       = proto(protoId);
+  const elapsed = (Date.now() - startTime) / 1000;
+
+  S.history.unshift({ id:Date.now(), type:'eating', startTime, endTime:Date.now(), duration:elapsed, goal:p.eat*3600, protoId });
+  if (S.history.length > 120) S.history = S.history.slice(0,120);
+  S.session = { startTime:Date.now(), type:'fasting', protoId: S.protocolId };
+
+  vibrate(10);
+}
+
+function vibrate(pat) {
+  try { navigator.vibrate && navigator.vibrate(pat); } catch {}
+}
+
+// ── Render home ──
+function render() {
+  const p     = proto(S.protocolId);
+  const ring  = document.getElementById('ring-fill');
+  const badge = document.getElementById('status-badge');
+  const sText = document.getElementById('status-text');
+  const cards = document.getElementById('time-cards');
+  const btn   = document.getElementById('main-btn');
+  const rTime = document.getElementById('ring-time');
+  const rSub  = document.getElementById('ring-sublabel');
+  const rPct  = document.getElementById('ring-pct');
+
+  document.getElementById('pill-name').textContent = p.name;
+
+  // Stats
+  document.getElementById('s-streak').textContent = streak();
+  document.getElementById('s-total').textContent  = S.history.filter(h=>h.type==='fasting').length;
+  document.getElementById('s-hours').textContent  = fmtHours(S.totalSecs);
+
+  if (!S.session) {
+    badge.className     = 'status-badge idle';
+    sText.textContent   = 'Ready';
+    cards.style.display = 'none';
+    btn.className       = 'main-btn btn-start';
+    btn.textContent     = 'Start Fasting';
+    rTime.textContent   = '00:00:00';
+    rTime.style.color   = 'var(--text)';
+    rSub.textContent    = 'tap to start fasting';
+    rPct.style.display  = 'none';
+    ring.style.strokeDashoffset = C;
+    ring.style.stroke   = 'var(--teal)';
+    return;
+  }
+
+  const { type, startTime, protoId } = S.session;
+  const sp      = proto(protoId);
+  const goal    = (type === 'fasting' ? sp.fast : sp.eat) * 3600;
+  const elapsed = (Date.now() - startTime) / 1000;
+  const remain  = Math.max(0, goal - elapsed);
+  const prog    = Math.min(1, elapsed / goal);
+
+  ring.style.strokeDashoffset = C * (1 - prog);
+  ring.style.stroke = type === 'fasting' ? 'var(--teal)' : 'var(--orange)';
+
+  rPct.style.display  = 'block';
+  rPct.textContent    = Math.round(prog * 100) + '%';
+
+  if (type === 'fasting') {
+    badge.className = 'status-badge fasting';
+    if (prog >= 1) {
+      sText.textContent = 'Goal reached! 🎉';
+      btn.className     = 'main-btn btn-stop';
+      btn.textContent   = 'Break Fast';
+      rSub.textContent  = 'fasting goal complete';
+      rTime.style.color = 'var(--teal)';
+      rTime.textContent = '+' + fmtHMS(elapsed - goal);
+    } else {
+      sText.textContent = 'Fasting';
+      btn.className     = 'main-btn btn-stop';
+      btn.textContent   = 'Break Fast Early';
+      rSub.textContent  = 'remaining';
+      rTime.style.color = 'var(--text)';
+      rTime.textContent = fmtHMS(remain);
+    }
+  } else {
+    badge.className     = 'status-badge eating';
+    sText.textContent   = 'Eating Window';
+    btn.className       = 'main-btn btn-eat';
+    btn.textContent     = remain > 0 ? 'Start Next Fast' : 'Start Next Fast';
+    rSub.textContent    = remain > 0 ? 'eating window left' : 'window ended';
+    rTime.style.color   = 'var(--text)';
+    rTime.textContent   = fmtHMS(remain);
+  }
+
+  cards.style.display = 'grid';
+  document.getElementById('tc-start').textContent    = fmt12(startTime);
+  document.getElementById('tc-start-day').textContent = fmtDay(startTime);
+
+  const goalEnd = startTime + goal * 1000;
+  document.getElementById('tc-end-label').textContent = type === 'fasting' ? 'Break Fast' : 'Window Ends';
+  document.getElementById('tc-end').textContent       = fmt12(goalEnd);
+  document.getElementById('tc-end-day').textContent   = fmtDay(goalEnd);
+}
+
+function startTick() {
+  if (ticker) clearInterval(ticker);
+  if (S.session) ticker = setInterval(render, 1000);
+}
+
+// ── Render plans ──
+function renderPlans() {
+  document.getElementById('plans-list').innerHTML = PROTOCOLS.map(p => `
+    <div class="plan-card ${S.protocolId === p.id ? 'selected' : ''}" onclick="pickPlan('${p.id}')">
+      <div class="plan-icon" style="background:${p.color}20">${p.icon}</div>
+      <div class="plan-info">
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-desc">${p.desc}</div>
+        <div class="plan-meta">${p.fast}h fast · ${p.eat}h eat · ${p.tag}</div>
+      </div>
+      <div class="plan-check">
+        ${S.protocolId === p.id
+          ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+          : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function pickPlan(id) {
+  if (S.session && !confirm('Changing plan will not affect your active session. Continue?')) return;
+  S.protocolId = id;
+  save();
+  renderPlans();
+  render();
+}
+
+// ── Render history ──
+function renderHistory() {
+  const fasts   = S.history.filter(h => h.type === 'fasting');
+  const str     = streak();
+  const avg     = fasts.length ? fasts.reduce((a,b)=>a+b.duration,0)/fasts.length : 0;
+  const met     = fasts.filter(f=>f.duration>=f.goal).length;
+
+  let html = `
+    <div class="streak-card">
+      <div class="streak-emoji">🔥</div>
+      <div>
+        <div class="streak-num">${str}</div>
+        <div class="streak-txt">day streak</div>
+      </div>
+    </div>
+    <div class="mini-stats">
+      <div class="mini-stat"><div class="ms-val">${fasts.length}</div><div class="ms-lbl">Total Fasts</div></div>
+      <div class="mini-stat"><div class="ms-val">${fmtHours(S.totalSecs)}</div><div class="ms-lbl">Hours Fasted</div></div>
+      <div class="mini-stat"><div class="ms-val">${fmtHours(avg)}</div><div class="ms-lbl">Average Fast</div></div>
+      <div class="mini-stat"><div class="ms-val">${met}</div><div class="ms-lbl">Goals Met</div></div>
+    </div>
+  `;
+
+  if (!S.history.length) {
+    html += `
+      <div class="empty-state">
+        <div class="ee">⏱️</div>
+        <p>No history yet.<br>Start your first fast to<br>begin tracking progress.</p>
+      </div>`;
+  } else {
+    html += `<div class="section-label">Recent Sessions</div>`;
+    html += S.history.map(item => {
+      const pct  = Math.round(Math.min(100, (item.duration / item.goal) * 100));
+      const done = pct >= 100;
+      return `
+        <div class="hist-item">
+          <div class="hist-icon ${item.type}">${item.type === 'fasting' ? '⚡' : '🍽️'}</div>
+          <div class="hist-info">
+            <div class="hist-date">${fmtDay(item.startTime)} · ${fmt12(item.startTime)}</div>
+            <div class="hist-duration">${fmtHMS(item.duration)} ${item.type}</div>
+          </div>
+          <div class="hist-result">
+            <div class="hist-pct">${pct}%</div>
+            <div class="hist-done ${done ? 'ok' : 'partial'}">${done ? 'Complete' : 'Partial'}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  document.getElementById('hist-content').innerHTML = html;
+}
+
+function clearHistory() {
+  if (!S.history.length) return;
+  if (!confirm('Clear all fasting history?\nThis cannot be undone.')) return;
+  S.history  = [];
+  S.totalSecs = 0;
+  save();
+  renderHistory();
+  render();
+}
+
+// ── Boot ──
+render();
+startTick();
 </script>
 </body>
 </html>
