@@ -291,6 +291,25 @@ body::before {
 }
 .wt-inp:focus { outline:none; border-color:var(--p); box-shadow:0 0 0 3px rgba(139,92,246,.2); }
 .wt-inp-unit { font-size:24px; font-weight:700; color:var(--t2); }
+
+/* ── Edit start time ── */
+.st-row {
+  display:none; text-align:center; margin:6px 0 4px;
+  font-size:13px; color:var(--t2);
+}
+.st-edit-btn {
+  background:none; border:none; color:var(--p); font-size:13px; font-weight:700;
+  cursor:pointer; font-family:inherit; margin-left:8px; padding:2px 0;
+}
+.st-edit-btn:active { opacity:.7; }
+.dt-inp {
+  width:100%; background:rgba(255,255,255,.08); border:1px solid var(--b1);
+  border-radius:14px; padding:14px 16px; font-size:17px; font-weight:600;
+  color:var(--t1); font-family:inherit; -webkit-appearance:none;
+  color-scheme:dark; margin-bottom:18px;
+}
+.dt-inp:focus { outline:none; border-color:var(--p); box-shadow:0 0 0 3px rgba(139,92,246,.2); }
+.modal-sub { text-align:center; color:var(--t2); font-size:14px; line-height:1.5; margin-bottom:20px; }
 </style>
 </head>
 <body>
@@ -339,6 +358,10 @@ body::before {
           <span style="color:var(--t2)">Phase ·</span>
           <span class="ph-name" id="ph-nm"></span>
         </div>
+      </div>
+      <div class="st-row" id="start-time-row">
+        <span id="start-time-label"></span>
+        <button class="st-edit-btn" onclick="openStModal()">✏️ Edit</button>
       </div>
       <div class="phase-card" id="phase-card" style="display:none">
         <div class="pc-ico" id="pc-ico">🔥</div>
@@ -417,6 +440,18 @@ body::before {
       </svg>Weight
     </div>
   </nav>
+
+  <!-- Edit Start Time Modal -->
+  <div class="modal-overlay" id="st-modal" onclick="closeStModal(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Edit Start Time</div>
+      <p class="modal-sub" id="st-modal-sub">Adjust when your fast began</p>
+      <input type="datetime-local" id="st-inp" class="dt-inp">
+      <button class="btn btn-pur" onclick="saveStartTime()">Save Changes</button>
+      <button class="btn btn-dim" onclick="closeStModal()">Cancel</button>
+    </div>
+  </div>
 
   <!-- Weight Log Modal -->
   <div class="modal-overlay" id="wt-modal" onclick="closeWtModal(event)">
@@ -554,7 +589,7 @@ function handleBtn() {
     S.session={startTime:Date.now(),type:'fasting',protoId:S.protocolId}; vibe(10);
   } else if(S.session.type==='fasting') {
     const el=(Date.now()-S.session.startTime)/1000,g=p.fast*3600,pct=el/g;
-    if(pct<0.5&&!confirm(`You've completed ${Math.round(pct*100)}% of your fast.\nEnd early?`)) return;
+    if(pct<0.25&&!confirm(`You've completed ${Math.round(pct*100)}% of your fast.\nBreak early?`)) return;
     endFast();
   } else { endEat(); }
   save(); render(); startTick();
@@ -597,10 +632,15 @@ function render() {
     document.getElementById('ri-pct').style.display='none';
     phRow.style.display='none'; phCard.style.display='none';
     msWrap.style.display='none'; moti.style.display='none';
+    document.getElementById('start-time-row').style.display='none';
     btn.className='btn btn-pur'; btn.textContent='Start Fasting';
     return;
   }
   const {type,startTime,protoId}=S.session,sp=proto(protoId);
+  // show start time row with edit button
+  const strLabel=document.getElementById('start-time-label');
+  strLabel.textContent=(type==='fasting'?'Fast started ':'Eating started ')+fmt12(startTime);
+  document.getElementById('start-time-row').style.display='block';
   const goal=(type==='fasting'?sp.fast:sp.eat)*3600;
   const elapsed=(Date.now()-startTime)/1000,remain=Math.max(0,goal-elapsed),prog=Math.min(1,elapsed/goal);
   ring.style.strokeDashoffset=C*(1-prog);
@@ -631,7 +671,7 @@ function render() {
       </div>`).join('');
     const mi=Math.min(Math.floor(prog*MOTOS.length),MOTOS.length-1);
     moti.style.display='block'; moti.textContent=MOTOS[mi];
-    btn.className='btn btn-dim'; btn.textContent=prog>=1?'Break Fast 🎉':'Break Fast Early';
+    btn.className='btn btn-dim'; btn.textContent=prog>=1?'Break Fast 🎉':'Break Fast';
   } else {
     ring.setAttribute('stroke','url(#rg)');
     document.getElementById('ri-emoji').textContent='🍽️';
@@ -935,6 +975,37 @@ function logWeight() {
   save(); vibe(10);
   document.getElementById('wt-modal').classList.remove('open');
   renderWeight();
+}
+
+// ── Edit Start Time ──
+function openStModal() {
+  if(!S.session) return;
+  const d=new Date(S.session.startTime);
+  const offset=d.getTimezoneOffset()*60000;
+  const localIso=new Date(d.getTime()-offset).toISOString().slice(0,16);
+  const maxIso=new Date(Date.now()-offset).toISOString().slice(0,16);
+  const inp=document.getElementById('st-inp');
+  inp.value=localIso;
+  inp.max=maxIso;
+  inp.min=new Date(Date.now()-offset-48*3600000).toISOString().slice(0,16);
+  document.getElementById('st-modal-sub').textContent=
+    S.session.type==='fasting'?'Adjust when your fast began':'Adjust when your eating window began';
+  document.getElementById('st-modal').classList.add('open');
+}
+function closeStModal(e) {
+  if(e&&e.target!==document.getElementById('st-modal')) return;
+  document.getElementById('st-modal').classList.remove('open');
+}
+function saveStartTime() {
+  const val=document.getElementById('st-inp').value;
+  if(!val) return;
+  const t=new Date(val).getTime();
+  if(isNaN(t)||t>=Date.now()) return;
+  if(t<Date.now()-48*3600000) { alert('Cannot go back more than 48 hours'); return; }
+  S.session.startTime=t;
+  save();
+  document.getElementById('st-modal').classList.remove('open');
+  render();
 }
 
 render(); startTick();
