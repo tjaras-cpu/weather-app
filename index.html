@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#090618">
-<title>FastTrack</title>
+<title>LeanPath</title>
 <style>
 :root {
   --bg:  #090618;
@@ -38,17 +38,9 @@ body::before {
 .tc  { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
 .tc::-webkit-scrollbar { display:none; }
 
-/* ── Bottom nav ── */
-.bnav {
-  display:flex; flex-shrink:0;
-  background:rgba(9,6,24,.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
-  border-top:1px solid var(--b2); padding-bottom:max(var(--safe-bot),8px);
-}
-.ni {
-  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:10px 0 6px; gap:4px; cursor:pointer; color:var(--t3);
-  transition:color .2s; font-size:10px; font-weight:600; letter-spacing:.3px; user-select:none;
-}
+/* Bottom nav */
+.bnav { display:flex; flex-shrink:0; background:rgba(9,6,24,.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-top:1px solid var(--b2); padding-bottom:max(var(--safe-bot),8px); }
+.ni   { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 0 6px; gap:4px; cursor:pointer; color:var(--t3); transition:color .2s; font-size:10px; font-weight:600; letter-spacing:.3px; user-select:none; }
 .ni.on { color:var(--p); }
 .ni svg { width:22px; height:22px; }
 
@@ -57,191 +49,144 @@ body::before {
 .scr-title { font-size:28px; font-weight:800; padding:22px 0 18px; }
 .sec-lbl   { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:11px; }
 
-/* shared cards */
+/* Shared */
 .card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:18px; }
-.btn  {
-  width:100%; padding:19px; border:none; border-radius:18px;
-  font-size:17px; font-weight:700; cursor:pointer; letter-spacing:.2px;
-  transition:all .12s; margin-bottom:13px; font-family:inherit;
-}
+.btn  { width:100%; padding:19px; border:none; border-radius:18px; font-size:17px; font-weight:700; cursor:pointer; letter-spacing:.2px; transition:all .12s; margin-bottom:13px; font-family:inherit; }
 .btn:active { transform:scale(.98); opacity:.87; }
 .btn-pur { background:linear-gradient(135deg,#8b5cf6 0%,#d946ef 60%,#f97316 100%); color:#fff; }
 .btn-dim { background:rgba(255,255,255,0.08); border:1px solid var(--b1); color:var(--t1); }
-.btn-eat { background:linear-gradient(135deg,#f97316,#f59e0b); color:#1a0700; }
 .btn-grn { background:linear-gradient(135deg,#22c55e,#14b8a6); color:#021a0e; }
+.btn-red { background:rgba(239,68,68,.13); border:1px solid rgba(239,68,68,.22); color:#fca5a5; }
+.btn-org { background:linear-gradient(135deg,#f97316,#f59e0b); color:#1a0700; }
+.empty { text-align:center; padding:36px 16px; color:var(--t2); }
+.empty .ee { font-size:48px; margin-bottom:14px; }
+.empty p { font-size:15px; line-height:1.6; }
 
-/* ═══════════════════════
-   HOME
-═══════════════════════ */
+/* ── HOME ── */
 .h-top { display:flex; justify-content:space-between; align-items:center; padding:18px 0 0; }
+.greeting { font-size:16px; font-weight:600; color:var(--t2); }
 .greeting b { font-weight:700; }
-.greeting   { font-size:16px; font-weight:600; color:var(--t2); }
-.proto-pill {
-  display:inline-flex; align-items:center; gap:5px; background:var(--card);
-  border:1px solid var(--b1); border-radius:20px; padding:6px 14px;
-  font-size:13px; font-weight:700; cursor:pointer; color:var(--p); transition:all .15s;
-}
-.proto-pill:active { transform:scale(.97); }
-.proto-pill svg { width:12px; height:12px; opacity:.7; }
-.ring-sec   { display:flex; flex-direction:column; align-items:center; padding:12px 0 6px; }
+.day-badge { background:var(--card); border:1px solid var(--b1); border-radius:20px; padding:6px 14px; font-size:13px; font-weight:700; color:var(--p); }
+.quote-card { background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07)); border:1px solid rgba(139,92,246,.28); border-radius:22px; padding:22px 20px; margin:14px 0 12px; }
+.quote-tag  { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.7px; margin-bottom:10px; }
+.quote-text { font-size:16px; font-weight:600; color:var(--t1); line-height:1.65; }
+.home-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 10px; text-align:center; }
+.sv { font-size:20px; font-weight:700; margin-bottom:4px; }
+.sl { font-size:10px; color:var(--t3); font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
+.tip-card { background:var(--card); border:1px solid var(--b2); border-radius:18px; padding:16px; margin-bottom:11px; }
+.tip-row  { display:flex; align-items:flex-start; gap:12px; }
+.tip-ico  { font-size:22px; flex-shrink:0; margin-top:1px; }
+.tip-title { font-size:14px; font-weight:700; color:var(--t1); margin-bottom:4px; }
+.tip-txt  { font-size:13px; color:var(--t2); line-height:1.55; }
+
+/* ── CALORIES ── */
+.cal-top { display:flex; justify-content:space-between; align-items:center; padding:18px 0 6px; }
+.gear-btn { background:none; border:none; color:var(--t2); font-size:22px; cursor:pointer; line-height:1; padding:2px; }
+.ring-sec   { display:flex; flex-direction:column; align-items:center; padding:4px 0 6px; }
 .ring-wrap  { position:relative; }
 .ring-wrap svg { width:252px; height:252px; display:block; overflow:visible; }
-.r-bg  { fill:none; stroke:rgba(255,255,255,.045); stroke-width:17; }
-.r-fill{ fill:none; stroke-width:17; stroke-linecap:round; transition:stroke-dashoffset .95s linear;
-         filter:drop-shadow(0 0 12px rgba(139,92,246,.45)); }
-.ring-inner { position:absolute; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:1px; text-align:center; padding:0 12px; }
+.r-bg   { fill:none; stroke:rgba(255,255,255,.045); stroke-width:17; }
+.r-fill { fill:none; stroke-width:17; stroke-linecap:round; transition:stroke-dashoffset .95s linear; filter:drop-shadow(0 0 12px rgba(34,197,94,.4)); }
+.ring-inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; text-align:center; padding:0 14px; }
 .ri-emoji { font-size:28px; line-height:1; margin-bottom:4px; }
-.ri-time  { font-size:44px; font-weight:800; letter-spacing:-2.5px; font-variant-numeric:tabular-nums; line-height:1; }
+.ri-num   { font-size:44px; font-weight:800; letter-spacing:-2.5px; font-variant-numeric:tabular-nums; line-height:1; }
 .ri-sub   { font-size:12px; color:var(--t2); font-weight:500; margin-top:3px; }
 .ri-pct   { font-size:13px; font-weight:700; margin-top:2px; }
-.phase-row { display:flex; align-items:center; gap:7px; margin-top:8px; font-size:13px; font-weight:600; color:var(--t2); }
-.ph-dot    { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-.ph-name   { font-weight:700; }
-.phase-card { background:var(--card); border:1px solid var(--b2); border-radius:20px;
-  padding:16px 18px; margin:12px 0 10px; display:flex; align-items:flex-start; gap:14px;
-  position:relative; overflow:hidden; }
-.phase-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
-  border-radius:3px 0 0 3px; background:var(--phase-clr,var(--p)); }
-.pc-ico  { font-size:30px; flex-shrink:0; }
-.pc-name { font-size:15px; font-weight:700; margin-bottom:5px; }
-.pc-desc { font-size:13px; color:var(--t2); line-height:1.5; }
-.ms-title  { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:10px; }
-.ms-scroll { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:0 -20px; padding:0 20px 4px; }
-.ms-scroll::-webkit-scrollbar { display:none; }
-.ms-chip   { flex-shrink:0; background:var(--card); border:1px solid var(--b2); border-radius:14px;
-  padding:10px 14px; display:flex; align-items:center; gap:8px; white-space:nowrap; }
-.ms-chip-emoji { font-size:16px; }
-.ms-chip-name  { font-size:12px; font-weight:700; }
-.ms-chip-time  { font-size:11px; color:var(--t2); }
-.moti      { text-align:center; font-size:14px; color:var(--t2); font-weight:500; padding:10px 0 14px; line-height:1.55; }
-.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 10px; text-align:center; }
-.sv { font-size:22px; font-weight:700; margin-bottom:4px; }
-.sl { font-size:10px; color:var(--t3); font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
+.cal-info-card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:14px 16px; margin:8px 0 12px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; }
+.cal-info-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:3px 0 0 3px; background:var(--ci-clr,var(--gr)); }
+.ci-ico  { font-size:26px; flex-shrink:0; }
+.ci-name { font-size:14px; font-weight:700; }
+.ci-desc { font-size:12px; color:var(--t2); margin-top:2px; line-height:1.4; }
+.budget-row { display:flex; justify-content:space-between; align-items:center; background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:12px 16px; margin-bottom:12px; }
+.br-lbl { font-size:12px; color:var(--t2); font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
+.br-val { font-size:16px; font-weight:700; }
+.br-val.good { color:var(--gr); }
+.br-val.warn { color:var(--co); }
+.br-val.over { color:#f87171; }
+.quick-row { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:0 -20px 12px; padding:0 20px 4px; }
+.quick-row::-webkit-scrollbar { display:none; }
+.qa { flex-shrink:0; background:var(--card); border:1.5px solid var(--b2); border-radius:14px; padding:10px 14px; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; min-width:70px; transition:all .15s; }
+.qa:active { transform:scale(.95); border-color:var(--p); }
+.qa-ico { font-size:18px; }
+.qa-lbl { font-size:11px; font-weight:700; color:var(--t2); }
+.qa-cal { font-size:10px; color:var(--p); font-weight:600; }
+.cal-item { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:13px 15px; margin-bottom:9px; display:flex; align-items:center; gap:12px; }
+.ci2-ico  { width:40px; height:40px; border-radius:12px; background:rgba(34,197,94,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.ci2-inf  { flex:1; }
+.ci2-name { font-size:14px; font-weight:700; }
+.ci2-time { font-size:12px; color:var(--t2); margin-top:1px; }
+.ci2-cals { font-size:18px; font-weight:700; color:var(--gr); margin-right:4px; }
+.ci2-del  { background:none; border:none; color:var(--t3); font-size:18px; cursor:pointer; padding:4px; }
+.ci2-del:active { color:var(--co); }
 
-/* ═══════════════════════
-   PLANS
-═══════════════════════ */
-.plan-card { background:var(--card); border:1.5px solid var(--b2); border-radius:20px;
-  padding:18px; margin-bottom:11px; cursor:pointer; transition:all .18s; display:flex; align-items:center; gap:14px; }
-.plan-card:active { transform:scale(.98); }
-.plan-card.sel { border-color:var(--p); background:rgba(139,92,246,.08); }
-.pln-ico  { width:52px; height:52px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
-.pln-name { font-size:18px; font-weight:700; margin-bottom:3px; }
-.pln-desc { font-size:13px; color:var(--t2); line-height:1.45; }
-.pln-meta { font-size:12px; color:var(--p); font-weight:600; margin-top:5px; }
-.pln-ck   { width:26px; height:26px; border-radius:50%; border:2px solid var(--b1);
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
-.plan-card.sel .pln-ck { background:var(--p); border-color:var(--p); }
+/* ── SWEETS ── */
+.sw-streak-card { background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(20,184,166,.08)); border:1px solid rgba(34,197,94,.3); border-radius:22px; padding:20px; display:flex; align-items:center; gap:18px; margin-bottom:13px; }
+.sw-str-ico { font-size:42px; }
+.sw-str-num { font-size:44px; font-weight:800; line-height:1; background:linear-gradient(135deg,var(--gr),var(--te)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.sw-str-lbl { font-size:14px; color:var(--t2); margin-top:4px; }
+.sw-today   { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:16px 18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+.sw-today-l { }
+.sw-today-tag { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+.sw-today-val { font-size:18px; font-weight:700; }
+.sw-today-val.good { color:var(--gr); }
+.sw-today-val.bad  { color:var(--co); }
+.sw-today-ico { font-size:34px; }
+.week-row { display:flex; gap:6px; justify-content:center; margin:4px 0 16px; }
+.wd { width:38px; height:44px; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; }
+.wd-e { font-size:16px; line-height:1; }
+.wd-d { font-size:9px; font-weight:700; opacity:.7; }
+.wd-good { background:rgba(34,197,94,.18); }
+.wd-bad  { background:rgba(249,115,22,.15); }
+.wd-none { background:rgba(255,255,255,.05); }
+.sw-log-item { background:var(--card); border:1px solid var(--b2); border-radius:14px; padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+.sw-log-ico  { font-size:22px; }
+.sw-log-inf  { flex:1; }
+.sw-log-lbl  { font-size:14px; font-weight:600; }
+.sw-log-time { font-size:12px; color:var(--t2); margin-top:1px; }
+.sw-log-del  { background:none; border:none; color:var(--t3); font-size:16px; cursor:pointer; padding:4px; }
+.sw-log-del:active { color:var(--co); }
 
-/* ═══════════════════════
-   HISTORY
-═══════════════════════ */
-.hist-top  { display:flex; justify-content:space-between; align-items:flex-end; padding:22px 0 18px; }
-.clr-btn   { background:none; border:none; color:var(--t2); font-size:14px; cursor:pointer; padding:4px; font-family:inherit; }
-.streak-card {
-  background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07));
-  border:1px solid rgba(139,92,246,.28); border-radius:22px;
-  padding:20px; display:flex; align-items:center; gap:18px; margin-bottom:13px;
-}
-.str-ico { font-size:42px; }
-.str-num { font-size:44px; font-weight:800; line-height:1;
-  background:linear-gradient(135deg,var(--p),var(--pk));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.str-txt { font-size:14px; color:var(--t2); margin-top:4px; }
-.mn-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
-.mn-card { background:var(--card); border:1px solid var(--b2); border-radius:17px; padding:16px; }
-.mn-val  { font-size:24px; font-weight:700; margin-bottom:4px; }
-.mn-lbl  { font-size:12px; color:var(--t2); }
-.hi { background:var(--card); border:1px solid var(--b2); border-radius:16px;
-  padding:14px 16px; margin-bottom:9px; display:flex; align-items:center; gap:12px; }
-.hi-ico { width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
-.hi-ico.fasting { background:rgba(139,92,246,.2); }
-.hi-ico.eating  { background:rgba(249,115,22,.18); }
-.hi-inf  { flex:1; }
-.hi-date { font-size:12px; color:var(--t2); margin-bottom:2px; }
-.hi-dur  { font-size:15px; font-weight:700; }
-.hi-res  { text-align:right; flex-shrink:0; }
-.hi-pct  { font-size:20px; font-weight:700; }
-.hi-tag  { font-size:11px; font-weight:600; }
-.hi-tag.ok { color:#a78bfa; }
-.hi-tag.pt { color:var(--co); }
-
-/* ═══════════════════════
-   WEIGHT
-═══════════════════════ */
+/* ── WEIGHT ── */
 .wt-top { display:flex; justify-content:space-between; align-items:center; padding:22px 0 18px; }
-.unit-pill {
-  background:var(--card); border:1px solid var(--b1); border-radius:20px;
-  padding:6px 16px; font-size:13px; font-weight:700; cursor:pointer; color:var(--p);
-  transition:all .15s;
-}
+.unit-pill { background:var(--card); border:1px solid var(--b1); border-radius:20px; padding:6px 16px; font-size:13px; font-weight:700; cursor:pointer; color:var(--p); transition:all .15s; }
 .unit-pill:active { transform:scale(.97); }
-
-/* Hero weight card */
-.wt-hero {
-  background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07));
-  border:1px solid rgba(139,92,246,.28); border-radius:22px; padding:22px;
-  margin-bottom:12px; display:flex; align-items:center; gap:16px;
-}
+.wt-hero { background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07)); border:1px solid rgba(139,92,246,.28); border-radius:22px; padding:22px; margin-bottom:12px; display:flex; align-items:center; gap:16px; }
 .wth-left { flex:1; }
 .wth-cur  { display:flex; align-items:baseline; gap:6px; }
 .wth-num  { font-size:52px; font-weight:800; letter-spacing:-2px; font-variant-numeric:tabular-nums; line-height:1; }
 .wth-unit { font-size:18px; font-weight:700; color:var(--t2); }
 .wth-sub  { font-size:13px; color:var(--t2); margin-top:6px; }
-.wth-delta { display:flex; align-items:center; gap:5px; margin-top:8px; }
-.delta-pill {
-  display:inline-flex; align-items:center; gap:4px;
-  border-radius:20px; padding:4px 11px; font-size:13px; font-weight:700;
-}
+.wth-delta{ display:flex; align-items:center; gap:5px; margin-top:8px; }
+.delta-pill { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:4px 11px; font-size:13px; font-weight:700; }
 .delta-pill.down { background:rgba(34,197,94,.15); color:#22c55e; }
 .delta-pill.up   { background:rgba(249,115,22,.15); color:#f97316; }
 .delta-pill.same { background:rgba(255,255,255,.07); color:var(--t2); }
 .wth-right { text-align:right; }
 .wth-days  { font-size:28px; font-weight:800; color:var(--p); line-height:1; }
 .wth-days-lbl { font-size:12px; color:var(--t2); margin-top:4px; }
-
-/* Goal card */
-.goal-card {
-  background:var(--card); border:1px solid var(--b2); border-radius:20px;
-  padding:16px 18px; margin-bottom:12px;
-}
+.goal-card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:16px 18px; margin-bottom:12px; }
 .goal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.goal-title  { font-size:14px; font-weight:700; color:var(--t2); text-transform:uppercase; letter-spacing:.5px; font-size:11px; }
-.goal-edit   { background:none; border:none; color:var(--p); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+.goal-title { font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; letter-spacing:.5px; }
+.goal-edit  { background:none; border:none; color:var(--p); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
 .goal-display { display:flex; align-items:center; gap:10px; }
-.goal-num    { font-size:22px; font-weight:800; }
+.goal-num { font-size:22px; font-weight:800; }
 .goal-bar-wrap { flex:1; }
-.goal-bar    { height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
+.goal-bar { height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
 .goal-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--p),var(--gr)); transition:width .5s ease; }
-.goal-pct    { font-size:12px; color:var(--t2); text-align:right; margin-top:4px; font-weight:600; }
-.goal-unset  { display:flex; align-items:center; justify-content:space-between; }
+.goal-pct { font-size:12px; color:var(--t2); text-align:right; margin-top:4px; font-weight:600; }
+.goal-unset { display:flex; align-items:center; justify-content:space-between; }
 .goal-unset-txt { font-size:14px; color:var(--t2); }
-.goal-set-btn { background:none; border:1px solid var(--b1); border-radius:12px; padding:7px 14px;
-  font-size:13px; font-weight:600; color:var(--p); cursor:pointer; font-family:inherit; }
+.goal-set-btn { background:none; border:1px solid var(--b1); border-radius:12px; padding:7px 14px; font-size:13px; font-weight:600; color:var(--p); cursor:pointer; font-family:inherit; }
 .goal-input-row { display:flex; gap:10px; margin-top:10px; align-items:center; }
-.goal-inp { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px;
-  padding:12px 14px; font-size:18px; font-weight:700; color:var(--t1); font-family:inherit;
-  font-variant-numeric:tabular-nums; -webkit-appearance:none; }
+.goal-inp { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:18px; font-weight:700; color:var(--t1); font-family:inherit; font-variant-numeric:tabular-nums; -webkit-appearance:none; }
 .goal-inp:focus { outline:none; border-color:var(--p); }
-.goal-save-btn { background:var(--p); border:none; border-radius:12px; padding:12px 20px;
-  font-size:14px; font-weight:700; color:#fff; cursor:pointer; font-family:inherit; white-space:nowrap; }
-.goal-save-btn:active { opacity:.85; }
-
-/* Chart card */
-.chart-card { background:var(--card); border:1px solid var(--b2); border-radius:20px;
-  padding:16px 16px 12px; margin-bottom:12px; }
-.chart-title { font-size:13px; font-weight:700; color:var(--t2); margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; font-size:11px; }
+.goal-save-btn { background:var(--p); border:none; border-radius:12px; padding:12px 20px; font-size:14px; font-weight:700; color:#fff; cursor:pointer; font-family:inherit; white-space:nowrap; }
+.chart-card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:16px 16px 12px; margin-bottom:12px; }
+.chart-title { font-size:11px; font-weight:700; color:var(--t2); margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
 .chart-empty { text-align:center; padding:32px 0; color:var(--t3); font-size:13px; }
-
-/* Weight log list */
-.wt-item {
-  background:var(--card); border:1px solid var(--b2); border-radius:16px;
-  padding:14px 16px; margin-bottom:9px; display:flex; align-items:center; gap:12px;
-}
-.wt-item-ico { width:40px; height:40px; border-radius:12px; background:rgba(139,92,246,.15);
-  display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.wt-item { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 16px; margin-bottom:9px; display:flex; align-items:center; gap:12px; }
+.wt-item-ico { width:40px; height:40px; border-radius:12px; background:rgba(139,92,246,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
 .wt-item-inf { flex:1; }
 .wt-item-date { font-size:12px; color:var(--t2); margin-bottom:2px; }
 .wt-item-val  { font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; }
@@ -251,89 +196,84 @@ body::before {
 .wt-item-delta.dn { color:var(--gr); }
 .wt-item-delta.up { color:var(--co); }
 
-/* empty state */
-.empty { text-align:center; padding:52px 16px; color:var(--t2); }
-.empty .ee { font-size:56px; margin-bottom:16px; }
-.empty p   { font-size:15px; line-height:1.6; }
-
-/* ═══════════════════════
-   MODAL (bottom sheet)
-═══════════════════════ */
-.modal-overlay {
-  position:fixed; inset:0; z-index:200; display:none;
-  align-items:flex-end; justify-content:center;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-}
+/* ── MODAL ── */
+.modal-overlay { position:fixed; inset:0; z-index:200; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
 .modal-overlay.open { display:flex; }
-.modal-sheet {
-  width:100%; max-width:430px;
-  background:#130f2a; border:1px solid var(--b1);
-  border-radius:28px 28px 0 0;
-  padding:12px 24px;
-  padding-bottom:max(32px,calc(16px + env(safe-area-inset-bottom)));
-  animation:slideUp .3s cubic-bezier(0.32,0.72,0,1);
-}
+.modal-sheet { width:100%; max-width:430px; background:#130f2a; border:1px solid var(--b1); border-radius:28px 28px 0 0; padding:12px 24px; padding-bottom:max(32px,calc(16px + env(safe-area-inset-bottom))); animation:slideUp .3s cubic-bezier(0.32,0.72,0,1); }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 .modal-handle { width:40px; height:4px; background:var(--b1); border-radius:2px; margin:0 auto 22px; }
-.modal-title  { font-size:22px; font-weight:800; text-align:center; margin-bottom:20px; }
-
-.unit-toggle  { display:flex; background:rgba(255,255,255,.06); border-radius:14px; padding:4px; margin-bottom:22px; }
-.ut-btn { flex:1; text-align:center; padding:11px; border-radius:10px; font-size:15px; font-weight:700;
-  cursor:pointer; transition:all .2s; color:var(--t2); }
+.modal-title  { font-size:22px; font-weight:800; text-align:center; margin-bottom:8px; }
+.modal-sub    { text-align:center; color:var(--t2); font-size:14px; line-height:1.5; margin-bottom:20px; }
+.inp-row  { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.inp-lbl  { font-size:14px; font-weight:600; color:var(--t2); flex-shrink:0; min-width:72px; }
+.inp-f    { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:17px; font-weight:700; color:var(--t1); font-family:inherit; -webkit-appearance:none; }
+.inp-f:focus { outline:none; border-color:var(--p); }
+.inp-unit { font-size:15px; font-weight:600; color:var(--t2); flex-shrink:0; }
+.unit-toggle { display:flex; background:rgba(255,255,255,.06); border-radius:14px; padding:4px; margin-bottom:22px; }
+.ut-btn { flex:1; text-align:center; padding:11px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:all .2s; color:var(--t2); }
 .ut-btn.on { background:var(--p); color:#fff; }
-
 .wt-inp-wrap { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:24px; }
-.wt-inp {
-  background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:18px;
-  padding:16px 20px; font-size:48px; font-weight:700; color:var(--t1); text-align:center;
-  width:190px; font-family:inherit; font-variant-numeric:tabular-nums; -webkit-appearance:none;
-}
+.wt-inp { background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:18px; padding:16px 20px; font-size:48px; font-weight:700; color:var(--t1); text-align:center; width:190px; font-family:inherit; font-variant-numeric:tabular-nums; -webkit-appearance:none; }
 .wt-inp:focus { outline:none; border-color:var(--p); box-shadow:0 0 0 3px rgba(139,92,246,.2); }
 .wt-inp-unit { font-size:24px; font-weight:700; color:var(--t2); }
-
-/* ── Edit start time ── */
-.st-row {
-  display:none; text-align:center; margin:6px 0 4px;
-  font-size:13px; color:var(--t2);
-}
-.st-edit-btn {
-  background:none; border:none; color:var(--p); font-size:13px; font-weight:700;
-  cursor:pointer; font-family:inherit; margin-left:8px; padding:2px 0;
-}
-.st-edit-btn:active { opacity:.7; }
-.dt-inp {
-  width:100%; background:rgba(255,255,255,.08); border:1px solid var(--b1);
-  border-radius:14px; padding:14px 16px; font-size:17px; font-weight:600;
-  color:var(--t1); font-family:inherit; -webkit-appearance:none;
-  color-scheme:dark; margin-bottom:18px;
-}
-.dt-inp:focus { outline:none; border-color:var(--p); box-shadow:0 0 0 3px rgba(139,92,246,.2); }
-.modal-sub { text-align:center; color:var(--t2); font-size:14px; line-height:1.5; margin-bottom:20px; }
 </style>
 </head>
 <body>
 <div id="app">
   <div class="sb"></div>
-
   <div class="tc">
 
-    <!-- ══ HOME ══ -->
+    <!-- HOME -->
     <div class="screen active" id="screen-home">
       <div class="h-top">
         <div class="greeting" id="greeting"><b>Good morning</b></div>
-        <div class="proto-pill" onclick="switchTab('plans')">
-          <span id="pill-nm">16:8</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
+        <div class="day-badge" id="day-badge">Day 1</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-tag" id="quote-tag">MOTIVATION</div>
+        <div class="quote-text" id="quote-text"></div>
+      </div>
+      <div class="home-stats">
+        <div class="sc"><div class="sv" id="h-remain">—</div><div class="sl">Cal Left</div></div>
+        <div class="sc"><div class="sv" id="h-streak">0</div><div class="sl">Sweet-free Days</div></div>
+        <div class="sc"><div class="sv" id="h-wt">—</div><div class="sl">Weight</div></div>
+      </div>
+      <div class="sec-lbl">Daily Tips</div>
+      <div class="tip-card"><div class="tip-row">
+        <div class="tip-ico">🍬</div>
+        <div><div class="tip-title">Beat Sugar Cravings</div>
+        <div class="tip-txt">Cravings peak at 20 minutes then fade. Drink water, take a walk, or chew gum — the urge usually passes on its own.</div></div>
+      </div></div>
+      <div class="tip-card"><div class="tip-row">
+        <div class="tip-ico">🔥</div>
+        <div><div class="tip-title">The 500 Calorie Rule</div>
+        <div class="tip-txt">A daily 500 cal deficit creates ~0.5 kg (1 lb) of fat loss per week. Small, consistent deficits beat crash diets every time.</div></div>
+      </div></div>
+      <div class="tip-card"><div class="tip-row">
+        <div class="tip-ico">💧</div>
+        <div><div class="tip-title">Drink Before Eating</div>
+        <div class="tip-txt">500 ml of water 30 minutes before a meal naturally reduces hunger and can cut calorie intake by up to 13%.</div></div>
+      </div></div>
+      <div class="tip-card"><div class="tip-row">
+        <div class="tip-ico">🥗</div>
+        <div><div class="tip-title">Eat Protein First</div>
+        <div class="tip-txt">Starting meals with protein keeps you full longer and reduces the total calories you eat — without counting every bite.</div></div>
+      </div></div>
+    </div>
+
+    <!-- CALORIES -->
+    <div class="screen" id="screen-cals">
+      <div class="cal-top">
+        <div class="scr-title" style="padding:0">Calories</div>
+        <button class="gear-btn" onclick="openCalSettings()">⚙️</button>
       </div>
       <div class="ring-sec">
         <div class="ring-wrap">
           <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="rg"  x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%"  stop-color="#6d28d9"/>
-                <stop offset="40%" stop-color="#d946ef"/>
+              <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"  stop-color="#22c55e"/>
+                <stop offset="50%" stop-color="#8b5cf6"/>
                 <stop offset="100%"stop-color="#f97316"/>
               </linearGradient>
               <linearGradient id="rg2" x1="0" y1="0" x2="1" y2="1">
@@ -347,55 +287,55 @@ body::before {
               transform="rotate(-90 140 140)"/>
           </svg>
           <div class="ring-inner">
-            <div class="ri-emoji" id="ri-emoji">🐝</div>
-            <div class="ri-time"  id="ri-time">00:00:00</div>
-            <div class="ri-sub"   id="ri-sub">tap to begin</div>
-            <div class="ri-pct"   id="ri-pct" style="display:none;color:var(--p)"></div>
+            <div class="ri-emoji" id="ri-emoji">🌱</div>
+            <div class="ri-num"   id="ri-num">—</div>
+            <div class="ri-sub"   id="ri-sub">cal remaining</div>
+            <div class="ri-pct"   id="ri-pct" style="color:var(--gr)"></div>
           </div>
         </div>
-        <div class="phase-row" id="phase-row" style="display:none">
-          <div class="ph-dot" id="ph-dot"></div>
-          <span style="color:var(--t2)">Phase ·</span>
-          <span class="ph-name" id="ph-nm"></span>
+      </div>
+      <div class="budget-row">
+        <div><div class="br-lbl">Budget</div><div class="br-val" id="br-budget">—</div></div>
+        <div style="text-align:center"><div class="br-lbl">Eaten</div><div class="br-val" id="br-eaten">0</div></div>
+        <div style="text-align:right"><div class="br-lbl">Deficit</div><div class="br-val good" id="br-deficit">—</div></div>
+      </div>
+      <div class="cal-info-card" id="cal-info-card">
+        <div class="ci-ico" id="ci-ico">🌱</div>
+        <div><div class="ci-name" id="ci-name">Start Your Deficit</div><div class="ci-desc" id="ci-desc">Log your meals to track your 500 cal deficit for today.</div></div>
+      </div>
+      <div class="sec-lbl">Quick Add</div>
+      <div class="quick-row">
+        <div class="qa" onclick="quickAdd('Breakfast','🍳',400)"><div class="qa-ico">🍳</div><div class="qa-lbl">Breakfast</div><div class="qa-cal">~400</div></div>
+        <div class="qa" onclick="quickAdd('Lunch','🥗',600)"><div class="qa-ico">🥗</div><div class="qa-lbl">Lunch</div><div class="qa-cal">~600</div></div>
+        <div class="qa" onclick="quickAdd('Dinner','🍽️',700)"><div class="qa-ico">🍽️</div><div class="qa-lbl">Dinner</div><div class="qa-cal">~700</div></div>
+        <div class="qa" onclick="quickAdd('Snack','🍎',150)"><div class="qa-ico">🍎</div><div class="qa-lbl">Snack</div><div class="qa-cal">~150</div></div>
+        <div class="qa" onclick="quickAdd('Coffee','☕',50)"><div class="qa-ico">☕</div><div class="qa-lbl">Coffee</div><div class="qa-cal">~50</div></div>
+        <div class="qa" onclick="openCalModal()"><div class="qa-ico">✏️</div><div class="qa-lbl">Custom</div><div class="qa-cal">manual</div></div>
+      </div>
+      <button class="btn btn-pur" onclick="openCalModal()">＋ Log Meal</button>
+      <div class="sec-lbl">Today's Log</div>
+      <div id="cal-list"></div>
+    </div>
+
+    <!-- SWEETS -->
+    <div class="screen" id="screen-sweets">
+      <div class="scr-title">Sweets</div>
+      <div id="sw-streak-wrap"></div>
+      <div class="sw-today">
+        <div class="sw-today-l">
+          <div class="sw-today-tag">Today's Status</div>
+          <div class="sw-today-val" id="sw-today-val">No entries yet</div>
         </div>
+        <div class="sw-today-ico" id="sw-today-ico">😐</div>
       </div>
-      <div class="st-row" id="start-time-row">
-        <span id="start-time-label"></span>
-        <button class="st-edit-btn" onclick="openStModal()">✏️ Edit</button>
-      </div>
-      <div class="phase-card" id="phase-card" style="display:none">
-        <div class="pc-ico" id="pc-ico">🔥</div>
-        <div><div class="pc-name" id="pc-nm"></div><div class="pc-desc" id="pc-desc"></div></div>
-      </div>
-      <div id="ms-wrap" style="display:none">
-        <div class="ms-title">Upcoming Phases</div>
-        <div class="ms-scroll" id="ms-scroll"></div>
-      </div>
-      <div class="moti" id="moti" style="display:none"></div>
-      <button class="btn btn-pur" id="main-btn" onclick="handleBtn()">Start Fasting</button>
-      <div class="stats-row">
-        <div class="sc"><div class="sv" id="s-str">0</div><div class="sl">🔥 Streak</div></div>
-        <div class="sc"><div class="sv" id="s-tot">0</div><div class="sl">Fasts</div></div>
-        <div class="sc"><div class="sv" id="s-hrs">0h</div><div class="sl">Hours</div></div>
-      </div>
+      <div class="week-row" id="week-row"></div>
+      <button class="btn btn-grn" style="font-size:18px;padding:22px" onclick="logSweet(true)">🙅 I Resisted a Sweet!</button>
+      <button class="btn btn-red" onclick="logSweet(false)">😔 I Had a Sweet</button>
+      <div class="sec-lbl">Recent Log</div>
+      <div id="sweet-list"></div>
     </div>
 
-    <!-- ══ PLANS ══ -->
-    <div class="screen" id="screen-plans">
-      <div class="scr-title">Plans</div>
-      <div id="plans-list"></div>
-    </div>
-
-    <!-- ══ HISTORY ══ -->
-    <div class="screen" id="screen-history">
-      <div class="hist-top">
-        <div class="scr-title" style="padding:0">History</div>
-        <button class="clr-btn" onclick="clearHistory()">Clear All</button>
-      </div>
-      <div id="hist-body"></div>
-    </div>
-
-    <!-- ══ WEIGHT ══ -->
+    <!-- WEIGHT -->
     <div class="screen" id="screen-weight">
       <div class="wt-top">
         <div class="scr-title" style="padding:0">Weight</div>
@@ -414,42 +354,67 @@ body::before {
 
   </div><!-- /tc -->
 
-  <!-- Bottom Nav -->
   <nav class="bnav">
     <div class="ni on" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-      </svg>Timer
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>Home
     </div>
-    <div class="ni" id="nav-plans" onclick="switchTab('plans')">
+    <div class="ni" id="nav-cals" onclick="switchTab('cals')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-        <path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-      </svg>Plans
+        <path d="M12 2a10 10 0 1010 10"/><path d="M12 6v6l4 2"/><path d="M22 2L12 12"/>
+      </svg>Calories
     </div>
-    <div class="ni" id="nav-history" onclick="switchTab('history')">
+    <div class="ni" id="nav-sweets" onclick="switchTab('sweets')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-      </svg>History
+        <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+      </svg>Sweets
     </div>
     <div class="ni" id="nav-weight" onclick="switchTab('weight')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 01-8 0"/>
+        <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
       </svg>Weight
     </div>
   </nav>
 
-  <!-- Edit Start Time Modal -->
-  <div class="modal-overlay" id="st-modal" onclick="closeStModal(event)">
+  <!-- Calorie Settings Modal -->
+  <div class="modal-overlay" id="cal-settings-modal" onclick="closeCalSettings(event)">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">Edit Start Time</div>
-      <p class="modal-sub" id="st-modal-sub">Adjust when your fast began</p>
-      <input type="datetime-local" id="st-inp" class="dt-inp">
-      <button class="btn btn-pur" onclick="saveStartTime()">Save Changes</button>
-      <button class="btn btn-dim" onclick="closeStModal()">Cancel</button>
+      <div class="modal-title">Calorie Settings</div>
+      <p class="modal-sub">Your eating budget = TDEE − deficit goal. A 500 cal deficit creates ~0.5 kg loss/week.</p>
+      <div class="inp-row">
+        <span class="inp-lbl">TDEE</span>
+        <input type="number" id="tdee-inp" class="inp-f" min="1000" max="5000" step="50" placeholder="2000">
+        <span class="inp-unit">cal/day</span>
+      </div>
+      <div class="inp-row" style="margin-bottom:22px">
+        <span class="inp-lbl">Deficit</span>
+        <input type="number" id="deficit-inp" class="inp-f" min="100" max="1000" step="50" placeholder="500">
+        <span class="inp-unit">cal</span>
+      </div>
+      <button class="btn btn-pur" onclick="saveCalSettings()">Save Settings</button>
+      <button class="btn btn-dim" onclick="closeCalSettings()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Add Meal Modal -->
+  <div class="modal-overlay" id="cal-modal" onclick="closeCalModal(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Log Meal</div>
+      <div class="inp-row">
+        <span class="inp-lbl">Meal</span>
+        <input type="text" id="meal-name" class="inp-f" placeholder="e.g. Chicken salad" maxlength="40" style="font-size:15px">
+      </div>
+      <div class="inp-row" style="margin-bottom:22px">
+        <span class="inp-lbl">Calories</span>
+        <input type="number" id="meal-cals" class="inp-f" min="1" max="5000" step="5" placeholder="400">
+        <span class="inp-unit">cal</span>
+      </div>
+      <button class="btn btn-pur" onclick="logMeal()">Log Meal</button>
+      <button class="btn btn-dim" onclick="closeCalModal()">Cancel</button>
     </div>
   </div>
 
@@ -471,64 +436,70 @@ body::before {
     </div>
   </div>
 
-</div><!-- /app -->
-
+</div>
 <script>
-const KEY = 'fasttrack_v3';
+const KEY = 'leanpath_v1';
 const C   = 2 * Math.PI * 122; // ≈ 766.55
 
-const PROTOS = [
-  { id:'12-12',name:'12:12',fast:12,eat:12,icon:'🌱',color:'#22c55e',tag:'Beginner',
-    desc:'Equal fasting and eating windows — the gentlest way to start intermittent fasting.' },
-  { id:'16-8', name:'16:8', fast:16,eat:8, icon:'⚡',color:'#8b5cf6',tag:'Popular',
-    desc:'Fast 16 hours, eat within 8. The gold standard protocol for most people.' },
-  { id:'18-6', name:'18:6', fast:18,eat:6, icon:'🔥',color:'#e879f9',tag:'Intermediate',
-    desc:'Fast 18 hours with a 6-hour eating window for accelerated results.' },
-  { id:'20-4', name:'20:4', fast:20,eat:4, icon:'💪',color:'#f97316',tag:'Advanced',
-    desc:'The Warrior Diet — fast 20 hours, feast within a 4-hour window.' },
-  { id:'omad', name:'OMAD', fast:23,eat:1, icon:'🏆',color:'#f59e0b',tag:'Expert',
-    desc:'One Meal A Day. 23 hours fasting with a 1-hour eating window.' },
+const QUOTES = [
+  { q:"Every bite is a choice. Make it count.",                     tag:"Mindful Eating" },
+  { q:"A 500 calorie deficit today is 1 pound lost this week.",     tag:"The Math Works" },
+  { q:"Saying no to sweets now means saying yes to your goals.",    tag:"Discipline" },
+  { q:"Progress, not perfection. Every good choice adds up.",       tag:"Keep Going" },
+  { q:"You are one meal away from getting back on track.",          tag:"Start Fresh" },
+  { q:"Hunger is not an emergency — it's just a feeling.",          tag:"Mindset Shift" },
+  { q:"It's not about being perfect. It's about being consistent.", tag:"Consistency" },
+  { q:"Cravings last minutes. Your goal lasts a lifetime.",         tag:"Big Picture" },
+  { q:"Small daily deficits create massive change over time.",      tag:"Compound Effect" },
+  { q:"Every time you resist a sweet, your future self thanks you.",tag:"Future You" },
+  { q:"Eat like you love yourself.",                                tag:"Self-Care" },
+  { q:"The scale doesn't define you, but your discipline does.",    tag:"Inner Strength" },
+  { q:"You don't have to eat less — you just have to eat right.",   tag:"Smart Choices" },
+  { q:"Weight loss is a journey, not a race. Pace yourself.",       tag:"Be Patient" },
+  { q:"Your body hears everything your mind says. Stay positive.",  tag:"Mindset" },
 ];
 
-const PHASES = [
-  { h:0,  name:'Fed State',      emoji:'🍽️',color:'#94a3b8',desc:'Your body is digesting and absorbing nutrients from your last meal.' },
-  { h:4,  name:'Early Fasting',  emoji:'⏳', color:'#a78bfa',desc:'Blood sugar is normalizing and your body is transitioning to fasting mode.' },
-  { h:8,  name:'Fat Mobilizing', emoji:'💧', color:'#8b5cf6',desc:'Glycogen stores are nearly depleted. Your body is mobilizing fat for energy.' },
-  { h:12, name:'Fat Burning',    emoji:'🔥', color:'#d946ef',desc:'Fat is now your primary fuel source. Stored body fat is actively being burned!' },
-  { h:16, name:'Ketosis',        emoji:'⚡', color:'#f97316',desc:'Ketone production ramps up. Expect enhanced mental clarity and sustained energy.' },
-  { h:18, name:'Autophagy',      emoji:'✨', color:'#f59e0b',desc:'Cellular cleanup begins. Your body is repairing and recycling damaged cells.' },
-  { h:24, name:'Deep Autophagy', emoji:'🌟', color:'#14b8a6',desc:'Peak cellular renewal and anti-aging autophagy. Maximum fasting benefits!' },
-];
-
-const MOTOS = [
-  'You\'ve got this! Every hour is a victory. 🐝',
-  'Great start! Your body is already working its magic. ✨',
-  'You\'re in the zone! Keep that momentum going. 🔥',
-  'Halfway there — you\'re absolutely crushing it! 💪',
-  'More than halfway! Your future self is grateful. ⭐',
-  'Almost there! The finish line is within reach. 🏁',
-  'Final stretch — you are unstoppable! 🚀',
-  'Goal reached! You\'re a fasting champion! 🏆',
+const CAL_PHASES = [
+  { min:0,    name:'Start Your Deficit',  emoji:'🌱', color:'#22c55e', desc:'Log your meals to build your 500 cal deficit for today.' },
+  { min:0.01, name:'Deficit Building',    emoji:'⚡', color:'#8b5cf6', desc:"Great start! You're on your way. Keep logging each meal." },
+  { min:0.5,  name:'Halfway Through',     emoji:'🎯', color:'#f59e0b', desc:"You're halfway through your budget. Stay mindful of portions." },
+  { min:0.75, name:'Choose Wisely',       emoji:'⚠️', color:'#f97316', desc:'Getting close to budget. Every calorie counts now!' },
+  { min:1.0,  name:'Deficit Achieved! 🏆',emoji:'🏆', color:'#14b8a6', desc:"500 cal deficit reached! You're on track to lose weight this week." },
 ];
 
 function blank() {
-  return { protocolId:'16-8', session:null, history:[], totalSecs:0,
-           weights:[], weightUnit:'kg', goalWeightKg:null };
+  return { tdee:2000, deficitGoal:500, calLog:[], sweetLog:[], weights:[], weightUnit:'kg', goalWeightKg:null };
 }
 let S = blank();
 try { const r=localStorage.getItem(KEY); if(r) S=Object.assign(blank(),JSON.parse(r)); } catch{}
-let tick=null;
+// Migrate weight data from old fasting app
+try {
+  const old=localStorage.getItem('fasttrack_v3');
+  if(old&&!S.weights.length) {
+    const od=JSON.parse(old);
+    if(od.weights&&od.weights.length) { S.weights=od.weights; S.weightUnit=od.weightUnit||'kg'; S.goalWeightKg=od.goalWeightKg||null; save(); }
+  }
+} catch{}
 
-const save  = () => { try{localStorage.setItem(KEY,JSON.stringify(S));}catch{} };
-const proto = id => PROTOS.find(p=>p.id===id)||PROTOS[1];
-const phase = h  => { let p=PHASES[0]; for(const x of PHASES){if(h>=x.h)p=x;else break;} return p; };
-const nextP = h  => PHASES.filter(p=>p.h>h);
-
-// Unit helpers — weights stored internally in kg
+const save    = () => { try{localStorage.setItem(KEY,JSON.stringify(S));}catch{} };
 const kgToLbs = kg => +(kg*2.20462).toFixed(1);
 const lbsToKg = lb => +(lb/2.20462).toFixed(2);
 const dispW   = kg => S.weightUnit==='lbs' ? kgToLbs(kg) : +kg.toFixed(1);
 const unitStr = () => S.weightUnit;
+const vibe    = p => { try{navigator.vibrate&&navigator.vibrate(p);}catch{} };
+const todayDS = () => new Date().toDateString();
+const budget  = () => Math.max(200, S.tdee - S.deficitGoal);
+const todayCals = () => S.calLog.filter(e=>new Date(e.ts).toDateString()===todayDS()).reduce((a,e)=>a+e.cals,0);
+
+function sweetStreak() {
+  let n=0; const now=new Date();
+  for(let d=0;d<365;d++) {
+    const dt=new Date(now); dt.setDate(dt.getDate()-d);
+    if(S.sweetLog.some(e=>!e.resisted&&new Date(e.ts).toDateString()===dt.toDateString())) break;
+    n++;
+  }
+  return n;
+}
 
 function greet() {
   const h=new Date().getHours();
@@ -539,476 +510,247 @@ function greet() {
 }
 
 function switchTab(t) {
-  ['home','plans','history','weight'].forEach(x=>{
+  ['home','cals','sweets','weight'].forEach(x=>{
     document.getElementById('screen-'+x).classList.toggle('active',x===t);
     document.getElementById('nav-'+x).classList.toggle('on',x===t);
   });
-  if(t==='plans')   renderPlans();
-  if(t==='history') renderHist();
-  if(t==='weight')  renderWeight();
+  if(t==='home')   renderHome();
+  if(t==='cals')   renderCals();
+  if(t==='sweets') renderSweets();
+  if(t==='weight') renderWeight();
 }
 
-// ── Formatters ──
-const fmt12 = ts => {
-  const d=new Date(ts); let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
-  h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`;
-};
-const fmtDay = ts => {
-  const d=new Date(ts),td=new Date(),yd=new Date(td); yd.setDate(yd.getDate()-1);
-  if(d.toDateString()===td.toDateString()) return 'Today';
-  if(d.toDateString()===yd.toDateString()) return 'Yesterday';
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-};
-const fmtHMS = s => {
-  s=Math.max(0,Math.floor(s));
-  return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
-};
-const fmtH = s => {
-  if(!s||s<=0) return '0h'; const h=s/3600;
-  return h<1 ? Math.round(h*60)+'m' : (Math.round(h*10)/10)+'h';
-};
-const fmtCd = s => {
-  s=Math.max(0,Math.floor(s)); const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
-  return h>0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${m}m ${String(ss).padStart(2,'0')}s`;
-};
+const fmt12  = ts => { const d=new Date(ts); let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
+const fmtDay = ts => { const d=new Date(ts),td=new Date(),yd=new Date(td); yd.setDate(yd.getDate()-1); if(d.toDateString()===td.toDateString()) return 'Today'; if(d.toDateString()===yd.toDateString()) return 'Yesterday'; return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); };
 
-function streak() {
-  const fs=S.history.filter(h=>h.type==='fasting'); if(!fs.length) return 0;
-  let n=0,last=null;
-  for(const f of fs){
-    if(!last){n=1;last=new Date(f.endTime);continue;}
-    if((last-new Date(f.endTime))/86400000<=1.05){n++;last=new Date(f.endTime);}else break;
-  }
-  return n;
-}
-
-// ── Fasting logic ──
-function handleBtn() {
-  const p=proto(S.protocolId);
-  if(!S.session) {
-    S.session={startTime:Date.now(),type:'fasting',protoId:S.protocolId}; vibe(10);
-  } else if(S.session.type==='fasting') {
-    const el=(Date.now()-S.session.startTime)/1000,g=p.fast*3600,pct=el/g;
-    if(pct<0.25&&!confirm(`You've completed ${Math.round(pct*100)}% of your fast.\nBreak early?`)) return;
-    endFast();
-  } else { endEat(); }
-  save(); render(); startTick();
-}
-function endFast() {
-  const {startTime,protoId}=S.session,p=proto(protoId),el=(Date.now()-startTime)/1000,g=p.fast*3600;
-  S.history.unshift({id:Date.now(),type:'fasting',startTime,endTime:Date.now(),duration:el,goal:g,protoId});
-  if(S.history.length>120) S.history=S.history.slice(0,120);
-  S.totalSecs=(S.totalSecs||0)+el;
-  S.session={startTime:Date.now(),type:'eating',protoId};
-  vibe([12,60,12]);
-}
-function endEat() {
-  const {startTime,protoId}=S.session,p=proto(protoId),el=(Date.now()-startTime)/1000;
-  S.history.unshift({id:Date.now(),type:'eating',startTime,endTime:Date.now(),duration:el,goal:p.eat*3600,protoId});
-  if(S.history.length>120) S.history=S.history.slice(0,120);
-  S.session={startTime:Date.now(),type:'fasting',protoId:S.protocolId};
-  vibe(10);
-}
-const vibe = p => { try{navigator.vibrate&&navigator.vibrate(p);}catch{} };
-
-// ── Render Home ──
-function render() {
-  const p=proto(S.protocolId);
-  document.getElementById('pill-nm').textContent=p.name;
+// ── HOME ──
+function renderHome() {
   document.getElementById('greeting').innerHTML=`<b>${greet()}</b>`;
-  document.getElementById('s-str').textContent=streak();
-  document.getElementById('s-tot').textContent=S.history.filter(h=>h.type==='fasting').length;
-  document.getElementById('s-hrs').textContent=fmtH(S.totalSecs);
+  const idx = Math.floor(Date.now()/86400000) % QUOTES.length;
+  const q = QUOTES[idx];
+  document.getElementById('quote-tag').textContent  = q.tag;
+  document.getElementById('quote-text').textContent = q.q;
+  const rem = Math.max(0, budget() - todayCals());
+  document.getElementById('h-remain').textContent = rem>0 ? rem+' cal' : '✅ done';
+  document.getElementById('h-streak').textContent = sweetStreak();
+  document.getElementById('h-wt').textContent = S.weights.length ? dispW(S.weights[0].valueKg)+' '+unitStr() : '—';
+  const allTs=[...S.calLog,...S.sweetLog,...S.weights].map(e=>e.ts||e.date||0);
+  const day = allTs.length ? Math.floor((Date.now()-Math.min(...allTs))/86400000)+1 : 1;
+  document.getElementById('day-badge').textContent = 'Day '+day;
+}
 
-  const ring=document.getElementById('r-fill'),btn=document.getElementById('main-btn');
-  const phRow=document.getElementById('phase-row'),phCard=document.getElementById('phase-card');
-  const msWrap=document.getElementById('ms-wrap'),moti=document.getElementById('moti');
+// ── CALORIES ──
+function renderCals() {
+  const eaten=todayCals(), bud=budget(), prog=Math.min(1,eaten/bud);
+  const rem=Math.max(0,bud-eaten), over=Math.max(0,eaten-bud);
+  const ring=document.getElementById('r-fill');
+  ring.style.strokeDashoffset=C*(1-prog);
+  ring.setAttribute('stroke',prog>=1?'url(#rg2)':'url(#rg)');
+  document.getElementById('ri-pct').textContent=Math.round(prog*100)+'%';
+  if(prog>=1) {
+    document.getElementById('ri-emoji').textContent='🏆';
+    document.getElementById('ri-num').textContent=over>0?'+'+over:'✅';
+    document.getElementById('ri-sub').textContent=over>0?'cal over budget':'deficit achieved!';
+  } else {
+    const ph=calPhase(prog);
+    document.getElementById('ri-emoji').textContent=ph.emoji;
+    document.getElementById('ri-num').textContent=rem;
+    document.getElementById('ri-sub').textContent='cal remaining';
+  }
+  const ph=calPhase(prog);
+  const card=document.getElementById('cal-info-card');
+  card.style.setProperty('--ci-clr',ph.color);
+  document.getElementById('ci-ico').textContent=ph.emoji;
+  document.getElementById('ci-name').textContent=ph.name;
+  document.getElementById('ci-desc').textContent=ph.desc;
+  document.getElementById('br-budget').textContent=bud+' cal';
+  document.getElementById('br-eaten').textContent=eaten+' cal';
+  const defEl=document.getElementById('br-deficit');
+  const def=S.tdee-eaten;
+  defEl.textContent=def>=0?'+'+def+' cal':def+' cal';
+  defEl.className='br-val'+(def>=S.deficitGoal?' good':def>0?' warn':' over');
 
-  if(!S.session) {
-    ring.style.strokeDashoffset=C; ring.setAttribute('stroke','url(#rg)');
-    document.getElementById('ri-emoji').textContent='🐝';
-    document.getElementById('ri-time').textContent='00:00:00';
-    document.getElementById('ri-sub').textContent='tap to begin fasting';
-    document.getElementById('ri-pct').style.display='none';
-    phRow.style.display='none'; phCard.style.display='none';
-    msWrap.style.display='none'; moti.style.display='none';
-    document.getElementById('start-time-row').style.display='none';
-    btn.className='btn btn-pur'; btn.textContent='Start Fasting';
+  const today=S.calLog.filter(e=>new Date(e.ts).toDateString()===todayDS()).sort((a,b)=>b.ts-a.ts);
+  const listEl=document.getElementById('cal-list');
+  if(!today.length) {
+    listEl.innerHTML='<div class="empty" style="padding:20px 0"><div class="ee">🍽️</div><p>No meals logged today.<br>Tap Quick Add or Log Meal below.</p></div>';
     return;
   }
-  const {type,startTime,protoId}=S.session,sp=proto(protoId);
-  // show start time row with edit button
-  const strLabel=document.getElementById('start-time-label');
-  strLabel.textContent=(type==='fasting'?'Fast started ':'Eating started ')+fmt12(startTime);
-  document.getElementById('start-time-row').style.display='block';
-  const goal=(type==='fasting'?sp.fast:sp.eat)*3600;
-  const elapsed=(Date.now()-startTime)/1000,remain=Math.max(0,goal-elapsed),prog=Math.min(1,elapsed/goal);
-  ring.style.strokeDashoffset=C*(1-prog);
-  const pctEl=document.getElementById('ri-pct');
-  pctEl.style.display='block'; pctEl.textContent=Math.round(prog*100)+'%';
-
-  if(type==='fasting') {
-    const elH=elapsed/3600,ph=phase(elH),nx=nextP(elH);
-    ring.setAttribute('stroke',prog>=1?'url(#rg2)':'url(#rg)');
-    document.getElementById('ri-emoji').textContent=ph.emoji;
-    document.getElementById('ri-time').textContent=fmtHMS(remain>0?remain:elapsed-goal);
-    document.getElementById('ri-sub').textContent=remain>0?'remaining':(prog>=1?'goal reached! 🎉':'fasting');
-    pctEl.style.color=ph.color;
-    phRow.style.display='flex';
-    document.getElementById('ph-dot').style.background=ph.color;
-    document.getElementById('ph-nm').textContent=ph.name;
-    document.getElementById('ph-nm').style.color=ph.color;
-    phCard.style.display='flex';
-    phCard.style.setProperty('--phase-clr',ph.color);
-    document.getElementById('pc-ico').textContent=ph.emoji;
-    document.getElementById('pc-nm').textContent=ph.name;
-    document.getElementById('pc-desc').textContent=ph.desc;
-    msWrap.style.display=nx.length?'block':'none';
-    if(nx.length) document.getElementById('ms-scroll').innerHTML=nx.slice(0,5).map(n=>`
-      <div class="ms-chip">
-        <div class="ms-chip-emoji">${n.emoji}</div>
-        <div><div class="ms-chip-name">${n.name}</div><div class="ms-chip-time">in ${fmtCd((n.h*3600)-elapsed)}</div></div>
-      </div>`).join('');
-    const mi=Math.min(Math.floor(prog*MOTOS.length),MOTOS.length-1);
-    moti.style.display='block'; moti.textContent=MOTOS[mi];
-    btn.className='btn btn-dim'; btn.textContent=prog>=1?'Break Fast 🎉':'Break Fast';
-  } else {
-    ring.setAttribute('stroke','url(#rg)');
-    document.getElementById('ri-emoji').textContent='🍽️';
-    document.getElementById('ri-time').textContent=fmtHMS(remain);
-    document.getElementById('ri-sub').textContent=remain>0?'eating window left':'window ended';
-    pctEl.style.color='var(--co)';
-    phRow.style.display='none'; phCard.style.display='none'; msWrap.style.display='none';
-    moti.style.display='block'; moti.textContent='Enjoy your eating window! Eat mindfully and nourish your body. 🥗';
-    btn.className='btn btn-eat'; btn.textContent='Start Next Fast';
-  }
-}
-function startTick() {
-  if(tick) clearInterval(tick);
-  if(S.session) tick=setInterval(render,1000);
-}
-
-// ── Plans ──
-function renderPlans() {
-  document.getElementById('plans-list').innerHTML=PROTOS.map(p=>`
-    <div class="plan-card ${S.protocolId===p.id?'sel':''}" onclick="pickPlan('${p.id}')">
-      <div class="pln-ico" style="background:${p.color}22">${p.icon}</div>
-      <div style="flex:1">
-        <div class="pln-name">${p.name}</div>
-        <div class="pln-desc">${p.desc}</div>
-        <div class="pln-meta">${p.fast}h fast · ${p.eat}h eat · ${p.tag}</div>
-      </div>
-      <div class="pln-ck">${S.protocolId===p.id?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':''}</div>
+  listEl.innerHTML=today.map(e=>`
+    <div class="cal-item">
+      <div class="ci2-ico">${e.icon||'🍽️'}</div>
+      <div class="ci2-inf"><div class="ci2-name">${e.name}</div><div class="ci2-time">${fmt12(e.ts)}</div></div>
+      <div class="ci2-cals">${e.cals}</div>
+      <button class="ci2-del" onclick="deleteMeal(${e.id})">✕</button>
     </div>`).join('');
 }
-function pickPlan(id) {
-  if(S.session&&!confirm('Changing plan won\'t affect your active session. Continue?')) return;
-  S.protocolId=id; save(); renderPlans(); render();
+
+function calPhase(prog) {
+  let ph=CAL_PHASES[0];
+  for(const p of CAL_PHASES){if(prog>=p.min)ph=p;else break;}
+  return ph;
+}
+function quickAdd(name,icon,cals) {
+  S.calLog.push({id:Date.now(),name,icon,cals,ts:Date.now()});
+  save(); vibe(10); renderCals();
+}
+function deleteMeal(id) {
+  S.calLog=S.calLog.filter(e=>e.id!==id); save(); renderCals();
+}
+let _mIcon='🍽️';
+function openCalModal(name,cals,icon) {
+  _mIcon=icon||'🍽️';
+  document.getElementById('meal-name').value=name||'';
+  document.getElementById('meal-cals').value=cals||'';
+  document.getElementById('cal-modal').classList.add('open');
+  setTimeout(()=>document.getElementById(name?'meal-cals':'meal-name').focus(),350);
+}
+function closeCalModal(e){if(e&&e.target!==document.getElementById('cal-modal'))return;document.getElementById('cal-modal').classList.remove('open');}
+function logMeal() {
+  const name=document.getElementById('meal-name').value.trim()||'Meal';
+  const cals=parseInt(document.getElementById('meal-cals').value);
+  if(!cals||cals<1){document.getElementById('meal-cals').focus();return;}
+  S.calLog.push({id:Date.now(),name,icon:_mIcon,cals,ts:Date.now()});
+  if(S.calLog.length>1000)S.calLog=S.calLog.slice(0,1000);
+  save();vibe(10);document.getElementById('cal-modal').classList.remove('open');renderCals();
+}
+function openCalSettings(){
+  document.getElementById('tdee-inp').value=S.tdee;
+  document.getElementById('deficit-inp').value=S.deficitGoal;
+  document.getElementById('cal-settings-modal').classList.add('open');
+}
+function closeCalSettings(e){if(e&&e.target!==document.getElementById('cal-settings-modal'))return;document.getElementById('cal-settings-modal').classList.remove('open');}
+function saveCalSettings(){
+  const t=parseInt(document.getElementById('tdee-inp').value);
+  const d=parseInt(document.getElementById('deficit-inp').value);
+  if(t>=1000&&t<=5000)S.tdee=t;
+  if(d>=100&&d<=1000)S.deficitGoal=d;
+  save();document.getElementById('cal-settings-modal').classList.remove('open');renderCals();
 }
 
-// ── History ──
-function renderHist() {
-  const fs=S.history.filter(h=>h.type==='fasting');
-  const str=streak(),avg=fs.length?fs.reduce((a,b)=>a+b.duration,0)/fs.length:0;
-  let html=`
-    <div class="streak-card">
-      <div class="str-ico">🔥</div>
-      <div><div class="str-num">${str}</div><div class="str-txt">day streak</div></div>
-    </div>
-    <div class="mn-grid">
-      <div class="mn-card"><div class="mn-val">${fs.length}</div><div class="mn-lbl">Total Fasts</div></div>
-      <div class="mn-card"><div class="mn-val">${fmtH(S.totalSecs)}</div><div class="mn-lbl">Hours Fasted</div></div>
-      <div class="mn-card"><div class="mn-val">${fmtH(avg)}</div><div class="mn-lbl">Average Fast</div></div>
-      <div class="mn-card"><div class="mn-val">${fs.filter(f=>f.duration>=f.goal).length}</div><div class="mn-lbl">Goals Met</div></div>
+// ── SWEETS ──
+function renderSweets() {
+  const streak=sweetStreak();
+  document.getElementById('sw-streak-wrap').innerHTML=`
+    <div class="sw-streak-card">
+      <div class="sw-str-ico">${streak>7?'🏆':streak>3?'🌟':'🙅'}</div>
+      <div><div class="sw-str-num">${streak}</div><div class="sw-str-lbl">sweet-free day${streak!==1?'s':''}</div></div>
     </div>`;
-  if(!S.history.length) {
-    html+=`<div class="empty"><div class="ee">🐝</div><p>No history yet.<br>Start your first fast to<br>track your progress!</p></div>`;
-  } else {
-    html+=`<div class="sec-lbl">Recent Sessions</div>`;
-    html+=S.history.map(item=>{
-      const pct=Math.round(Math.min(100,(item.duration/item.goal)*100)),done=pct>=100;
-      return `<div class="hi">
-        <div class="hi-ico ${item.type}">${item.type==='fasting'?'⚡':'🍽️'}</div>
-        <div class="hi-inf">
-          <div class="hi-date">${fmtDay(item.startTime)} · ${fmt12(item.startTime)}</div>
-          <div class="hi-dur">${fmtHMS(item.duration)} ${item.type}</div>
-        </div>
-        <div class="hi-res"><div class="hi-pct">${pct}%</div><div class="hi-tag ${done?'ok':'pt'}">${done?'Complete':'Partial'}</div></div>
-      </div>`;
-    }).join('');
+  const todayS=S.sweetLog.filter(e=>new Date(e.ts).toDateString()===todayDS());
+  const had=todayS.filter(e=>!e.resisted).length;
+  const res=todayS.filter(e=>e.resisted).length;
+  const valEl=document.getElementById('sw-today-val');
+  const icoEl=document.getElementById('sw-today-ico');
+  if(!todayS.length){valEl.textContent='No entries yet';valEl.className='sw-today-val';icoEl.textContent='😐';}
+  else if(had===0){valEl.textContent=res+'× resisted! 🙌';valEl.className='sw-today-val good';icoEl.textContent='😇';}
+  else{valEl.textContent=had+' sweet'+(had>1?'s':'')+' today';valEl.className='sw-today-val bad';icoEl.textContent='😅';}
+
+  const days=['S','M','T','W','T','F','S'];
+  const now=new Date();
+  let wHtml='';
+  for(let i=6;i>=0;i--){
+    const dt=new Date(now);dt.setDate(dt.getDate()-i);
+    const ds=dt.toDateString();
+    const de=S.sweetLog.filter(e=>new Date(e.ts).toDateString()===ds);
+    const dh=de.some(e=>!e.resisted),dr=de.some(e=>e.resisted);
+    const cls=dh?'wd-bad':dr?'wd-good':'wd-none';
+    wHtml+=`<div class="wd ${cls}"><span class="wd-e">${dh?'😔':dr?'🙅':'·'}</span><span class="wd-d">${days[dt.getDay()]}</span></div>`;
   }
-  document.getElementById('hist-body').innerHTML=html;
-}
-function clearHistory() {
-  if(!S.history.length) return;
-  if(!confirm('Clear all fasting history?\nThis cannot be undone.')) return;
-  S.history=[]; S.totalSecs=0; save(); renderHist(); render();
-}
+  document.getElementById('week-row').innerHTML=wHtml;
 
-// ── Weight ──
-function renderWeight() {
-  document.getElementById('unit-pill').textContent=unitStr();
-  renderWtHero();
-  renderWtChart();
-  renderGoalCard();
-  renderWtList();
+  const recent=[...S.sweetLog].sort((a,b)=>b.ts-a.ts).slice(0,20);
+  const listEl=document.getElementById('sweet-list');
+  if(!recent.length){listEl.innerHTML='<div class="empty" style="padding:20px 0"><div class="ee">🍬</div><p>No entries yet.<br>Start tracking your sweet resistance!</p></div>';return;}
+  listEl.innerHTML=recent.map(e=>`
+    <div class="sw-log-item">
+      <span class="sw-log-ico">${e.resisted?'🙅':'🍬'}</span>
+      <div class="sw-log-inf">
+        <div class="sw-log-lbl">${e.resisted?'Resisted a sweet ✊':'Had a sweet'}</div>
+        <div class="sw-log-time">${fmtDay(e.ts)} · ${fmt12(e.ts)}</div>
+      </div>
+      <button class="sw-log-del" onclick="deleteSweet(${e.id})">✕</button>
+    </div>`).join('');
 }
+function logSweet(resisted){
+  S.sweetLog.push({id:Date.now(),ts:Date.now(),resisted});
+  if(S.sweetLog.length>500)S.sweetLog=S.sweetLog.slice(0,500);
+  save();vibe(resisted?[10,40,10]:20);renderSweets();
+}
+function deleteSweet(id){S.sweetLog=S.sweetLog.filter(e=>e.id!==id);save();renderSweets();}
 
-function renderWtHero() {
+// ── WEIGHT ──
+function renderWeight(){document.getElementById('unit-pill').textContent=unitStr();renderWtHero();renderWtChart();renderGoalCard();renderWtList();}
+function renderWtHero(){
   const el=document.getElementById('wt-hero-wrap');
-  if(!S.weights.length) {
-    el.innerHTML=''; return;
-  }
-  const cur=S.weights[0];
-  const first=S.weights[S.weights.length-1];
+  if(!S.weights.length){el.innerHTML='';return;}
+  const cur=S.weights[0],first=S.weights[S.weights.length-1];
   const delta=cur.valueKg-first.valueKg;
-  const dispCur=dispW(cur.valueKg);
-  const dispDelta=dispW(Math.abs(delta));
-  const days=Math.round((cur.date-first.date)/86400000)||1;
-  let deltaHtml='';
-  if(Math.abs(delta)<0.05) {
-    deltaHtml=`<span class="delta-pill same">→ No change</span>`;
-  } else if(delta<0) {
-    deltaHtml=`<span class="delta-pill down">↓ ${dispDelta} ${unitStr()} lost</span>`;
-  } else {
-    deltaHtml=`<span class="delta-pill up">↑ ${dispDelta} ${unitStr()} gained</span>`;
-  }
-  el.innerHTML=`
-    <div class="wt-hero">
-      <div class="wth-left">
-        <div class="wth-cur">
-          <div class="wth-num">${dispCur}</div>
-          <div class="wth-unit">${unitStr()}</div>
-        </div>
-        <div class="wth-sub">Current weight</div>
-        <div class="wth-delta">${deltaHtml}</div>
-      </div>
-      <div class="wth-right">
-        <div class="wth-days">${S.weights.length}</div>
-        <div class="wth-days-lbl">entries<br>logged</div>
-      </div>
-    </div>`;
+  let dh='';
+  if(Math.abs(delta)<0.05)dh=`<span class="delta-pill same">→ No change</span>`;
+  else if(delta<0)dh=`<span class="delta-pill down">↓ ${dispW(Math.abs(delta))} ${unitStr()} lost</span>`;
+  else dh=`<span class="delta-pill up">↑ ${dispW(Math.abs(delta))} ${unitStr()} gained</span>`;
+  el.innerHTML=`<div class="wt-hero"><div class="wth-left">
+    <div class="wth-cur"><div class="wth-num">${dispW(cur.valueKg)}</div><div class="wth-unit">${unitStr()}</div></div>
+    <div class="wth-sub">Current weight</div>
+    <div class="wth-delta">${dh}</div>
+  </div><div class="wth-right"><div class="wth-days">${S.weights.length}</div><div class="wth-days-lbl">entries<br>logged</div></div></div>`;
 }
-
-function renderWtChart() {
+function renderWtChart(){
   const el=document.getElementById('wt-chart');
-  const ws=[...S.weights].reverse(); // oldest first
-  if(ws.length<2) {
-    el.innerHTML=`<div class="chart-empty">${ws.length===0?'Log your first weight entry below':'Log one more entry to see your chart'}</div>`;
-    return;
-  }
-  const W=360,H=150,PL=32,PR=8,PT=8,PB=20;
-  const cW=W-PL-PR,cH=H-PT-PB;
-  const vals=ws.map(w=>w.valueKg);
-  const dates=ws.map(w=>w.date);
-  const minV=Math.min(...vals),maxV=Math.max(...vals);
-  const vRange=maxV-minV||0.5;
-  const vPad=vRange*0.18;
+  const ws=[...S.weights].reverse();
+  if(ws.length<2){el.innerHTML=`<div class="chart-empty">${ws.length===0?'Log your first weight entry below':'Log one more entry to see your chart'}</div>`;return;}
+  const W=360,H=150,PL=32,PR=8,PT=8,PB=20,cW=W-PL-PR,cH=H-PT-PB;
+  const vals=ws.map(w=>w.valueKg),dates=ws.map(w=>w.date);
+  const minV=Math.min(...vals),maxV=Math.max(...vals),vRange=maxV-minV||0.5,vPad=vRange*0.18;
   const minVP=minV-vPad,maxVP=maxV+vPad;
   const minD=dates[0],maxD=dates[dates.length-1],dRange=maxD-minD||1;
   const px=ts=>PL+((ts-minD)/dRange)*cW;
-  const py=v =>PT+cH-((v-minVP)/(maxVP-minVP))*cH;
+  const py=v=>PT+cH-((v-minVP)/(maxVP-minVP))*cH;
   const pts=ws.map(w=>({x:px(w.date),y:py(w.valueKg)}));
-
   let line=`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-  for(let i=1;i<pts.length;i++) {
-    const dx=(pts[i].x-pts[i-1].x)/2.8;
-    line+=` C ${(pts[i-1].x+dx).toFixed(1)} ${pts[i-1].y.toFixed(1)} ${(pts[i].x-dx).toFixed(1)} ${pts[i].y.toFixed(1)} ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`;
-  }
+  for(let i=1;i<pts.length;i++){const dx=(pts[i].x-pts[i-1].x)/2.8;line+=` C ${(pts[i-1].x+dx).toFixed(1)} ${pts[i-1].y.toFixed(1)} ${(pts[i].x-dx).toFixed(1)} ${pts[i].y.toFixed(1)} ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`;}
   const fill=line+` L ${pts[pts.length-1].x.toFixed(1)} ${PT+cH} L ${pts[0].x.toFixed(1)} ${PT+cH} Z`;
-
-  // y-axis labels (3 ticks)
-  let yLabels='';
-  for(let i=0;i<=2;i++) {
-    const v=minVP+(maxVP-minVP)*(i/2);
-    yLabels+=`<text x="${PL-5}" y="${py(v)+4}" text-anchor="end" fill="rgba(255,255,255,.25)" font-size="9">${dispW(v)}</text>`;
-  }
-
-  // goal line
-  let goalLine='';
-  if(S.goalWeightKg) {
-    const gy=py(S.goalWeightKg);
-    if(gy>=PT&&gy<=PT+cH) {
-      goalLine=`<line x1="${PL}" y1="${gy.toFixed(1)}" x2="${W-PR}" y2="${gy.toFixed(1)}" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4" opacity=".7"/>
-        <text x="${W-PR-2}" y="${(gy-4).toFixed(1)}" text-anchor="end" fill="#22c55e" font-size="9" opacity=".8">Goal ${dispW(S.goalWeightKg)}</text>`;
-    }
-  }
-
-  // dots (up to last 12)
+  let yL='';for(let i=0;i<=2;i++){const v=minVP+(maxVP-minVP)*(i/2);yL+=`<text x="${PL-5}" y="${py(v)+4}" text-anchor="end" fill="rgba(255,255,255,.25)" font-size="9">${dispW(v)}</text>`;}
+  let gl='';if(S.goalWeightKg){const gy=py(S.goalWeightKg);if(gy>=PT&&gy<=PT+cH)gl=`<line x1="${PL}" y1="${gy.toFixed(1)}" x2="${W-PR}" y2="${gy.toFixed(1)}" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4" opacity=".7"/><text x="${W-PR-2}" y="${(gy-4).toFixed(1)}" text-anchor="end" fill="#22c55e" font-size="9" opacity=".8">Goal ${dispW(S.goalWeightKg)}</text>`;}
   const step=Math.max(1,Math.floor(pts.length/12));
-  const dotIdxs=new Set([0,...pts.map((_,i)=>i).filter(i=>i%step===0),pts.length-1]);
-  const dots=[...dotIdxs].map(i=>`<circle cx="${pts[i].x.toFixed(1)}" cy="${pts[i].y.toFixed(1)}" r="3" fill="#8b5cf6" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
-
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible">
-    <defs>
-      <linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="#8b5cf6" stop-opacity=".28"/>
-        <stop offset="100%"stop-color="#8b5cf6" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="wline" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%"  stop-color="#8b5cf6"/>
-        <stop offset="100%"stop-color="#d946ef"/>
-      </linearGradient>
-    </defs>
-    <line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
-    <line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
-    ${yLabels}
-    ${goalLine}
-    <path d="${fill}" fill="url(#wfill)"/>
-    <path d="${line}" fill="none" stroke="url(#wline)" stroke-width="2.5" stroke-linecap="round"/>
-    ${dots}
-  </svg>`;
+  const di=new Set([0,...pts.map((_,i)=>i).filter(i=>i%step===0),pts.length-1]);
+  const dots=[...di].map(i=>`<circle cx="${pts[i].x.toFixed(1)}" cy="${pts[i].y.toFixed(1)}" r="3" fill="#8b5cf6" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible"><defs><linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity=".28"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient><linearGradient id="wline" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#d946ef"/></linearGradient></defs><line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/><line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>${yL}${gl}<path d="${fill}" fill="url(#wfill)"/><path d="${line}" fill="none" stroke="url(#wline)" stroke-width="2.5" stroke-linecap="round"/>${dots}</svg>`;
 }
-
-function renderGoalCard() {
+function renderGoalCard(){
   const el=document.getElementById('goal-card');
-  if(!S.goalWeightKg) {
-    el.innerHTML=`
-      <div class="goal-unset">
-        <span class="goal-unset-txt">🎯 Set a goal weight</span>
-        <button class="goal-set-btn" onclick="showGoalInput()">Set Goal</button>
-      </div>
-      <div id="goal-input-row" style="display:none">
-        <div class="goal-input-row">
-          <input type="number" id="goal-inp" class="goal-inp" step="0.1" min="10" max="700" placeholder="${S.weightUnit==='lbs'?'150':'70'}">
-          <span style="color:var(--t2);font-size:15px;font-weight:600">${unitStr()}</span>
-          <button class="goal-save-btn" onclick="saveGoal()">Save</button>
-        </div>
-      </div>`;
+  if(!S.goalWeightKg){
+    el.innerHTML=`<div class="goal-unset"><span class="goal-unset-txt">🎯 Set a goal weight</span><button class="goal-set-btn" onclick="showGoalInput()">Set Goal</button></div><div id="goal-input-row" style="display:none"><div class="goal-input-row"><input type="number" id="goal-inp" class="goal-inp" step="0.1" min="10" max="700" placeholder="${S.weightUnit==='lbs'?'150':'70'}"><span style="color:var(--t2);font-size:15px;font-weight:600">${unitStr()}</span><button class="goal-save-btn" onclick="saveGoal()">Save</button></div></div>`;
   } else {
     const cur=S.weights.length?S.weights[0].valueKg:S.goalWeightKg;
     const first=S.weights.length?S.weights[S.weights.length-1].valueKg:S.goalWeightKg;
-    const totalNeeded=Math.abs(first-S.goalWeightKg)||0.001;
+    const need=Math.abs(first-S.goalWeightKg)||0.001;
     const done=Math.abs(first-cur);
-    const pct=Math.min(100,Math.round((done/totalNeeded)*100));
-    el.innerHTML=`
-      <div class="goal-header">
-        <div class="goal-title">🎯 Goal Weight</div>
-        <button class="goal-edit" onclick="clearGoal()">Clear Goal</button>
-      </div>
-      <div class="goal-display">
-        <div class="goal-num">${dispW(S.goalWeightKg)} ${unitStr()}</div>
-        <div class="goal-bar-wrap">
-          <div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%"></div></div>
-          <div class="goal-pct">${pct}% there</div>
-        </div>
-      </div>`;
+    const pct=Math.min(100,Math.round((done/need)*100));
+    el.innerHTML=`<div class="goal-header"><div class="goal-title">🎯 Goal Weight</div><button class="goal-edit" onclick="clearGoal()">Clear Goal</button></div><div class="goal-display"><div class="goal-num">${dispW(S.goalWeightKg)} ${unitStr()}</div><div class="goal-bar-wrap"><div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%"></div></div><div class="goal-pct">${pct}% there</div></div></div>`;
   }
 }
-
-function renderWtList() {
+function renderWtList(){
   const el=document.getElementById('wt-list');
-  if(!S.weights.length) {
-    el.innerHTML=`<div class="empty" style="padding:32px 16px"><div class="ee">⚖️</div><p>No weight entries yet.<br>Tap <b>Log Weight</b> to start tracking.</p></div>`;
-    return;
-  }
+  if(!S.weights.length){el.innerHTML='<div class="empty" style="padding:32px 16px"><div class="ee">⚖️</div><p>No weight entries yet.<br>Tap <b>Log Weight</b> to start tracking.</p></div>';return;}
   el.innerHTML=S.weights.map((w,i)=>{
-    const prev=S.weights[i+1];
-    let deltaHtml='';
-    if(prev) {
-      const d=w.valueKg-prev.valueKg;
-      const dd=+(Math.abs(dispW(Math.abs(d)))).toFixed(1);
-      if(Math.abs(d)>0.04) deltaHtml=`<span class="wt-item-delta ${d<0?'dn':'up'}">${d<0?'↓':'↑'} ${dd} ${unitStr()}</span>`;
-    }
-    return `<div class="wt-item">
-      <div class="wt-item-ico">⚖️</div>
-      <div class="wt-item-inf">
-        <div class="wt-item-date">${fmtDay(w.date)} · ${fmt12(w.date)}</div>
-        <div class="wt-item-val">${dispW(w.valueKg)} ${unitStr()} ${deltaHtml}</div>
-      </div>
-      <button class="wt-item-del" onclick="deleteWeight(${w.id})" aria-label="Delete">✕</button>
-    </div>`;
+    const prev=S.weights[i+1];let dh='';
+    if(prev){const d=w.valueKg-prev.valueKg;const dd=+(Math.abs(dispW(Math.abs(d)))).toFixed(1);if(Math.abs(d)>0.04)dh=`<span class="wt-item-delta ${d<0?'dn':'up'}">${d<0?'↓':'↑'} ${dd} ${unitStr()}</span>`;}
+    return `<div class="wt-item"><div class="wt-item-ico">⚖️</div><div class="wt-item-inf"><div class="wt-item-date">${fmtDay(w.date)} · ${fmt12(w.date)}</div><div class="wt-item-val">${dispW(w.valueKg)} ${unitStr()} ${dh}</div></div><button class="wt-item-del" onclick="deleteWeight(${w.id})">✕</button></div>`;
   }).join('');
 }
+function showGoalInput(){const r=document.getElementById('goal-input-row');r.style.display=r.style.display==='none'?'block':'none';if(r.style.display==='block')document.getElementById('goal-inp').focus();}
+function saveGoal(){const v=parseFloat(document.getElementById('goal-inp').value);if(!v||v<10)return;S.goalWeightKg=S.weightUnit==='lbs'?lbsToKg(v):v;save();renderGoalCard();renderWtChart();}
+function clearGoal(){if(!confirm('Clear goal weight?'))return;S.goalWeightKg=null;save();renderGoalCard();renderWtChart();}
+function deleteWeight(id){S.weights=S.weights.filter(w=>w.id!==id);save();renderWeight();}
+function toggleUnit(){S.weightUnit=S.weightUnit==='kg'?'lbs':'kg';save();renderWeight();}
+function openWtModal(){updateUnitBtns();const last=S.weights.length?dispW(S.weights[0].valueKg):'';document.getElementById('wt-inp').value=last||'';document.getElementById('wt-inp-unit').textContent=unitStr();document.getElementById('wt-modal').classList.add('open');setTimeout(()=>document.getElementById('wt-inp').focus(),350);}
+function closeWtModal(e){if(e&&e.target!==document.getElementById('wt-modal'))return;document.getElementById('wt-modal').classList.remove('open');}
+function setUnit(u){S.weightUnit=u;save();updateUnitBtns();document.getElementById('wt-inp-unit').textContent=unitStr();document.getElementById('unit-pill').textContent=unitStr();}
+function updateUnitBtns(){document.getElementById('ut-kg').classList.toggle('on',S.weightUnit==='kg');document.getElementById('ut-lbs').classList.toggle('on',S.weightUnit==='lbs');}
+function logWeight(){const v=parseFloat(document.getElementById('wt-inp').value);if(!v||v<10||v>700){document.getElementById('wt-inp').focus();return;}const vk=S.weightUnit==='lbs'?lbsToKg(v):v;S.weights.unshift({id:Date.now(),date:Date.now(),valueKg:vk});if(S.weights.length>365)S.weights=S.weights.slice(0,365);save();vibe(10);document.getElementById('wt-modal').classList.remove('open');renderWeight();}
 
-function showGoalInput() {
-  const row=document.getElementById('goal-input-row');
-  row.style.display=row.style.display==='none'?'block':'none';
-  if(row.style.display==='block') document.getElementById('goal-inp').focus();
-}
-function saveGoal() {
-  const v=parseFloat(document.getElementById('goal-inp').value);
-  if(!v||v<10) return;
-  S.goalWeightKg=S.weightUnit==='lbs'?lbsToKg(v):v;
-  save(); renderGoalCard(); renderWtChart();
-}
-function clearGoal() {
-  if(!confirm('Clear goal weight?')) return;
-  S.goalWeightKg=null; save(); renderGoalCard(); renderWtChart();
-}
-function deleteWeight(id) {
-  S.weights=S.weights.filter(w=>w.id!==id); save(); renderWeight();
-}
-function toggleUnit() {
-  S.weightUnit=S.weightUnit==='kg'?'lbs':'kg';
-  save(); renderWeight();
-}
-
-// ── Weight modal ──
-function openWtModal() {
-  updateUnitButtons();
-  const last=S.weights.length?dispW(S.weights[0].valueKg):'';
-  document.getElementById('wt-inp').value=last||'';
-  document.getElementById('wt-inp-unit').textContent=unitStr();
-  document.getElementById('wt-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('wt-inp').focus(),350);
-}
-function closeWtModal(e) {
-  if(e&&e.target!==document.getElementById('wt-modal')) return;
-  document.getElementById('wt-modal').classList.remove('open');
-}
-function setUnit(u) {
-  S.weightUnit=u; save(); updateUnitButtons();
-  document.getElementById('wt-inp-unit').textContent=unitStr();
-  document.getElementById('unit-pill').textContent=unitStr();
-}
-function updateUnitButtons() {
-  document.getElementById('ut-kg').classList.toggle('on',S.weightUnit==='kg');
-  document.getElementById('ut-lbs').classList.toggle('on',S.weightUnit==='lbs');
-}
-function logWeight() {
-  const v=parseFloat(document.getElementById('wt-inp').value);
-  if(!v||v<10||v>700) { document.getElementById('wt-inp').focus(); return; }
-  const valueKg=S.weightUnit==='lbs'?lbsToKg(v):v;
-  S.weights.unshift({id:Date.now(),date:Date.now(),valueKg});
-  if(S.weights.length>365) S.weights=S.weights.slice(0,365);
-  save(); vibe(10);
-  document.getElementById('wt-modal').classList.remove('open');
-  renderWeight();
-}
-
-// ── Edit Start Time ──
-function openStModal() {
-  if(!S.session) return;
-  const d=new Date(S.session.startTime);
-  const offset=d.getTimezoneOffset()*60000;
-  const localIso=new Date(d.getTime()-offset).toISOString().slice(0,16);
-  const maxIso=new Date(Date.now()-offset).toISOString().slice(0,16);
-  const inp=document.getElementById('st-inp');
-  inp.value=localIso;
-  inp.max=maxIso;
-  inp.min=new Date(Date.now()-offset-48*3600000).toISOString().slice(0,16);
-  document.getElementById('st-modal-sub').textContent=
-    S.session.type==='fasting'?'Adjust when your fast began':'Adjust when your eating window began';
-  document.getElementById('st-modal').classList.add('open');
-}
-function closeStModal(e) {
-  if(e&&e.target!==document.getElementById('st-modal')) return;
-  document.getElementById('st-modal').classList.remove('open');
-}
-function saveStartTime() {
-  const val=document.getElementById('st-inp').value;
-  if(!val) return;
-  const t=new Date(val).getTime();
-  if(isNaN(t)||t>=Date.now()) return;
-  if(t<Date.now()-48*3600000) { alert('Cannot go back more than 48 hours'); return; }
-  S.session.startTime=t;
-  save();
-  document.getElementById('st-modal').classList.remove('open');
-  render();
-}
-
-render(); startTick();
+renderHome();
 </script>
 </body>
 </html>
