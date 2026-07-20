@@ -351,6 +351,24 @@ body::before {
       <div id="wt-list"></div>
     </div>
 
+    <!-- HEALTH -->
+    <div class="screen" id="screen-health">
+      <div class="wt-top">
+        <div class="scr-title" style="padding:0">Health</div>
+      </div>
+      <div style="color:var(--t2);font-size:13px;margin:-10px 0 16px;line-height:1.5">ประเมินสุขภาพโดยรวม · Overall health assessment from your BodyTrax scans</div>
+      <div id="health-hero-wrap"></div>
+      <div class="sec-lbl">Latest Scan</div>
+      <div class="home-stats" id="health-metrics" style="margin-bottom:16px"></div>
+      <button class="btn btn-pur" onclick="openHealthModal()">🔄 Sync with BodyTrax</button>
+      <div class="chart-card" id="health-chart-card" style="display:none">
+        <div class="chart-title">Health Score Trend</div>
+        <div id="health-chart"></div>
+      </div>
+      <div class="sec-lbl">Scan History</div>
+      <div id="health-list"></div>
+    </div>
+
   </div>
 
   <nav class="bnav">
@@ -374,6 +392,11 @@ body::before {
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
         <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
       </svg>Weight
+    </div>
+    <div class="ni" id="nav-health" onclick="switchTab('health')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/>
+      </svg>Health
     </div>
   </nav>
 
@@ -435,6 +458,23 @@ body::before {
     </div>
   </div>
 
+  <!-- BodyTrax Sync Modal -->
+  <div class="modal-overlay" id="health-modal" onclick="closeHealthModal(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Sync with BodyTrax</div>
+      <p class="modal-sub">Enter your latest BodyTrax scan results.</p>
+      <div class="inp-row"><span class="inp-lbl">Body Fat</span><input type="number" id="bt-bf" class="inp-f" min="3" max="60" step="0.1" placeholder="22.0"><span class="inp-unit">%</span></div>
+      <div class="inp-row"><span class="inp-lbl">Muscle Mass</span><input type="number" id="bt-mm" class="inp-f" min="10" max="120" step="0.1" placeholder="45.0"><span class="inp-unit">kg</span></div>
+      <div class="inp-row"><span class="inp-lbl">BMI</span><input type="number" id="bt-bmi" class="inp-f" min="10" max="60" step="0.1" placeholder="22.5"><span class="inp-unit">&nbsp;</span></div>
+      <div class="inp-row"><span class="inp-lbl">Visceral Fat</span><input type="number" id="bt-vf" class="inp-f" min="1" max="59" step="1" placeholder="7"><span class="inp-unit">rating</span></div>
+      <div class="inp-row"><span class="inp-lbl">Metabolic Age</span><input type="number" id="bt-ma" class="inp-f" min="10" max="99" step="1" placeholder="30"><span class="inp-unit">yrs</span></div>
+      <div class="inp-row" style="margin-bottom:22px"><span class="inp-lbl">Body Water</span><input type="number" id="bt-water" class="inp-f" min="20" max="80" step="0.1" placeholder="55.0"><span class="inp-unit">%</span></div>
+      <button class="btn btn-pur" onclick="logBodytrax()">Save Scan</button>
+      <button class="btn btn-dim" onclick="closeHealthModal()">Cancel</button>
+    </div>
+  </div>
+
 </div>
 <script>
 const KEY = 'leanpath_v1';
@@ -466,8 +506,15 @@ const CAL_PHASES = [
   { min:1.0,  name:'Deficit Achieved! 🏆', emoji:'🏆', color:'#14b8a6', desc:"500 cal deficit reached! You're on track to lose weight this week." },
 ];
 
+const HEALTH_LEVELS = [
+  { min:0,  label:'Needs Attention', emoji:'⚠️', color:'#f87171' },
+  { min:50, label:'Fair',            emoji:'🙂', color:'#f59e0b' },
+  { min:70, label:'Good',            emoji:'💪', color:'#14b8a6' },
+  { min:85, label:'Excellent',       emoji:'🏆', color:'#22c55e' },
+];
+
 function blank() {
-  return { tdee:2000, deficitGoal:500, calLog:[], sweetLog:[], weights:[], weightUnit:'kg', goalWeightKg:null };
+  return { tdee:2000, deficitGoal:500, calLog:[], sweetLog:[], weights:[], weightUnit:'kg', goalWeightKg:null, bodytraxLog:[] };
 }
 let S = blank();
 try { const r=localStorage.getItem(KEY); if(r) S=Object.assign(blank(),JSON.parse(r)); } catch{}
@@ -505,7 +552,7 @@ function greet() {
 }
 
 function switchTab(t) {
-  ['home','cals','sweets','weight'].forEach(x=>{
+  ['home','cals','sweets','weight','health'].forEach(x=>{
     document.getElementById('screen-'+x).classList.toggle('active',x===t);
     document.getElementById('nav-'+x).classList.toggle('on',x===t);
   });
@@ -513,6 +560,7 @@ function switchTab(t) {
   if(t==='cals')   renderCals();
   if(t==='sweets') renderSweets();
   if(t==='weight') renderWeight();
+  if(t==='health') renderHealth();
 }
 
 const fmt12  = ts => { const d=new Date(ts); let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
@@ -680,6 +728,90 @@ function closeWtModal(e){if(e&&e.target!==document.getElementById('wt-modal'))re
 function setUnit(u){S.weightUnit=u;save();updateUnitBtns();document.getElementById('wt-inp-unit').textContent=unitStr();document.getElementById('unit-pill').textContent=unitStr();}
 function updateUnitBtns(){document.getElementById('ut-kg').classList.toggle('on',S.weightUnit==='kg');document.getElementById('ut-lbs').classList.toggle('on',S.weightUnit==='lbs');}
 function logWeight(){const v=parseFloat(document.getElementById('wt-inp').value);if(!v||v<10||v>700){document.getElementById('wt-inp').focus();return;}const vk=S.weightUnit==='lbs'?lbsToKg(v):v;S.weights.unshift({id:Date.now(),date:Date.now(),valueKg:vk});if(S.weights.length>365)S.weights=S.weights.slice(0,365);save();vibe(10);document.getElementById('wt-modal').classList.remove('open');renderWeight();}
+
+function healthLevel(score){let l=HEALTH_LEVELS[0];for(const x of HEALTH_LEVELS){if(score>=x.min)l=x;else break;}return l;}
+function compScore(v,lo,hi){if(v==null||isNaN(v))return null;if(v>=lo&&v<=hi)return 100;const dist=v<lo?lo-v:v-hi;const range=(hi-lo)||1;return Math.max(0,100-(dist/range)*60);}
+function computeHealthScore(e){
+  const parts=[
+    compScore(e.bmi,18.5,24.9),
+    compScore(e.bodyFatPct,10,25),
+    (e.visceralFat!=null&&!isNaN(e.visceralFat))?(e.visceralFat<=9?100:Math.max(0,100-(e.visceralFat-9)*8)):null,
+    compScore(e.bodyWaterPct,45,60),
+  ].filter(x=>x!=null);
+  if(!parts.length)return null;
+  return Math.round(parts.reduce((a,b)=>a+b,0)/parts.length);
+}
+
+function openHealthModal(){['bt-bf','bt-mm','bt-bmi','bt-vf','bt-ma','bt-water'].forEach(id=>document.getElementById(id).value='');document.getElementById('health-modal').classList.add('open');setTimeout(()=>document.getElementById('bt-bf').focus(),350);}
+function closeHealthModal(e){if(e&&e.target!==document.getElementById('health-modal'))return;document.getElementById('health-modal').classList.remove('open');}
+function logBodytrax(){
+  const bf=parseFloat(document.getElementById('bt-bf').value);
+  if(!bf||bf<3||bf>60){document.getElementById('bt-bf').focus();return;}
+  const mm=parseFloat(document.getElementById('bt-mm').value);
+  const bmi=parseFloat(document.getElementById('bt-bmi').value);
+  const vf=parseFloat(document.getElementById('bt-vf').value);
+  const ma=parseFloat(document.getElementById('bt-ma').value);
+  const water=parseFloat(document.getElementById('bt-water').value);
+  const entry={id:Date.now(),ts:Date.now(),bodyFatPct:bf,muscleMassKg:isNaN(mm)?null:mm,bmi:isNaN(bmi)?null:bmi,visceralFat:isNaN(vf)?null:vf,metabolicAge:isNaN(ma)?null:ma,bodyWaterPct:isNaN(water)?null:water};
+  entry.score=computeHealthScore(entry);
+  S.bodytraxLog.unshift(entry);
+  if(S.bodytraxLog.length>365)S.bodytraxLog=S.bodytraxLog.slice(0,365);
+  save();vibe(10);
+  document.getElementById('health-modal').classList.remove('open');
+  renderHealth();
+}
+function deleteBodytrax(id){S.bodytraxLog=S.bodytraxLog.filter(e=>e.id!==id);save();renderHealth();}
+
+function renderHealth(){
+  const heroEl=document.getElementById('health-hero-wrap');
+  const metricsEl=document.getElementById('health-metrics');
+  const listEl=document.getElementById('health-list');
+  const chartCard=document.getElementById('health-chart-card');
+  if(!S.bodytraxLog.length){
+    heroEl.innerHTML='<div class="card empty"><div class="ee">🔄</div><p>No BodyTrax scans yet.<br>Tap <b>Sync with BodyTrax</b> to log your first body composition scan.</p></div>';
+    metricsEl.innerHTML='';
+    chartCard.style.display='none';
+    listEl.innerHTML='';
+    return;
+  }
+  const latest=S.bodytraxLog[0];
+  const lvl=healthLevel(latest.score??0);
+  heroEl.innerHTML=`<div class="wt-hero"><div class="wth-left">
+    <div class="wth-cur"><div class="wth-num">${latest.score??'—'}</div><div class="wth-unit">/100</div></div>
+    <div class="wth-sub">${lvl.label} · Last synced ${fmtDay(latest.ts)}</div>
+  </div><div class="wth-right"><div style="font-size:40px">${lvl.emoji}</div></div></div>`;
+  metricsEl.innerHTML=`
+    <div class="sc"><div class="sv">${latest.bodyFatPct??'—'}%</div><div class="sl">Body Fat</div></div>
+    <div class="sc"><div class="sv">${latest.muscleMassKg??'—'}</div><div class="sl">Muscle kg</div></div>
+    <div class="sc"><div class="sv">${latest.bmi??'—'}</div><div class="sl">BMI</div></div>
+    <div class="sc"><div class="sv">${latest.visceralFat??'—'}</div><div class="sl">Visceral Fat</div></div>
+    <div class="sc"><div class="sv">${latest.metabolicAge??'—'}</div><div class="sl">Metabolic Age</div></div>
+    <div class="sc"><div class="sv">${latest.bodyWaterPct??'—'}%</div><div class="sl">Body Water</div></div>`;
+  if(S.bodytraxLog.filter(e=>e.score!=null).length<2){chartCard.style.display='none';}
+  else{chartCard.style.display='block';renderHealthChart();}
+  listEl.innerHTML=S.bodytraxLog.map(e=>{const l=healthLevel(e.score??0);return `<div class="wt-item"><div class="wt-item-ico">${l.emoji}</div><div class="wt-item-inf"><div class="wt-item-date">${fmtDay(e.ts)} · ${fmt12(e.ts)}</div><div class="wt-item-val">${e.score??'—'} <span style="color:var(--t2);font-weight:500;font-size:12px">/100 · ${l.label}</span></div></div><button class="wt-item-del" onclick="deleteBodytrax(${e.id})">✕</button></div>`;}).join('');
+}
+
+function renderHealthChart(){
+  const el=document.getElementById('health-chart');
+  const es=[...S.bodytraxLog].filter(e=>e.score!=null).reverse();
+  if(es.length<2){el.innerHTML='<div class="chart-empty">Log one more scan to see your trend</div>';return;}
+  const W=360,H=150,PL=32,PR=8,PT=8,PB=20,cW=W-PL-PR,cH=H-PT-PB;
+  const vals=es.map(e=>e.score),dates=es.map(e=>e.ts);
+  const minV=Math.min(...vals),maxV=Math.max(...vals),vRange=maxV-minV||10,vPad=vRange*0.18;
+  const minVP=Math.max(0,minV-vPad),maxVP=Math.min(100,maxV+vPad||100);
+  const minD=dates[0],maxD=dates[dates.length-1],dRange=maxD-minD||1;
+  const px=ts=>PL+((ts-minD)/dRange)*cW,py=v=>PT+cH-((v-minVP)/((maxVP-minVP)||1))*cH;
+  const pts=es.map(e=>({x:px(e.ts),y:py(e.score)}));
+  let line=`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for(let i=1;i<pts.length;i++){const dx=(pts[i].x-pts[i-1].x)/2.8;line+=` C ${(pts[i-1].x+dx).toFixed(1)} ${pts[i-1].y.toFixed(1)} ${(pts[i].x-dx).toFixed(1)} ${pts[i].y.toFixed(1)} ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`;}
+  const fill=line+` L ${pts[pts.length-1].x.toFixed(1)} ${PT+cH} L ${pts[0].x.toFixed(1)} ${PT+cH} Z`;
+  let yL='';for(let i=0;i<=2;i++){const v=minVP+(maxVP-minVP)*(i/2);yL+=`<text x="${PL-5}" y="${py(v)+4}" text-anchor="end" fill="rgba(255,255,255,.25)" font-size="9">${Math.round(v)}</text>`;}
+  const step=Math.max(1,Math.floor(pts.length/12));
+  const di=new Set([0,...pts.map((_,i)=>i).filter(i=>i%step===0),pts.length-1]);
+  const dots=[...di].map(i=>`<circle cx="${pts[i].x.toFixed(1)}" cy="${pts[i].y.toFixed(1)}" r="3" fill="#14b8a6" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible"><defs><linearGradient id="hfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#14b8a6" stop-opacity=".28"/><stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/></linearGradient><linearGradient id="hline" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#14b8a6"/><stop offset="100%" stop-color="#22c55e"/></linearGradient></defs><line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/><line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>${yL}<path d="${fill}" fill="url(#hfill)"/><path d="${line}" fill="none" stroke="url(#hline)" stroke-width="2.5" stroke-linecap="round"/>${dots}</svg>`;
+}
 
 renderHome();
 </script>
