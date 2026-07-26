@@ -216,6 +216,18 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
     <div class="screen" id="screen-screener">
       <div class="scr-title">คัดหุ้น</div>
       <div class="scr-sub">ให้คะแนนหุ้นจาก 4 ปัจจัย: แนวโน้มราคา (35%) · โมเมนตัม RSI (15%) · ความแข็งแกร่งเทียบ SET (30%) · สภาพคล่อง (20%) — กรอกข้อมูลจริงของหุ้นที่สนใจจากโปรแกรมเทรดของคุณ</div>
+
+      <div class="sec-lbl">สแกนหุ้นแนะนำ (ทดลอง)</div>
+      <div class="disc">⚠️ ดึงราคาสดจากเบราว์เซอร์คุณเอง (endpoint ไม่เป็นทางการ) — อาจใช้ไม่ได้ในบางเครือข่าย และคะแนน "ความแข็งแกร่ง" ในการสแกนนี้ใช้ผลตอบแทน 3 เดือนของหุ้นเอง (ยังไม่ได้เทียบกับดัชนี SET) จึงเป็นค่าประมาณเท่านั้น</div>
+      <div class="card">
+        <label style="font-size:11px;color:var(--t2);font-weight:600;display:block;margin-bottom:6px">รายชื่อหุ้นที่จะสแกน (เว้นว่าง = ใช้ชุดตัวอย่าง 15 ตัวใหญ่ใน SET)</label>
+        <textarea class="csv-ta" id="scan-tickers" style="min-height:52px" placeholder="PTT.BK, AOT.BK, CPALL.BK, ADVANC.BK, ..."></textarea>
+        <button class="btn btn-pri" id="scan-btn" style="margin-top:10px;margin-bottom:0" onclick="scanRecommended()">🔎 เริ่มสแกนหุ้นแนะนำ</button>
+      </div>
+      <div class="mk-status" id="scan-status"></div>
+      <div id="scan-result"></div>
+
+      <div class="sec-lbl">เพิ่มหุ้นด้วยตนเอง</div>
       <div class="card">
         <div class="sc-form">
           <div class="sc-full"><label>ชื่อหุ้น / Ticker</label><input type="text" id="sc-ticker" placeholder="เช่น PTT, AOT" maxlength="12"></div>
@@ -405,6 +417,30 @@ function classifyMarket(price,sma50v,sma200v,rsi){
   }
   return {label,color,desc,emoji,rsiNote};
 }
+async function fetchYahooDaily(tkRaw,range='1y'){
+  const hosts=['query1.finance.yahoo.com','query2.finance.yahoo.com'];
+  for(const host of hosts){
+    try{
+      const url=`https://${host}/v8/finance/chart/${encodeURIComponent(tkRaw)}?range=${range}&interval=1d`;
+      const res=await fetch(url);
+      if(!res.ok)continue;
+      const json=await res.json();
+      const chartResult=json&&json.chart&&json.chart.result&&json.chart.result[0];
+      if(!chartResult)continue;
+      const ts=chartResult.timestamp||[];
+      const q=(chartResult.indicators&&chartResult.indicators.quote&&chartResult.indicators.quote[0])||{};
+      const dates=[],open=[],high=[],low=[],close=[],volume=[];
+      ts.forEach((t,i)=>{
+        if(q.close==null||q.close[i]==null)return;
+        dates.push(new Date(t*1000));
+        open.push(q.open[i]);high.push(q.high[i]);low.push(q.low[i]);close.push(q.close[i]);volume.push(q.volume?q.volume[i]||0:0);
+      });
+      if(close.length<10)continue;
+      return {dates,open,high,low,close,volume};
+    }catch(e){/* try next host */}
+  }
+  return null;
+}
 async function fetchLiveMarket(){
   const tkRaw=document.getElementById('mk-ticker').value.trim();
   if(!tkRaw){alert('กรุณาใส่ชื่อหุ้น เช่น PTT.BK');return;}
@@ -415,31 +451,14 @@ async function fetchLiveMarket(){
   statusEl.style.color='var(--t2)';
   statusEl.textContent='กำลังดึงข้อมูล...';
   btn.disabled=true;
-  const hosts=['query1.finance.yahoo.com','query2.finance.yahoo.com'];
-  let chartResult=null;
-  for(const host of hosts){
-    try{
-      const url=`https://${host}/v8/finance/chart/${encodeURIComponent(tkRaw)}?range=1y&interval=1d`;
-      const res=await fetch(url);
-      if(!res.ok)continue;
-      const json=await res.json();
-      if(json&&json.chart&&json.chart.result&&json.chart.result[0]){chartResult=json.chart.result[0];break;}
-    }catch(e){/* try next host / fall through to error state */}
-  }
+  const D=await fetchYahooDaily(tkRaw,'1y');
   btn.disabled=false;
-  if(!chartResult){
+  if(!D){
     statusEl.style.color='var(--rd)';
     statusEl.textContent='ดึงข้อมูลไม่สำเร็จ (อาจติด CORS/เครือข่ายบล็อก หรือชื่อหุ้นไม่ถูกต้อง) — กรุณาใช้แบบกรอกเองด้านล่างแทน';
     return;
   }
-  const ts=chartResult.timestamp||[];
-  const q=(chartResult.indicators&&chartResult.indicators.quote&&chartResult.indicators.quote[0])||{};
-  const dates=[],open=[],high=[],low=[],close=[],volume=[];
-  ts.forEach((t,i)=>{
-    if(q.close==null||q.close[i]==null)return;
-    dates.push(new Date(t*1000));
-    open.push(q.open[i]);high.push(q.high[i]);low.push(q.low[i]);close.push(q.close[i]);volume.push(q.volume?q.volume[i]||0:0);
-  });
+  const {dates,open,high,low,close,volume}=D;
   if(close.length<30){statusEl.style.color='var(--rd)';statusEl.textContent='ข้อมูลที่ได้มีน้อยเกินไปสำหรับวิเคราะห์';return;}
   statusEl.style.color='var(--gr)';
   statusEl.textContent=`ดึงสำเร็จ: ${close.length} วัน (${fmtDate(dates[0])} ถึง ${fmtDate(dates[dates.length-1])})`;
@@ -521,6 +540,68 @@ function addScreenerRow(){
   renderScreener();
 }
 function deleteScreenerRow(id){S.screener=S.screener.filter(r=>r.id!==id);save();renderScreener();}
+
+/* ---------- SCAN RECOMMENDED (experimental live multi-ticker scan) ---------- */
+const DEFAULT_WATCHLIST=['PTT.BK','PTTEP.BK','AOT.BK','CPALL.BK','ADVANC.BK','SCB.BK','KBANK.BK','BBL.BK','SCC.BK','BDMS.BK','CPN.BK','DELTA.BK','GULF.BK','TRUE.BK','KTB.BK'];
+async function scanRecommended(){
+  const raw=document.getElementById('scan-tickers').value.trim();
+  let tickers=raw?raw.split(/[\s,]+/).map(s=>s.trim().toUpperCase()).filter(Boolean):DEFAULT_WATCHLIST.slice();
+  tickers=[...new Set(tickers)].slice(0,25);
+  if(!tickers.length){alert('กรุณาใส่รายชื่อหุ้นอย่างน้อย 1 ตัว');return;}
+  const statusEl=document.getElementById('scan-status');
+  const resultEl=document.getElementById('scan-result');
+  const btn=document.getElementById('scan-btn');
+  btn.disabled=true;
+  resultEl.innerHTML='';
+  const rows=[],failed=[];
+  for(let i=0;i<tickers.length;i++){
+    const tk=tickers[i];
+    statusEl.style.color='var(--t2)';
+    statusEl.textContent=`กำลังสแกน ${i+1}/${tickers.length}: ${tk} ...`;
+    const D=await fetchYahooDaily(tk,'1y');
+    if(!D||D.close.length<210){failed.push(tk);continue;}
+    const {close,volume}=D;
+    const sma50Arr=sma(close,50),sma200Arr=sma(close,200),rsiArr=rsiCalc(close,14);
+    const last=close.length-1;
+    const price=close[last],s50=sma50Arr[last],s200=sma200Arr[last],rsiV=rsiArr[last];
+    if(s50==null||s200==null||rsiV==null){failed.push(tk);continue;}
+    const idx3m=Math.max(0,last-63);
+    const ret3m=(price/close[idx3m]-1)*100;
+    const recentVol=avg(volume.slice(Math.max(0,last-4),last+1));
+    const baseVol=avg(volume.slice(Math.max(0,last-24),Math.max(1,last-4)))||1;
+    const volRatio=recentVol/baseVol;
+    const row={ticker:tk,price,sma50:s50,sma200:s200,rsi:rsiV,vol:volRatio,rs:ret3m};
+    rows.push({...row,score:computeScreenerScore(row)});
+    await new Promise(r=>setTimeout(r,350));
+  }
+  btn.disabled=false;
+  rows.sort((a,b)=>b.score.total-a.score.total);
+  statusEl.style.color=failed.length?'var(--go)':'var(--gr)';
+  statusEl.textContent=`สแกนสำเร็จ ${rows.length}/${tickers.length} ตัว${failed.length?` · ดึงไม่สำเร็จ: ${failed.join(', ')}`:''}`;
+  if(!rows.length){resultEl.innerHTML='<div class="empty"><div class="ee">📭</div><p>สแกนไม่สำเร็จเลย — อาจติด CORS/เครือข่ายบล็อกจากเบราว์เซอร์นี้ ลองใหม่อีกครั้งหรือใช้แบบกรอกเองด้านล่าง</p></div>';return;}
+  resultEl.innerHTML=rows.map(r=>{
+    const b=scoreBadge(r.score.total);
+    return `<div class="score-row">
+      <div class="score-ring" style="background:conic-gradient(${b.color} ${r.score.total*3.6}deg, rgba(255,255,255,.08) 0deg); color:${b.color}"><div style="background:var(--bg);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">${r.score.total}</div></div>
+      <div class="score-inf">
+        <div class="score-tk">${r.ticker} <span style="color:var(--t2);font-weight:500;font-size:11px">฿${fmtNum(r.price)}</span></div>
+        <div class="score-badge" style="color:${b.color}">${b.label}</div>
+        <div class="breakdown">
+          <span class="bd-pill">เทรนด์ ${r.score.trend}</span>
+          <span class="bd-pill">RSI ${r.score.momentum}</span>
+          <span class="bd-pill">Mom3M ${r.score.rs}</span>
+          <span class="bd-pill">สภาพคล่อง ${r.score.liq}</span>
+        </div>
+      </div>
+      <button class="score-del" onclick="addScanRowToList('${r.ticker}',${r.price},${r.sma50},${r.sma200},${r.rsi},${r.vol},${r.rs})" title="เพิ่มเข้ารายการคัดหุ้น">＋</button>
+    </div>`;
+  }).join('');
+}
+function addScanRowToList(ticker,price,sma50,sma200,rsi,vol,rs){
+  S.screener.unshift({id:Date.now(),ticker,price,sma50,sma200,rsi,vol,rs});
+  save();
+  renderScreener();
+}
 function loadScreenerDemo(){
   const demo=[
     {ticker:'หุ้น A (ตัวอย่าง)',price:52.0,sma50:49.5,sma200:44.0,rsi:61,vol:1.6,rs:9.5},
