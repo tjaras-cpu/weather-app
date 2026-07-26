@@ -259,7 +259,7 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
         </select>
       </div>
       <div class="csv-box" id="csv-box">
-        <div class="csv-hint">รูปแบบ: <b>Date,Open,High,Low,Close,Volume</b> หนึ่งแถวต่อวัน (คัดลอกจาก SETTRADE, Investing.com, aomMONEY หรือไฟล์ที่ดาวน์โหลดจากโบรกเกอร์ได้) ควรมีข้อมูลอย่างน้อย ~500 วันทำการ (2 ปี) เพื่อความแม่นยำของเส้นค่าเฉลี่ยระยะยาว</div>
+        <div class="csv-hint">วางไฟล์ CSV ที่ดาวน์โหลดจาก Yahoo Finance, Investing.com, SETTRADE หรือโบรกเกอร์อื่นได้เลย — ระบบจะอ่านหัวตาราง (header) แล้วจับคู่คอลัมน์ Date/Open/High/Low/Close(หรือ Price)/Volume ให้อัตโนมัติ ไม่ว่าลำดับคอลัมน์จะต่างกันแค่ไหน ควรมีข้อมูลอย่างน้อย ~500 วันทำการ (2 ปี) เพื่อความแม่นยำของเส้นค่าเฉลี่ยระยะยาว</div>
         <textarea class="csv-ta" id="csv-input" placeholder="2024-01-02,35.00,35.50,34.75,35.25,12345600
 2024-01-03,35.25,35.75,35.00,35.50,9876500
 ..."></textarea>
@@ -709,17 +709,74 @@ function genDemoSeries(kind){
 
 /* ---------- CSV import ---------- */
 let CUSTOM_DATA=null;
+function splitCSVLine(line){
+  const out=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){ if(inQ&&line[i+1]==='"'){cur+='"';i++;} else inQ=!inQ; }
+    else if(ch===','&&!inQ){ out.push(cur);cur=''; }
+    else cur+=ch;
+  }
+  out.push(cur);
+  return out.map(s=>s.trim());
+}
+function parseCsvNum(str){
+  if(str==null)return NaN;
+  let s=String(str).trim().replace(/^"|"$/g,'').trim();
+  if(s===''||s==='-')return NaN;
+  let mult=1;
+  const last=s[s.length-1].toUpperCase();
+  if(last==='K'){mult=1e3;s=s.slice(0,-1);}
+  else if(last==='M'){mult=1e6;s=s.slice(0,-1);}
+  else if(last==='B'){mult=1e9;s=s.slice(0,-1);}
+  s=s.replace(/,/g,'').replace(/%$/,'');
+  const v=parseFloat(s);
+  return isNaN(v)?NaN:v*mult;
+}
+const CSV_COL_ALIASES={
+  open:['open'],
+  high:['high'],
+  low:['low'],
+  close:['close','close*','adj close','adj close*','price'],
+  volume:['volume','vol.','vol','vol*'],
+};
+function detectCsvColumns(headerCells){
+  const norm=headerCells.map(h=>h.toLowerCase().replace(/"/g,'').trim());
+  const idx={};
+  for(const key in CSV_COL_ALIASES){
+    for(const alias of CSV_COL_ALIASES[key]){
+      const i=norm.indexOf(alias);
+      if(i!==-1){idx[key]=i;break;}
+    }
+  }
+  return idx;
+}
 function parseCSV(text){
   const lines=text.trim().split(/\r?\n/).filter(l=>l.trim());
+  if(!lines.length)return {dates:[],open:[],high:[],low:[],close:[],volume:[]};
+  // Default: plain "Date,Open,High,Low,Close[,Volume]" with no header (legacy format).
+  let colIdx={open:1,high:2,low:3,close:4,volume:null};
+  let startIdx=0;
+  const firstCells=splitCSVLine(lines[0]);
+  if(isNaN(new Date(firstCells[0]))){
+    // First row isn't a date → treat as a header row and map columns by name,
+    // so exports like investing.com's "Date,Price,Open,High,Low,Vol.,Change %"
+    // (a different column order than Yahoo's) still line up correctly.
+    const detected=detectCsvColumns(firstCells);
+    if(detected.open!=null&&detected.high!=null&&detected.low!=null&&detected.close!=null){
+      colIdx={open:detected.open,high:detected.high,low:detected.low,close:detected.close,volume:detected.volume!=null?detected.volume:null};
+    }
+    startIdx=1;
+  }
   const rows=[];
-  for(const line of lines){
-    const parts=line.split(',').map(s=>s.trim());
-    if(parts.length<5)continue;
+  for(let li=startIdx;li<lines.length;li++){
+    const parts=splitCSVLine(lines[li]);
+    if(parts.length<2)continue;
     const dt=new Date(parts[0]);
     if(isNaN(dt))continue;
-    const o=parseFloat(parts[1]),h=parseFloat(parts[2]),l=parseFloat(parts[3]),c=parseFloat(parts[4]);
+    const o=parseCsvNum(parts[colIdx.open]),h=parseCsvNum(parts[colIdx.high]),l=parseCsvNum(parts[colIdx.low]),c=parseCsvNum(parts[colIdx.close]);
     if([o,h,l,c].some(isNaN))continue;
-    const v=parts.length>=6?parseFloat(parts[parts.length-1]):0;
+    const v=colIdx.volume!=null?parseCsvNum(parts[colIdx.volume]):(parts.length>=6?parseCsvNum(parts[parts.length-1]):0);
     rows.push({date:dt,open:o,high:h,low:l,close:c,volume:isNaN(v)?0:v});
   }
   rows.sort((a,b)=>a.date-b.date);
