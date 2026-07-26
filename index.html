@@ -132,6 +132,24 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
 .g-txt { font-size:13px; color:var(--t2); line-height:1.7; }
 .g-list { font-size:13px; color:var(--t2); line-height:1.8; padding-left:18px; }
 .g-list li { margin-bottom:2px; }
+
+/* MARKET */
+.mk-row { display:flex; gap:8px; margin-bottom:10px; }
+.mk-row input { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:15px; color:var(--t1); font-family:inherit; }
+.mk-row input:focus { outline:none; border-color:var(--p); }
+.mk-status { font-size:12px; line-height:1.55; margin-bottom:10px; min-height:16px; }
+.mk-quote { display:flex; align-items:baseline; gap:10px; margin-bottom:12px; }
+.mk-price { font-size:32px; font-weight:800; font-variant-numeric:tabular-nums; }
+.mk-chg { font-size:15px; font-weight:700; }
+.trend-card { display:flex; align-items:center; gap:14px; }
+.trend-emoji { font-size:34px; flex-shrink:0; }
+.trend-label { font-size:16px; font-weight:800; margin-bottom:3px; }
+.trend-desc { font-size:12.5px; color:var(--t2); line-height:1.5; }
+.trend-rsinote { font-size:11.5px; color:var(--go); margin-top:6px; font-weight:600; }
+.sc-form2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.sc-form2 label { font-size:11px; color:var(--t2); font-weight:600; display:block; margin-bottom:4px; }
+.sc-form2 input { width:100%; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:10px; padding:9px 10px; font-size:14px; color:var(--t1); font-family:inherit; }
+.sc-form2 input:focus { outline:none; border-color:var(--p); }
 </style>
 </head>
 <body>
@@ -162,6 +180,36 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
       <div class="tip-card"><div class="tip-ico">✂️</div><div><div class="tip-title">ตัดขาดทุนไว ปล่อยกำไรวิ่ง</div><div class="tip-txt">ตั้งจุดตัดขาดทุน (Stop Loss) ทุกครั้งก่อนเข้าซื้อ และอย่ารีบขายหุ้นที่กำลังเป็นกำไรตามเทรนด์เร็วเกินไป</div></div></div>
       <div class="tip-card"><div class="tip-ico">⚖️</div><div><div class="tip-title">บริหารความเสี่ยงต่อไม้ 1-2%</div><div class="tip-txt">แต่ละการเทรดควรเสี่ยงไม่เกิน 1-2% ของพอร์ตทั้งหมด เพื่อให้อยู่รอดได้แม้เจอไม้ที่ขาดทุนติดกันหลายครั้ง</div></div></div>
       <div class="tip-card"><div class="tip-ico">🧪</div><div><div class="tip-title">Backtest ก่อนใช้เงินจริงเสมอ</div><div class="tip-txt">ทดสอบกลยุทธ์กับข้อมูลย้อนหลังอย่างน้อย 1-2 ปี เพื่อเข้าใจอัตราชนะ ผลตอบแทน และการขาดทุนสูงสุดที่อาจเกิดขึ้น</div></div></div>
+    </div>
+
+    <!-- MARKET -->
+    <div class="screen" id="screen-market">
+      <div class="scr-title">ตลาด</div>
+      <div class="scr-sub">เช็คสถานะแนวโน้มตลาด/หุ้นตอนนี้ ด้วยการดึงราคาสด (ทดลอง) หรือกรอกตัวเลขด้วยตนเอง</div>
+
+      <div class="sec-lbl">ดึงราคาสด (ทดลอง)</div>
+      <div class="disc">⚠️ ใช้ endpoint สาธารณะที่ไม่เป็นทางการ ทำงานจากเบราว์เซอร์ของคุณโดยตรง อาจใช้ไม่ได้บ้างขึ้นกับเครือข่าย/เบราว์เซอร์ (ติด CORS) — หากไม่สำเร็จให้เลื่อนลงไปกรอกข้อมูลด้วยตนเองด้านล่างแทน ไม่ใช่ข้อมูลทางการจาก SET</div>
+      <div class="card">
+        <div class="mk-row">
+          <input type="text" id="mk-ticker" placeholder="เช่น PTT.BK, AOT.BK" value="PTT.BK">
+        </div>
+        <div class="csv-hint" style="margin-top:-4px">ใส่ชื่อย่อหุ้นต่อท้ายด้วย .BK เช่น PTT.BK, AOT.BK, CPALL.BK — ดัชนี SET โดยรวมอาจไม่มีใน endpoint นี้</div>
+        <button class="btn btn-pri" style="margin-bottom:0" onclick="fetchLiveMarket()" id="mk-fetch-btn">🔄 ดึงราคาล่าสุด</button>
+      </div>
+      <div class="mk-status" id="mk-status"></div>
+      <div id="mk-live-result"></div>
+
+      <div class="sec-lbl">เช็คสถานะด้วยตนเอง</div>
+      <div class="card">
+        <div class="sc-form2">
+          <div class="sc-full" style="grid-column:1/-1"><label>ราคา/ดัชนีปัจจุบัน</label><input type="number" id="mm-price" step="0.01" placeholder="เช่น 1420.50 หรือ 35.25"></div>
+          <div><label>SMA 50</label><input type="number" id="mm-sma50" step="0.01" placeholder="1400"></div>
+          <div><label>SMA 200</label><input type="number" id="mm-sma200" step="0.01" placeholder="1380"></div>
+          <div class="sc-full" style="grid-column:1/-1"><label>RSI (14) — ไม่บังคับ</label><input type="number" id="mm-rsi" step="0.1" placeholder="55"></div>
+        </div>
+        <button class="btn btn-grn" style="margin-bottom:0" onclick="checkManualMarket()">เช็คสถานะตลาด</button>
+      </div>
+      <div id="mk-manual-result"></div>
     </div>
 
     <!-- SCREENER -->
@@ -271,7 +319,7 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
 
       <div class="g-block">
         <div class="g-h">🧪 ข้อจำกัดของเครื่องมือนี้</div>
-        <div class="g-txt">แอปนี้ไม่มีการเชื่อมต่อข้อมูลราคาตลาดสด (real-time) เนื่องจากข้อจำกัดด้านเครือข่าย การ Backtest จึงต้องใช้ข้อมูลราคาย้อนหลังที่คุณนำเข้าเอง (CSV) จากแหล่งข้อมูลที่เชื่อถือได้ หรือใช้ชุดข้อมูลตัวอย่างที่จำลองขึ้นเพื่อสาธิตวิธีการทำงานของระบบเท่านั้น ผลลัพธ์จากข้อมูลจำลองไม่สะท้อนหุ้นจริงแต่อย่างใด</div>
+        <div class="g-txt">แท็บ "ตลาด" มีฟีเจอร์ดึงราคาสดแบบทดลอง ซึ่งใช้ endpoint สาธารณะที่ไม่เป็นทางการและทำงานจากเบราว์เซอร์ของคุณเอง จึง<b>ไม่รับประกันความเสถียร</b> อาจใช้ไม่ได้ในบางเครือข่าย/เบราว์เซอร์ (ติดปัญหา CORS) และไม่ใช่ข้อมูลทางการจาก SET การ Backtest ที่แม่นยำจึงควรใช้ข้อมูลราคาย้อนหลังที่คุณนำเข้าเอง (CSV) จากแหล่งข้อมูลที่เชื่อถือได้ หรือใช้ชุดข้อมูลตัวอย่างที่จำลองขึ้นเพื่อสาธิตวิธีการทำงานของระบบเท่านั้น ผลลัพธ์จากข้อมูลจำลองไม่สะท้อนหุ้นจริงแต่อย่างใด</div>
       </div>
     </div>
 
@@ -282,6 +330,11 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
       </svg>หน้าแรก
+    </div>
+    <div class="ni" id="nav-market" onclick="switchTab('market')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 010 20 15 15 0 010-20z"/>
+      </svg>ตลาด
     </div>
     <div class="ni" id="nav-screener" onclick="switchTab('screener')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -309,7 +362,7 @@ try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r)
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch{}};
 
 function switchTab(t){
-  ['home','screener','backtest','guide'].forEach(x=>{
+  ['home','market','screener','backtest','guide'].forEach(x=>{
     document.getElementById('screen-'+x).classList.toggle('active',x===t);
     document.getElementById('nav-'+x).classList.toggle('on',x===t);
   });
@@ -324,6 +377,120 @@ const fmtNum=v=>v==null||isNaN(v)?'—':(+v).toLocaleString('en-US',{maximumFrac
 const fmtPct=v=>(v>=0?'+':'')+v.toFixed(1)+'%';
 const avg=a=>a.reduce((s,x)=>s+x,0)/a.length;
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+
+/* ---------- MARKET (live fetch + manual snapshot) ---------- */
+let LIVE_DATA=null;
+function classifyMarket(price,sma50v,sma200v,rsi){
+  let label,color,desc,emoji;
+  if(sma50v==null||sma200v==null||isNaN(sma50v)||isNaN(sma200v)){
+    label='ข้อมูลไม่พอสำหรับวิเคราะห์'; color='var(--t2)'; emoji='❔';
+    desc='ต้องมี SMA50 และ SMA200 ครบทั้งคู่จึงจะประเมินแนวโน้มได้';
+  } else if(price>sma50v && sma50v>sma200v){
+    label='ขาขึ้น (Uptrend)'; color='var(--gr)'; emoji='📈';
+    desc='ราคาอยู่เหนือเส้นค่าเฉลี่ยทั้งสอง แนวโน้มหลักเป็นขาขึ้น เหมาะกับกลยุทธ์ Golden Cross / EMA Pullback';
+  } else if(price<sma50v && sma50v>sma200v){
+    label='ย่อตัวในขาขึ้น (Pullback)'; color='var(--go)'; emoji='⏸️';
+    desc='แนวโน้มใหญ่ยังเป็นขาขึ้น (SMA50>SMA200) แต่ราคาระยะสั้นย่อลงมา รอสัญญาณกลับตัวก่อนเข้าซื้อเพิ่ม';
+  } else if(price>sma50v && sma50v<sma200v){
+    label='กำลังฟื้นตัว (Early Recovery)'; color='var(--go)'; emoji='🔄';
+    desc='ราคาดีดขึ้นเหนือ SMA50 แต่แนวโน้มใหญ่ (SMA200) ยังเป็นขาลง ควรรอการยืนยันเพิ่มก่อนเข้าซื้อหนัก';
+  } else {
+    label='ขาลง (Downtrend)'; color='var(--rd)'; emoji='📉';
+    desc='ราคาต่ำกว่าเส้นค่าเฉลี่ยทั้งสอง แนวโน้มหลักเป็นขาลง ควรระมัดระวังหรือลดขนาดสถานะ';
+  }
+  let rsiNote='';
+  if(rsi!=null && !isNaN(rsi)){
+    if(rsi>70) rsiNote='⚠️ RSI '+rsi.toFixed(0)+' สูงเกิน 70 (Overbought) ระวังการปรับฐานระยะสั้น';
+    else if(rsi<30) rsiNote='⚠️ RSI '+rsi.toFixed(0)+' ต่ำกว่า 30 (Oversold) อาจมีการดีดตัวระยะสั้น';
+  }
+  return {label,color,desc,emoji,rsiNote};
+}
+async function fetchLiveMarket(){
+  const tkRaw=document.getElementById('mk-ticker').value.trim();
+  if(!tkRaw){alert('กรุณาใส่ชื่อหุ้น เช่น PTT.BK');return;}
+  const statusEl=document.getElementById('mk-status');
+  const resultEl=document.getElementById('mk-live-result');
+  const btn=document.getElementById('mk-fetch-btn');
+  resultEl.innerHTML='';
+  statusEl.style.color='var(--t2)';
+  statusEl.textContent='กำลังดึงข้อมูล...';
+  btn.disabled=true;
+  const hosts=['query1.finance.yahoo.com','query2.finance.yahoo.com'];
+  let chartResult=null;
+  for(const host of hosts){
+    try{
+      const url=`https://${host}/v8/finance/chart/${encodeURIComponent(tkRaw)}?range=1y&interval=1d`;
+      const res=await fetch(url);
+      if(!res.ok)continue;
+      const json=await res.json();
+      if(json&&json.chart&&json.chart.result&&json.chart.result[0]){chartResult=json.chart.result[0];break;}
+    }catch(e){/* try next host / fall through to error state */}
+  }
+  btn.disabled=false;
+  if(!chartResult){
+    statusEl.style.color='var(--rd)';
+    statusEl.textContent='ดึงข้อมูลไม่สำเร็จ (อาจติด CORS/เครือข่ายบล็อก หรือชื่อหุ้นไม่ถูกต้อง) — กรุณาใช้แบบกรอกเองด้านล่างแทน';
+    return;
+  }
+  const ts=chartResult.timestamp||[];
+  const q=(chartResult.indicators&&chartResult.indicators.quote&&chartResult.indicators.quote[0])||{};
+  const dates=[],open=[],high=[],low=[],close=[],volume=[];
+  ts.forEach((t,i)=>{
+    if(q.close==null||q.close[i]==null)return;
+    dates.push(new Date(t*1000));
+    open.push(q.open[i]);high.push(q.high[i]);low.push(q.low[i]);close.push(q.close[i]);volume.push(q.volume?q.volume[i]||0:0);
+  });
+  if(close.length<30){statusEl.style.color='var(--rd)';statusEl.textContent='ข้อมูลที่ได้มีน้อยเกินไปสำหรับวิเคราะห์';return;}
+  statusEl.style.color='var(--gr)';
+  statusEl.textContent=`ดึงสำเร็จ: ${close.length} วัน (${fmtDate(dates[0])} ถึง ${fmtDate(dates[dates.length-1])})`;
+  LIVE_DATA={dates,open,high,low,close,volume,ticker:tkRaw};
+  const sma50Arr=sma(close,50),sma200Arr=sma(close,200),rsiArr=rsiCalc(close,14);
+  const last=close.length-1;
+  const price=close[last],prevClose=close[last-1];
+  const chgPct=(price/prevClose-1)*100;
+  const cls=classifyMarket(price,sma50Arr[last],sma200Arr[last],rsiArr[last]);
+  resultEl.innerHTML=`
+    <div class="card">
+      <div class="mk-quote"><div class="mk-price">${fmtNum(price)}</div><div class="mk-chg" style="color:${chgPct>=0?'var(--gr)':'var(--rd)'}">${fmtPct(chgPct)}</div></div>
+      <div class="trend-card">
+        <div class="trend-emoji">${cls.emoji}</div>
+        <div>
+          <div class="trend-label" style="color:${cls.color}">${cls.label}</div>
+          <div class="trend-desc">${cls.desc}</div>
+          ${cls.rsiNote?`<div class="trend-rsinote">${cls.rsiNote}</div>`:''}
+        </div>
+      </div>
+      <button class="btn btn-dim" style="margin-top:12px;margin-bottom:0" onclick="useLiveForBacktest()">ใช้ข้อมูลนี้ทำ Backtest →</button>
+    </div>`;
+}
+function useLiveForBacktest(){
+  if(!LIVE_DATA)return;
+  CUSTOM_DATA={dates:LIVE_DATA.dates,open:LIVE_DATA.open,high:LIVE_DATA.high,low:LIVE_DATA.low,close:LIVE_DATA.close,volume:LIVE_DATA.volume};
+  switchTab('backtest');
+  document.getElementById('bt-source').value='custom';
+  onSourceChange();
+  const st=document.getElementById('csv-status');
+  st.style.color='var(--gr)';
+  st.textContent=`ใช้ข้อมูลสด ${LIVE_DATA.ticker}: ${CUSTOM_DATA.close.length} วัน (${fmtDate(CUSTOM_DATA.dates[0])} ถึง ${fmtDate(CUSTOM_DATA.dates[CUSTOM_DATA.dates.length-1])})`;
+}
+function checkManualMarket(){
+  const price=parseFloat(document.getElementById('mm-price').value);
+  const sma50v=parseFloat(document.getElementById('mm-sma50').value);
+  const sma200v=parseFloat(document.getElementById('mm-sma200').value);
+  const rsiRaw=document.getElementById('mm-rsi').value;
+  const rsi=rsiRaw===''?null:parseFloat(rsiRaw);
+  if([price,sma50v,sma200v].some(v=>isNaN(v))){alert('กรุณากรอก ราคา/ดัชนีปัจจุบัน, SMA50, SMA200 ให้ครบ');return;}
+  const cls=classifyMarket(price,sma50v,sma200v,rsi);
+  document.getElementById('mk-manual-result').innerHTML=`
+    <div class="card trend-card">
+      <div class="trend-emoji">${cls.emoji}</div>
+      <div>
+        <div class="trend-label" style="color:${cls.color}">${cls.label}</div>
+        <div class="trend-desc">${cls.desc}</div>
+        ${cls.rsiNote?`<div class="trend-rsinote">${cls.rsiNote}</div>`:''}
+      </div>
+    </div>`;
+}
 
 /* ---------- SCREENER ---------- */
 function computeScreenerScore(row){
