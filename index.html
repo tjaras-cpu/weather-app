@@ -188,7 +188,7 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
       <div class="scr-sub">เช็คสถานะแนวโน้มตลาด/หุ้นตอนนี้ ด้วยการดึงราคาสด (ทดลอง) หรือกรอกตัวเลขด้วยตนเอง</div>
 
       <div class="sec-lbl">ดึงราคาสด (ทดลอง)</div>
-      <div class="disc">⚠️ ใช้ endpoint สาธารณะที่ไม่เป็นทางการ ทำงานจากเบราว์เซอร์ของคุณโดยตรง อาจใช้ไม่ได้บ้างขึ้นกับเครือข่าย/เบราว์เซอร์ (ติด CORS) — หากไม่สำเร็จให้เลื่อนลงไปกรอกข้อมูลด้วยตนเองด้านล่างแทน ไม่ใช่ข้อมูลทางการจาก SET</div>
+      <div class="disc">⚠️ ใช้ endpoint สาธารณะที่ไม่เป็นทางการ (ลองต่อตรงก่อน แล้วสลับไปผ่าน CORS-proxy สำรองอัตโนมัติถ้าต่อตรงไม่ได้) ทำงานจากเบราว์เซอร์ของคุณโดยตรง อาจใช้ไม่ได้บ้างขึ้นกับเครือข่าย/เบราว์เซอร์ — หากไม่สำเร็จให้เลื่อนลงไปกรอกข้อมูลด้วยตนเองด้านล่างแทน ไม่ใช่ข้อมูลทางการจาก SET</div>
       <div class="card">
         <div class="mk-row">
           <input type="text" id="mk-ticker" placeholder="เช่น PTT.BK, AOT.BK" value="PTT.BK">
@@ -331,7 +331,7 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
 
       <div class="g-block">
         <div class="g-h">🧪 ข้อจำกัดของเครื่องมือนี้</div>
-        <div class="g-txt">แท็บ "ตลาด" มีฟีเจอร์ดึงราคาสดแบบทดลอง ซึ่งใช้ endpoint สาธารณะที่ไม่เป็นทางการและทำงานจากเบราว์เซอร์ของคุณเอง จึง<b>ไม่รับประกันความเสถียร</b> อาจใช้ไม่ได้ในบางเครือข่าย/เบราว์เซอร์ (ติดปัญหา CORS) และไม่ใช่ข้อมูลทางการจาก SET การ Backtest ที่แม่นยำจึงควรใช้ข้อมูลราคาย้อนหลังที่คุณนำเข้าเอง (CSV) จากแหล่งข้อมูลที่เชื่อถือได้ หรือใช้ชุดข้อมูลตัวอย่างที่จำลองขึ้นเพื่อสาธิตวิธีการทำงานของระบบเท่านั้น ผลลัพธ์จากข้อมูลจำลองไม่สะท้อนหุ้นจริงแต่อย่างใด</div>
+        <div class="g-txt">แท็บ "ตลาด" และฟีเจอร์สแกนหุ้นแนะนำ มีการดึงราคาสดแบบทดลอง ซึ่งใช้ endpoint สาธารณะที่ไม่เป็นทางการและทำงานจากเบราว์เซอร์ของคุณเอง (ลองต่อตรงก่อน แล้วสลับไปผ่าน CORS-proxy สำรองอัตโนมัติถ้าต่อตรงไม่ได้) จึง<b>ไม่รับประกันความเสถียร</b> อาจใช้ไม่ได้ในบางเครือข่าย/เบราว์เซอร์ และไม่ใช่ข้อมูลทางการจาก SET การ Backtest ที่แม่นยำจึงควรใช้ข้อมูลราคาย้อนหลังที่คุณนำเข้าเอง (CSV) จากแหล่งข้อมูลที่เชื่อถือได้ หรือใช้ชุดข้อมูลตัวอย่างที่จำลองขึ้นเพื่อสาธิตวิธีการทำงานของระบบเท่านั้น ผลลัพธ์จากข้อมูลจำลองไม่สะท้อนหุ้นจริงแต่อย่างใด</div>
       </div>
     </div>
 
@@ -418,10 +418,20 @@ function classifyMarket(price,sma50v,sma200v,rsi){
   return {label,color,desc,emoji,rsiNote};
 }
 async function fetchYahooDaily(tkRaw,range='1y'){
-  const hosts=['query1.finance.yahoo.com','query2.finance.yahoo.com'];
-  for(const host of hosts){
+  const target=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(tkRaw)}?range=${range}&interval=1d`;
+  const target2=`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(tkRaw)}?range=${range}&interval=1d`;
+  // Try direct first (works on some networks/browsers), then fall back to public
+  // CORS-proxy relays — Yahoo's chart endpoint often refuses cross-origin fetches
+  // from arbitrary origins outright, which a direct call cannot work around.
+  const attempts=[
+    target,
+    target2,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(target)}`,
+  ];
+  for(const url of attempts){
     try{
-      const url=`https://${host}/v8/finance/chart/${encodeURIComponent(tkRaw)}?range=${range}&interval=1d`;
       const res=await fetch(url);
       if(!res.ok)continue;
       const json=await res.json();
@@ -437,7 +447,7 @@ async function fetchYahooDaily(tkRaw,range='1y'){
       });
       if(close.length<10)continue;
       return {dates,open,high,low,close,volume};
-    }catch(e){/* try next host */}
+    }catch(e){/* try next attempt */}
   }
   return null;
 }
