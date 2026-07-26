@@ -255,8 +255,18 @@ textarea.csv-ta:focus { outline:none; border-color:var(--p); }
           <option value="up">ตัวอย่าง: หุ้นเทรนด์ขึ้น (จำลอง)</option>
           <option value="side">ตัวอย่าง: หุ้นไซด์เวย์ (จำลอง)</option>
           <option value="vol">ตัวอย่าง: หุ้นผันผวน-กลับตัว (จำลอง)</option>
+          <option value="auto">ดึงข้อมูลอัตโนมัติ — ใส่ชื่อหุ้น (ทดลอง)</option>
           <option value="custom">กำหนดเอง — วางข้อมูลราคาจริง (CSV)</option>
         </select>
+      </div>
+      <div class="csv-box" id="auto-box">
+        <div class="disc" style="margin-bottom:10px">⚠️ ดึงราคาสดจากเบราว์เซอร์คุณเอง (endpoint ไม่เป็นทางการ ต่อตรงก่อนแล้วสลับไป CORS-proxy สำรองอัตโนมัติถ้าไม่ได้) — อาจใช้ไม่ได้บ้างขึ้นกับเครือข่าย ถ้าไม่สำเร็จให้เปลี่ยนไปใช้ "กำหนดเอง — วาง CSV" แทน</div>
+        <div class="mk-row">
+          <input type="text" id="auto-ticker" placeholder="เช่น PTT.BK, AOT.BK" value="PTT.BK">
+        </div>
+        <div class="csv-hint" style="margin-top:-4px">ต้องมี .BK ต่อท้ายเสมอ เช่น ADVANC.BK, CPALL.BK</div>
+        <button class="btn btn-dim" style="margin-top:8px" onclick="loadAutoFetch()" id="auto-fetch-btn">🔄 ดึงข้อมูลอัตโนมัติ</button>
+        <div class="csv-status" id="auto-status"></div>
       </div>
       <div class="csv-box" id="csv-box">
         <div class="csv-hint">วางไฟล์ CSV ที่ดาวน์โหลดจาก Yahoo Finance, Investing.com, SETTRADE หรือโบรกเกอร์อื่นได้เลย — ระบบจะอ่านหัวตาราง (header) แล้วจับคู่คอลัมน์ Date/Open/High/Low/Close(หรือ Price)/Volume ให้อัตโนมัติ ไม่ว่าลำดับคอลัมน์จะต่างกันแค่ไหน ควรมีข้อมูลอย่างน้อย ~500 วันทำการ (2 ปี) เพื่อความแม่นยำของเส้นค่าเฉลี่ยระยะยาว</div>
@@ -791,8 +801,29 @@ function loadCustomCsv(){
   statusEl.style.color='var(--gr)';
   statusEl.textContent=`โหลดสำเร็จ: ${d.close.length} วัน (${fmtDate(d.dates[0])} ถึง ${fmtDate(d.dates[d.dates.length-1])})`;
 }
+async function loadAutoFetch(){
+  const tk=document.getElementById('auto-ticker').value.trim();
+  if(!tk){alert('กรุณาใส่ชื่อหุ้น เช่น PTT.BK');return;}
+  const statusEl=document.getElementById('auto-status');
+  const btn=document.getElementById('auto-fetch-btn');
+  statusEl.style.color='var(--t2)';
+  statusEl.textContent='กำลังดึงข้อมูล...';
+  btn.disabled=true;
+  const D=await fetchYahooDaily(tk,'5y');
+  btn.disabled=false;
+  if(!D||D.close.length<210){
+    statusEl.style.color='var(--rd)';
+    statusEl.textContent='ดึงข้อมูลไม่สำเร็จ หรือข้อมูลน้อยเกินไป (อาจติด CORS/เครือข่ายบล็อก หรือชื่อหุ้นไม่ถูกต้อง) — ลองใหม่อีกครั้ง หรือเปลี่ยนไปใช้ "กำหนดเอง — วาง CSV" แทน';
+    CUSTOM_DATA=null;
+    return;
+  }
+  CUSTOM_DATA=D;
+  statusEl.style.color='var(--gr)';
+  statusEl.textContent=`ดึงสำเร็จ: ${tk.toUpperCase()} · ${D.close.length} วัน (${fmtDate(D.dates[0])} ถึง ${fmtDate(D.dates[D.dates.length-1])})`;
+}
 function onSourceChange(){
   const src=document.getElementById('bt-source').value;
+  document.getElementById('auto-box').classList.toggle('on',src==='auto');
   document.getElementById('csv-box').classList.toggle('on',src==='custom');
 }
 
@@ -927,6 +958,9 @@ function runBacktestUI(){
   let D;
   if(src==='custom'){
     if(!CUSTOM_DATA){alert('กรุณาโหลดข้อมูล CSV ก่อนกดรัน Backtest');return;}
+    D=CUSTOM_DATA;
+  } else if(src==='auto'){
+    if(!CUSTOM_DATA){alert('กรุณากดดึงข้อมูลอัตโนมัติให้สำเร็จก่อนกดรัน Backtest');return;}
     D=CUSTOM_DATA;
   } else {
     D=genDemoSeries(src);
