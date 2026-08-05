@@ -2252,7 +2252,7 @@ function goToTarotCards() {
   showGypsyStep('cards');
 }
 function renderGypsyCards() {
-  gypsySpread = [...TAROT_CARDS].sort(() => Math.random() - 0.5).slice(0, 6);
+  gypsySpread = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
   document.getElementById('gypsy-cards-grid').innerHTML = gypsySpread.map((c, i) =>
     `<button type="button" class="tarot-card" onclick="pickTarotCard(${i})"><span class="tarot-card-back">🔮</span></button>`
   ).join('');
