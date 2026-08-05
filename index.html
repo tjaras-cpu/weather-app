@@ -20,8 +20,8 @@
   --gr:  #22c55e;
   --te:  #14b8a6;
   --t1:  #ffffff;
-  --t2:  rgba(255,255,255,0.55);
-  --t3:  rgba(255,255,255,0.3);
+  --t2:  rgba(255,255,255,0.72);
+  --t3:  rgba(255,255,255,0.45);
   --safe-top: env(safe-area-inset-top,  44px);
   --safe-bot: env(safe-area-inset-bottom, 34px);
 }
@@ -84,17 +84,24 @@ body::before {
 .siamsi-shake-ico { font-size:64px; display:inline-block; animation:siamsiShake .35s ease-in-out infinite; }
 @keyframes siamsiShake { 0%{transform:rotate(-14deg)} 50%{transform:rotate(14deg)} 100%{transform:rotate(-14deg)} }
 .siamsi-poem { background:rgba(255,255,255,.05); border:1px solid var(--b2); border-radius:16px; padding:16px; text-align:center; font-size:15px; font-weight:600; line-height:1.8; color:var(--t1); margin-bottom:12px; }
-.siamsi-meaning { font-size:13px; color:var(--t2); line-height:1.6; margin-bottom:16px; text-align:center; }
+.siamsi-meaning { font-size:14px; color:var(--t2); line-height:1.6; margin-bottom:16px; text-align:center; }
 .siamsi-q-echo { font-size:13px; color:var(--pk); font-style:italic; text-align:center; margin-bottom:10px; }
 .chong-tag.mid { background:rgba(245,179,1,.15); color:#f6ad37; }
 .ask-header { display:flex; gap:12px; align-items:center; margin-bottom:16px; }
 .ask-avatar { width:48px; height:48px; border-radius:50%; object-fit:cover; object-position:top center; border:2px solid rgba(245,179,1,.4); flex-shrink:0; }
 .ask-chat { max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; padding-right:2px; }
-.ask-bubble { max-width:85%; padding:11px 14px; border-radius:16px; font-size:13px; line-height:1.55; }
+.ask-bubble { max-width:85%; padding:11px 14px; border-radius:16px; font-size:14px; line-height:1.55; }
 .ask-bubble.teacher { align-self:flex-start; background:rgba(245,179,1,.12); border:1px solid rgba(245,179,1,.25); color:var(--t1); border-bottom-left-radius:4px; }
 .ask-bubble.user { align-self:flex-end; background:linear-gradient(135deg,#dc2626,#f6ad37); color:#fff; border-bottom-right-radius:4px; }
 .ask-input-row { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
 .ask-input-row .fld-inp { margin-bottom:0; }
+.bazi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:14px; }
+.bazi-col { background:rgba(255,255,255,.05); border:1px solid var(--b2); border-radius:14px; padding:14px 6px; text-align:center; }
+.bazi-col-label { font-size:12px; color:var(--t3); font-weight:700; margin-bottom:10px; }
+.bazi-char { font-size:28px; font-weight:800; line-height:1.3; color:var(--t1); }
+.bazi-sub { font-size:12px; color:var(--t2); margin-top:8px; line-height:1.4; }
+.bazi-element-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+.bazi-el-chip { display:flex; align-items:center; gap:5px; background:rgba(255,255,255,.06); border-radius:14px; padding:7px 11px; font-size:13px; font-weight:700; }
 .home-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
 .sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 8px; text-align:center; }
 .sv { font-size:18px; font-weight:700; margin-bottom:4px; }
@@ -178,7 +185,7 @@ body::before {
 .cat-score { font-size:13px; font-weight:700; color:var(--p); }
 .cat-bar { height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; margin-bottom:9px; }
 .cat-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--p),var(--pk)); }
-.cat-text { font-size:13px; color:var(--t2); line-height:1.55; }
+.cat-text { font-size:14px; color:var(--t2); line-height:1.55; }
 .lucky-row { display:flex; gap:10px; margin:14px 0 10px; }
 .lucky-box { flex:1; background:var(--card); border:1px solid var(--b2); border-radius:18px; padding:16px; text-align:center; }
 .lucky-lbl { font-size:11px; color:var(--t3); font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
@@ -190,10 +197,10 @@ body::before {
 .advice-card { background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(249,115,22,.06)); border:1px solid rgba(245,179,1,.28); border-radius:18px; padding:16px; margin:6px 0 18px; text-align:left; display:flex; gap:12px; align-items:flex-start; }
 .advice-ico { font-size:22px; flex-shrink:0; }
 .advice-title { font-size:12px; font-weight:700; color:var(--go); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
-.advice-text { font-size:13px; color:var(--t1); line-height:1.6; }
+.advice-text { font-size:14px; color:var(--t1); line-height:1.6; }
 .chip-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
 .chip { background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:20px; padding:6px 12px; font-size:12px; font-weight:600; color:var(--t2); }
-.element-desc { font-size:12px; color:var(--t2); line-height:1.6; text-align:center; padding:0 12px; margin-top:8px; }
+.element-desc { font-size:13px; color:var(--t2); line-height:1.6; text-align:center; padding:0 12px; margin-top:8px; }
 .hand-note { font-size:12px; color:var(--pk); font-weight:600; text-align:center; background:rgba(246,173,55,.10); border-radius:12px; padding:8px 10px; margin-bottom:12px; }
 .found-card { background:linear-gradient(135deg,rgba(220,38,38,.16),rgba(20,184,166,.06)); border:1px solid rgba(220,38,38,.26); border-radius:20px; padding:18px; margin:16px 0 18px; text-align:left; }
 .found-title { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.6px; margin-bottom:12px; }
@@ -201,9 +208,9 @@ body::before {
 .found-age { font-size:26px; font-weight:800; }
 .found-age span { font-size:12px; font-weight:600; color:var(--t2); }
 .found-stage { font-size:13px; font-weight:700; color:var(--t1); text-align:right; }
-.found-desc { font-size:12px; color:var(--t2); line-height:1.6; margin-top:2px; text-align:right; max-width:170px; }
-.found-chong { font-size:13px; color:var(--t1); line-height:1.65; margin-top:12px; padding-top:12px; border-top:1px solid var(--b2); }
-.found-summary-text { font-size:13px; color:var(--t1); line-height:1.75; text-align:left; }
+.found-desc { font-size:13px; color:var(--t2); line-height:1.6; margin-top:2px; text-align:right; max-width:170px; }
+.found-chong { font-size:14px; color:var(--t1); line-height:1.65; margin-top:12px; padding-top:12px; border-top:1px solid var(--b2); }
+.found-summary-text { font-size:14px; color:var(--t1); line-height:1.75; text-align:left; }
 .chong-tag { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; margin-bottom:6px; }
 .chong-tag.warn { background:rgba(239,68,68,.15); color:#fca5a5; }
 .chong-tag.ok   { background:rgba(34,197,94,.15); color:#4ade80; }
@@ -438,6 +445,13 @@ body::before {
         <div class="res-overall-text" id="res-overall-text">—</div>
 
         <div class="found-card">
+          <div class="found-title">🈴 ผูกดวงจีนสี่เสา (八字)</div>
+          <div class="bazi-grid" id="res-bazi-grid"></div>
+          <div class="bazi-element-row" id="res-bazi-elements"></div>
+          <div class="found-summary-text" id="res-bazi-note" style="margin-top:10px">—</div>
+        </div>
+
+        <div class="found-card">
           <div class="found-title">✋ ผลอ่านลายมือ</div>
           <div class="hand-note" id="res-hand-note">—</div>
           <div class="palm-result-row" id="res-palms"></div>
@@ -496,6 +510,7 @@ body::before {
         </div>
 
         <button class="btn btn-gold" onclick="openAskModal('res')">🗣️ ถามอาจารย์จรัส</button>
+        <button class="btn btn-dim" onclick="openLifePlan('res')">🗓️ วางแผนชีวิต</button>
         <button class="btn btn-dim" onclick="exportPDF('res')">📄 บันทึกเป็น PDF</button>
         <button class="btn btn-dim" onclick="shareResult('res')">📤 แชร์ผลดูดวง</button>
         <button class="btn btn-pur" onclick="goToRead(true)">🔄 ดูดวงอีกครั้ง</button>
@@ -581,6 +596,13 @@ body::before {
       <div class="res-overall-text" id="mres-overall-text">—</div>
 
       <div class="found-card">
+        <div class="found-title">🈴 ผูกดวงจีนสี่เสา (八字)</div>
+        <div class="bazi-grid" id="mres-bazi-grid"></div>
+        <div class="bazi-element-row" id="mres-bazi-elements"></div>
+        <div class="found-summary-text" id="mres-bazi-note" style="margin-top:10px">—</div>
+      </div>
+
+      <div class="found-card">
         <div class="found-title">✋ ผลอ่านลายมือ</div>
         <div class="hand-note" id="mres-hand-note">—</div>
         <div class="palm-result-row" id="mres-palms"></div>
@@ -637,6 +659,7 @@ body::before {
       </div>
 
       <button class="btn btn-gold" onclick="openAskModal('mres')">🗣️ ถามอาจารย์จรัส</button>
+      <button class="btn btn-dim" onclick="openLifePlan('mres')">🗓️ วางแผนชีวิต</button>
       <button class="btn btn-dim" onclick="exportPDF('mres')">📄 บันทึกเป็น PDF</button>
       <button class="btn btn-dim" onclick="shareResult('mres')">📤 แชร์ผลดูดวง</button>
       <button class="btn btn-outline-red" onclick="deleteHistEntry()">🗑️ ลบรายการนี้</button>
@@ -719,6 +742,35 @@ body::before {
         <button class="btn btn-gold" style="margin-bottom:0;width:auto;padding:14px 20px" onclick="submitAsk()">ถาม</button>
       </div>
       <button class="btn btn-dim" onclick="closeAskModal()">ปิด</button>
+    </div>
+  </div>
+
+  <!-- Life Plan modal -->
+  <div class="modal-overlay" id="lifeplan-modal" onclick="closeLifePlan(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🗓️ วางแผนชีวิต</div>
+      <p class="modal-sub">สรุปแนวทางจากดวงชะตาของคุณ เพื่อวางแผนช่วงเวลาข้างหน้า</p>
+
+      <div class="found-card">
+        <div class="found-title">⏰ ช่วงเวลาสำคัญ</div>
+        <div class="found-summary-text" id="lp-timing">—</div>
+      </div>
+      <div class="found-card">
+        <div class="found-title">🎯 จุดที่ควรโฟกัส</div>
+        <div class="found-summary-text" id="lp-focus">—</div>
+      </div>
+      <div class="found-card">
+        <div class="found-title">⚠️ จุดที่ควรระวัง</div>
+        <div class="found-summary-text" id="lp-caution">—</div>
+      </div>
+      <div class="advice-card"><div class="advice-ico">💰</div><div><div class="advice-title">แนวโน้มการเงิน (เพื่อความบันเทิง)</div><div class="advice-text" id="lp-money">—</div></div></div>
+      <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">คำแนะนำเสริมดวง</div><div class="advice-text" id="lp-remedy">—</div></div></div>
+      <div class="advice-card karma-card"><div class="advice-ico">🙏</div><div><div class="advice-title">วิธีแก้กรรม</div><div class="advice-text" id="lp-karma">—</div></div></div>
+
+      <div class="disclaimer" style="margin-bottom:16px">เนื้อหาทั้งหมดเพื่อความบันเทิงเท่านั้น ไม่ใช่คำแนะนำทางการเงิน การลงทุน หรือบริการวางแผนการเงินที่มีใบอนุญาต โปรดปรึกษาผู้เชี่ยวชาญที่ได้รับใบอนุญาตสำหรับการตัดสินใจทางการเงินจริง</div>
+
+      <button class="btn btn-dim" onclick="closeLifePlan()">ปิด</button>
     </div>
   </div>
 
@@ -896,6 +948,91 @@ const CHINESE_ELEMENTS = [
   { e:'🌊', name:'ธาตุน้ำ (หยาง)' },
   { e:'💧', name:'ธาตุน้ำ (หยิน)' },
 ];
+
+/* ── BaZi (八字 Four Pillars) ── */
+const HEAVENLY_STEMS = [
+  { ch:'甲', th:'เจี๋ย',  elIdx:0 }, { ch:'乙', th:'อี่',    elIdx:0 },
+  { ch:'丙', th:'ปิ่ง',   elIdx:1 }, { ch:'丁', th:'ติง',   elIdx:1 },
+  { ch:'戊', th:'บู๊',    elIdx:2 }, { ch:'己', th:'จี่',    elIdx:2 },
+  { ch:'庚', th:'เกิง',   elIdx:3 }, { ch:'辛', th:'ซิน',   elIdx:3 },
+  { ch:'壬', th:'เหยิน',  elIdx:4 }, { ch:'癸', th:'กุ่ย',  elIdx:4 },
+];
+const EARTHLY_BRANCHES = [
+  { ch:'子', th:'หนู',     elIdx:4 }, { ch:'丑', th:'วัว',      elIdx:2 },
+  { ch:'寅', th:'เสือ',    elIdx:0 }, { ch:'卯', th:'กระต่าย', elIdx:0 },
+  { ch:'辰', th:'มังกร',   elIdx:2 }, { ch:'巳', th:'งู',       elIdx:1 },
+  { ch:'午', th:'ม้า',     elIdx:1 }, { ch:'未', th:'แพะ',      elIdx:2 },
+  { ch:'申', th:'ลิง',     elIdx:3 }, { ch:'酉', th:'ไก่',      elIdx:3 },
+  { ch:'戌', th:'หมา',     elIdx:2 }, { ch:'亥', th:'หมู',      elIdx:4 },
+];
+const FIVE_ELEMENTS_BAZI = [
+  { name:'ไม้', e:'🌳', color:'#22c55e' }, { name:'ไฟ', e:'🔥', color:'#dc2626' },
+  { name:'ดิน', e:'⛰️', color:'#d97706' }, { name:'ทอง', e:'⚔️', color:'#94a3b8' },
+  { name:'น้ำ', e:'💧', color:'#3b82f6' },
+];
+const SOLAR_MONTHS = [
+  { month:2,  day:4, branchIdx:2  }, { month:3,  day:6, branchIdx:3  }, { month:4,  day:5, branchIdx:4  },
+  { month:5,  day:6, branchIdx:5  }, { month:6,  day:6, branchIdx:6  }, { month:7,  day:7, branchIdx:7  },
+  { month:8,  day:8, branchIdx:8  }, { month:9,  day:8, branchIdx:9  }, { month:10, day:8, branchIdx:10 },
+  { month:11, day:7, branchIdx:11 }, { month:12, day:7, branchIdx:0  }, { month:1,  day:6, branchIdx:1  },
+];
+function solarMonthBranch(month, day) {
+  const key = (month===1 ? 13 : month)*100 + day;
+  let result = SOLAR_MONTHS[11];
+  for (const entry of SOLAR_MONTHS) {
+    const ekey = (entry.month===1 ? 13 : entry.month)*100 + entry.day;
+    if (ekey <= key) result = entry;
+  }
+  return result.branchIdx;
+}
+function jdn(y, m, d) {
+  const a = Math.floor((14-m)/12);
+  const yy = y + 4800 - a;
+  const mm = m + 12*a - 3;
+  return d + Math.floor((153*mm+2)/5) + 365*yy + Math.floor(yy/4) - Math.floor(yy/100) + Math.floor(yy/400) - 32045;
+}
+function computeBazi(dateStr, timeStr) {
+  const d = new Date(dateStr+'T00:00:00');
+  const y = d.getFullYear(), m = d.getMonth()+1, day = d.getDate();
+
+  let baziYear = y;
+  if (m===1 || (m===2 && day<4)) baziYear -= 1;
+  const yStemIdx = ((baziYear-4)%10+10)%10;
+  const yBranchIdx = ((baziYear-4)%12+12)%12;
+
+  const mBranchIdx = solarMonthBranch(m, day);
+  const solarMonthPos = (mBranchIdx - 2 + 12) % 12;
+  const firstMonthStemIdx = (2*(yStemIdx%5)+2) % 10;
+  const mStemIdx = (firstMonthStemIdx + solarMonthPos) % 10;
+
+  const JDN = jdn(y, m, day);
+  const dStemIdx = ((JDN+9)%10+10)%10;
+  const dBranchIdx = ((JDN+1)%12+12)%12;
+
+  const pillars = [
+    { label:'ปี',    stem:HEAVENLY_STEMS[yStemIdx], branch:EARTHLY_BRANCHES[yBranchIdx] },
+    { label:'เดือน', stem:HEAVENLY_STEMS[mStemIdx], branch:EARTHLY_BRANCHES[mBranchIdx] },
+    { label:'วัน',   stem:HEAVENLY_STEMS[dStemIdx], branch:EARTHLY_BRANCHES[dBranchIdx] },
+  ];
+
+  if (timeStr) {
+    const hour = parseInt(timeStr.split(':')[0], 10);
+    const hBranchIdx = Math.floor(((hour+1)%24)/2) % 12;
+    const firstHourStemIdx = (2*(dStemIdx%5)) % 10;
+    const hStemIdx = (firstHourStemIdx + hBranchIdx) % 10;
+    pillars.push({ label:'เวลา', stem:HEAVENLY_STEMS[hStemIdx], branch:EARTHLY_BRANCHES[hBranchIdx] });
+  } else {
+    pillars.push({ label:'เวลา', stem:null, branch:null });
+  }
+
+  const elCount = [0,0,0,0,0];
+  pillars.forEach(p => { if (p.stem) { elCount[p.stem.elIdx]++; elCount[p.branch.elIdx]++; } });
+  const elSummary = FIVE_ELEMENTS_BAZI.map((el,i) => ({ ...el, count:elCount[i] }));
+  const dominant = elSummary.reduce((a,b) => b.count>a.count ? b : a);
+  const weakest = elSummary.reduce((a,b) => b.count<a.count ? b : a);
+
+  return { pillars, elSummary, dominant, weakest, dayMaster:HEAVENLY_STEMS[dStemIdx] };
+}
 
 const ELEMENT_DESC = [
   'มีความคิดสร้างสรรค์ ชอบเติบโตและพัฒนาตัวเองอยู่เสมอ ปรับตัวเก่งเหมือนต้นไม้ที่แตกกิ่งก้านไม่หยุดนิ่ง',
@@ -1373,6 +1510,7 @@ function buildResult(f) {
   const gem = GEMSTONES[wIdx];
   const luckyItem = pick(LUCKY_ITEMS);
   const karma = pick(KARMA_TEXTS);
+  const bazi = computeBazi(f.date, f.noTime ? null : f.time);
 
   const months = [];
   for (let i=0;i<6;i++) {
@@ -1440,6 +1578,7 @@ function buildResult(f) {
     years,
     summary,
     turning,
+    bazi,
   };
 }
 
@@ -1498,6 +1637,20 @@ function radarSVG(cats) {
   }).join('');
 
   return `<svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible">${grid}${spokes}<polygon points="${dataPts.join(' ')}" fill="rgba(220,38,38,.38)" stroke="#f6ad37" stroke-width="2.5"/>${dots}${labels}</svg>`;
+}
+
+function baziGridHTML(bazi) {
+  return bazi.pillars.map(p => {
+    if (!p.stem) return `<div class="bazi-col"><div class="bazi-col-label">${p.label}</div><div class="bazi-char">—</div><div class="bazi-sub">ไม่ทราบเวลา</div></div>`;
+    return `<div class="bazi-col">
+      <div class="bazi-col-label">${p.label}</div>
+      <div class="bazi-char">${p.stem.ch}${p.branch.ch}</div>
+      <div class="bazi-sub">${p.stem.th}${p.branch.th}</div>
+    </div>`;
+  }).join('');
+}
+function baziElementsHTML(bazi) {
+  return bazi.elSummary.map(el => `<div class="bazi-el-chip" style="color:${el.color}">${el.e} ${el.name} ×${el.count}</div>`).join('');
 }
 
 function lifeChartSVG(data) {
@@ -1584,6 +1737,10 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-chips').innerHTML =
     `<span class="chip">${r.element.e} ${r.element.name}</span><span class="chip">${r.buddha.e} ${r.buddha.name}</span>`;
   document.getElementById(prefix+'-element-desc').textContent = r.elementDesc;
+  document.getElementById(prefix+'-bazi-grid').innerHTML = baziGridHTML(r.bazi);
+  document.getElementById(prefix+'-bazi-elements').innerHTML = baziElementsHTML(r.bazi);
+  document.getElementById(prefix+'-bazi-note').textContent =
+    `ธาตุเด่นในดวงชะตาคือ${r.bazi.dominant.e} ธาตุ${r.bazi.dominant.name} (${r.bazi.dominant.count} จุด) ส่วนธาตุที่ขาดคือ${r.bazi.weakest.e} ธาตุ${r.bazi.weakest.name} (${r.bazi.weakest.count} จุด) ควรเสริมธาตุนี้ด้วยสีหรือของใช้ที่เกี่ยวข้องเพื่อปรับสมดุล`;
   const genderLbl = r.gender === 'female' ? 'ผู้หญิง' : 'ผู้ชาย';
   document.getElementById(prefix+'-hand-note').innerHTML =
     `👐 ตามความเชื่อจีน (男左女右): ${genderLbl}เน้นดูลายมือข้าง<b>${r.primaryHand}</b>เป็นหลัก`;
@@ -1906,6 +2063,27 @@ function submitAsk() {
   vibe(10);
   const answer = buildTeacherAnswer(entry, q);
   setTimeout(() => addAskBubble('teacher', answer), 400);
+}
+
+/* ── Life Plan ── */
+function openLifePlan(prefix) {
+  const entry = _paintedEntry[prefix];
+  if (!entry) return;
+  const r = entry.result;
+  const catEntries = CATS_META.map(m => ({ ...m, score:r.cats[m.key].score, text:r.cats[m.key].text }));
+  const top = catEntries.reduce((a,b) => b.score > a.score ? b : a);
+  const bottom = catEntries.reduce((a,b) => b.score < a.score ? b : a);
+  document.getElementById('lp-timing').textContent = r.turning.text;
+  document.getElementById('lp-focus').textContent = `${top.icon} ${top.name} (${top.score}%) — ${top.text}`;
+  document.getElementById('lp-caution').textContent = `${bottom.icon} ${bottom.name} (${bottom.score}%) — ${bottom.text}`;
+  document.getElementById('lp-money').textContent = r.cats.money.text;
+  document.getElementById('lp-remedy').textContent = r.remedy;
+  document.getElementById('lp-karma').textContent = r.karma;
+  document.getElementById('lifeplan-modal').classList.add('open');
+}
+function closeLifePlan(e) {
+  if (e && e.target !== document.getElementById('lifeplan-modal')) return;
+  document.getElementById('lifeplan-modal').classList.remove('open');
 }
 
 renderHome();
