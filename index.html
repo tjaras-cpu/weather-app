@@ -115,6 +115,16 @@ body::before {
 .scan-line  { position:absolute; left:6%; right:6%; height:3px; border-radius:3px; background:linear-gradient(90deg,transparent,#8b5cf6,#e879f9,transparent); box-shadow:0 0 14px 2px rgba(232,121,249,.6); top:8%; animation:scanmove 1.7s ease-in-out infinite; }
 @keyframes scanmove { 0%{top:8%} 50%{top:88%} 100%{top:8%} }
 .scan-status { text-align:center; font-size:14px; font-weight:600; color:var(--t2); margin:18px 0 4px; }
+.palm-row { display:flex; gap:12px; margin:10px 0 4px; }
+.palm-slot { flex:1; aspect-ratio:1/1; border-radius:20px; border:2px dashed rgba(139,92,246,.5); background:radial-gradient(circle,rgba(139,92,246,.12),transparent 72%); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:border-color .2s; }
+.palm-slot:active { border-color:var(--p); }
+.palm-ph { display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--t2); font-size:38px; }
+.palm-ph span { font-size:11px; font-weight:700; color:var(--t2); }
+.palm-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; }
+.palm-check { position:absolute; top:8px; right:8px; font-size:16px; background:rgba(0,0,0,.45); border-radius:50%; padding:4px 6px; display:none; }
+.palm-retake { position:absolute; bottom:6px; left:0; right:0; text-align:center; font-size:10px; font-weight:700; color:#fff; background:rgba(0,0,0,.45); padding:4px 0; display:none; }
+.palm-result-row { display:flex; gap:10px; justify-content:center; margin-top:12px; }
+.palm-result-thumb { width:56px; height:56px; border-radius:14px; object-fit:cover; border:1px solid var(--b1); }
 .scan-progress-wrap { width:100%; height:8px; background:rgba(255,255,255,.08); border-radius:4px; overflow:hidden; margin:14px 0 26px; }
 .scan-progress-fill { height:100%; width:0%; background:linear-gradient(90deg,#8b5cf6,#e879f9); border-radius:4px; transition:width .15s linear; }
 
@@ -297,11 +307,26 @@ body::before {
       <!-- Step 2: palm scan -->
       <div class="rd-step" id="rd-step-2">
         <div class="rd-title">สแกนลายมือ</div>
-        <div class="rd-sub">วางฝ่ามือบนเครื่องสแกนให้นิ่ง แล้วแตะปุ่มด้านล่างเพื่อเริ่มสแกน</div>
-        <div class="scan-frame"><div class="scan-hand">🖐️</div><div class="scan-line"></div></div>
-        <div class="scan-status" id="scan-status">แตะปุ่มด้านล่างเพื่อเริ่มสแกน</div>
+        <div class="rd-sub">แตะกรอบด้านล่างเพื่อถ่ายรูปฝ่ามือซ้ายและขวาให้ครบ</div>
+        <div class="palm-row">
+          <div class="palm-slot" id="palm-left-slot" onclick="triggerCapture('left')">
+            <div class="palm-ph" id="palm-left-ph">🤚<span>ถ่ายมือซ้าย</span></div>
+            <img class="palm-img" id="palm-left-img" alt="ลายมือซ้าย">
+            <div class="palm-check" id="palm-left-check">✅</div>
+            <div class="palm-retake" id="palm-left-retake">แตะเพื่อถ่ายใหม่</div>
+          </div>
+          <div class="palm-slot" id="palm-right-slot" onclick="triggerCapture('right')">
+            <div class="palm-ph" id="palm-right-ph">✋<span>ถ่ายมือขวา</span></div>
+            <img class="palm-img" id="palm-right-img" alt="ลายมือขวา">
+            <div class="palm-check" id="palm-right-check">✅</div>
+            <div class="palm-retake" id="palm-right-retake">แตะเพื่อถ่ายใหม่</div>
+          </div>
+        </div>
+        <input type="file" accept="image/*" capture="environment" id="cap-left" style="display:none" onchange="handleCapture('left', this)">
+        <input type="file" accept="image/*" capture="environment" id="cap-right" style="display:none" onchange="handleCapture('right', this)">
+        <div class="scan-status" id="scan-status">ถ่ายรูปให้ครบทั้งสองข้างก่อนนะคะ</div>
         <div class="scan-progress-wrap"><div class="scan-progress-fill" id="scan-progress-fill"></div></div>
-        <button class="btn btn-pur" id="scan-btn" onclick="startScan()">👋 แตะเพื่อสแกนลายมือ</button>
+        <button class="btn btn-pur" id="scan-btn" onclick="startScan()" disabled>🔎 วิเคราะห์ลายมือ</button>
         <button class="btn btn-grn" id="scan-next-btn" style="display:none" onclick="goStep3()">ถัดไป: ชำระเงิน →</button>
       </div>
 
@@ -324,6 +349,7 @@ body::before {
           <div class="res-name" id="res-name">—</div>
           <div class="res-date" id="res-date">—</div>
           <div class="res-zodiac" id="res-zodiac">—</div>
+          <div class="palm-result-row" id="res-palms"></div>
           <div class="chip-row" id="res-chips"></div>
           <div class="res-overall-badge" id="res-overall-badge">
             <div class="res-overall-num" id="res-overall-num">—</div>
@@ -425,6 +451,7 @@ body::before {
         <div class="res-name" id="mres-name">—</div>
         <div class="res-date" id="mres-date">—</div>
         <div class="res-zodiac" id="mres-zodiac">—</div>
+        <div class="palm-result-row" id="mres-palms"></div>
         <div class="chip-row" id="mres-chips"></div>
         <div class="res-overall-badge" id="mres-overall-badge">
           <div class="res-overall-num" id="mres-overall-num">—</div>
@@ -697,7 +724,15 @@ try {
   }
 } catch {}
 
-const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch{} };
+const save = () => {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch {
+    try {
+      S.history.forEach((e,i) => { if (i>=20) { e.leftPhoto=null; e.rightPhoto=null; } });
+      localStorage.setItem(KEY, JSON.stringify(S));
+    } catch {}
+  }
+};
 const vibe = p => { try{ navigator.vibrate && navigator.vibrate(p); }catch{} };
 
 function switchTab(t) {
@@ -716,20 +751,28 @@ function goToRead(reset) {
 }
 
 /* ── Read flow state ── */
-let form = { date:'', time:'', noTime:false, name:'' };
+let form = { date:'', time:'', noTime:false, name:'', leftPhoto:null, rightPhoto:null };
 let scanTimer = null;
 
 function resetReadFlow() {
-  form = { date:'', time:'', noTime:false, name:'' };
+  form = { date:'', time:'', noTime:false, name:'', leftPhoto:null, rightPhoto:null };
   document.getElementById('rd-name').value = '';
   document.getElementById('rd-date').value = '';
   document.getElementById('rd-time').value = '';
   document.getElementById('rd-time').disabled = false;
   document.getElementById('rd-notime').checked = false;
   clearInterval(scanTimer);
+  ['left','right'].forEach(side => {
+    document.getElementById('cap-'+side).value = '';
+    document.getElementById('palm-'+side+'-img').removeAttribute('src');
+    document.getElementById('palm-'+side+'-img').style.display = 'none';
+    document.getElementById('palm-'+side+'-ph').style.display = 'flex';
+    document.getElementById('palm-'+side+'-check').style.display = 'none';
+    document.getElementById('palm-'+side+'-retake').style.display = 'none';
+  });
   document.getElementById('scan-progress-fill').style.width = '0%';
-  document.getElementById('scan-status').textContent = 'แตะปุ่มด้านล่างเพื่อเริ่มสแกน';
-  document.getElementById('scan-btn').disabled = false;
+  document.getElementById('scan-status').textContent = 'ถ่ายรูปให้ครบทั้งสองข้างก่อนนะคะ';
+  document.getElementById('scan-btn').disabled = true;
   document.getElementById('scan-btn').style.display = 'block';
   document.getElementById('scan-next-btn').style.display = 'none';
   document.getElementById('pay-btn').disabled = false;
@@ -759,9 +802,60 @@ function goStep2() {
   showStep(2);
 }
 
+function triggerCapture(side) {
+  document.getElementById('cap-'+side).click();
+}
+
+function downscaleImage(file, maxSize) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > h) { if (w > maxSize) { h = Math.round(h*maxSize/w); w = maxSize; } }
+        else       { if (h > maxSize) { w = Math.round(w*maxSize/h); h = maxSize; } }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleCapture(side, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  downscaleImage(file, 260).then(dataUrl => {
+    form[side+'Photo'] = dataUrl;
+    document.getElementById('palm-'+side+'-img').src = dataUrl;
+    document.getElementById('palm-'+side+'-img').style.display = 'block';
+    document.getElementById('palm-'+side+'-ph').style.display = 'none';
+    document.getElementById('palm-'+side+'-check').style.display = 'block';
+    document.getElementById('palm-'+side+'-retake').style.display = 'block';
+    vibe(10);
+    updateScanReady();
+  }).catch(() => {});
+  input.value = '';
+}
+
+function updateScanReady() {
+  const ready = !!(form.leftPhoto && form.rightPhoto);
+  document.getElementById('scan-btn').disabled = !ready;
+  document.getElementById('scan-status').textContent = ready
+    ? 'พร้อมแล้ว แตะปุ่มด้านล่างเพื่อวิเคราะห์ลายมือ'
+    : 'ถ่ายรูปให้ครบทั้งสองข้างก่อนนะคะ';
+}
+
 function startScan() {
+  if (!form.leftPhoto || !form.rightPhoto) return;
   document.getElementById('scan-btn').disabled = true;
-  document.getElementById('scan-status').textContent = 'กำลังสแกนลายมือ...';
+  document.getElementById('scan-status').textContent = 'กำลังวิเคราะห์ลายมือ...';
   let p = 0;
   clearInterval(scanTimer);
   scanTimer = setInterval(() => {
@@ -769,7 +863,7 @@ function startScan() {
     if (p >= 100) {
       p = 100;
       clearInterval(scanTimer);
-      document.getElementById('scan-status').textContent = '✅ สแกนลายมือสำเร็จ';
+      document.getElementById('scan-status').textContent = '✅ วิเคราะห์ลายมือสำเร็จ';
       vibe([10,30,10]);
       document.getElementById('scan-btn').style.display = 'none';
       document.getElementById('scan-next-btn').style.display = 'block';
@@ -877,9 +971,9 @@ function formatThaiDate(dateStr) {
 
 function finishReading() {
   const result = buildResult(form);
-  const entry = { id:Date.now(), ts:Date.now(), name:form.name, date:form.date, time:form.noTime?null:form.time, result };
+  const entry = { id:Date.now(), ts:Date.now(), name:form.name, date:form.date, time:form.noTime?null:form.time, leftPhoto:form.leftPhoto, rightPhoto:form.rightPhoto, result };
   S.history.unshift(entry);
-  if (S.history.length > 300) S.history = S.history.slice(0,300);
+  if (S.history.length > 100) S.history = S.history.slice(0,100);
   save();
   paintResult('res', entry);
   showStep(4);
@@ -903,6 +997,9 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-name').textContent = entry.name || 'คุณลูกค้า';
   document.getElementById(prefix+'-date').textContent = formatThaiDate(entry.date) + (entry.time ? ` เวลา ${entry.time} น.` : '');
   document.getElementById(prefix+'-zodiac').textContent = r.zodiac.e + ' ปี' + r.zodiac.name;
+  const palmsEl = document.getElementById(prefix+'-palms');
+  const palmImgs = [entry.leftPhoto, entry.rightPhoto].filter(Boolean);
+  palmsEl.innerHTML = palmImgs.map(src => `<img class="palm-result-thumb" src="${src}">`).join('');
   document.getElementById(prefix+'-chips').innerHTML =
     `<span class="chip">${r.element.e} ${r.element.name}</span><span class="chip">${r.buddha.e} ${r.buddha.name}</span>`;
   document.getElementById(prefix+'-overall-badge').style.setProperty('--pct', r.overall);
