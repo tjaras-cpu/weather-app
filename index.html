@@ -77,6 +77,16 @@ body::before {
 .quote-card { background:linear-gradient(135deg,rgba(220,38,38,.16),rgba(246,173,55,.06)); border:1px solid rgba(220,38,38,.26); border-radius:22px; padding:20px; margin:0 0 14px; }
 .quote-tag  { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.7px; margin-bottom:9px; }
 .quote-text { font-size:15px; font-weight:600; color:var(--t1); line-height:1.65; }
+.siamsi-card { background:linear-gradient(135deg,rgba(245,179,1,.16),rgba(220,38,38,.08)); border:1px solid rgba(245,179,1,.3); border-radius:22px; padding:20px; margin-bottom:14px; text-align:center; }
+.siamsi-card-ico { font-size:38px; margin-bottom:6px; }
+.siamsi-card-title { font-size:17px; font-weight:800; margin-bottom:6px; }
+.siamsi-card-sub { font-size:12px; color:var(--t2); line-height:1.6; margin-bottom:14px; }
+.siamsi-shake-ico { font-size:64px; display:inline-block; animation:siamsiShake .35s ease-in-out infinite; }
+@keyframes siamsiShake { 0%{transform:rotate(-14deg)} 50%{transform:rotate(14deg)} 100%{transform:rotate(-14deg)} }
+.siamsi-poem { background:rgba(255,255,255,.05); border:1px solid var(--b2); border-radius:16px; padding:16px; text-align:center; font-size:15px; font-weight:600; line-height:1.8; color:var(--t1); margin-bottom:12px; }
+.siamsi-meaning { font-size:13px; color:var(--t2); line-height:1.6; margin-bottom:16px; text-align:center; }
+.siamsi-q-echo { font-size:13px; color:var(--pk); font-style:italic; text-align:center; margin-bottom:10px; }
+.chong-tag.mid { background:rgba(245,179,1,.15); color:#f6ad37; }
 .home-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
 .sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 8px; text-align:center; }
 .sv { font-size:18px; font-weight:700; margin-bottom:4px; }
@@ -288,6 +298,12 @@ body::before {
       <div class="quote-card">
         <div class="quote-tag">คำทำนายประจำวัน</div>
         <div class="quote-text" id="home-quote"></div>
+      </div>
+      <div class="siamsi-card">
+        <div class="siamsi-card-ico">🎋</div>
+        <div class="siamsi-card-title">เซียมซีเสี่ยงดวง</div>
+        <div class="siamsi-card-sub">เขย่ากระบอกเซียมซี ถามอะไรก็ได้ ฟรี ไม่มีค่าใช้จ่าย</div>
+        <button class="btn btn-gold" style="margin-bottom:0" onclick="openSiamsi()">🎋 เขย่าเซียมซี</button>
       </div>
       <div class="home-stats">
         <div class="sc"><div class="sv" id="home-count">0</div><div class="sl">ดูดวงวันนี้</div></div>
@@ -596,6 +612,39 @@ body::before {
     </div>
   </div>
 
+  <!-- Siamsi (temple fortune stick) draw modal -->
+  <div class="modal-overlay" id="siamsi-modal" onclick="closeSiamsiModal(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div id="siamsi-ask">
+        <div class="modal-title">🎋 เซียมซีเสี่ยงดวง</div>
+        <p class="modal-sub">ตั้งจิตอธิษฐาน แล้วเขย่ากระบอกเพื่อเสี่ยงเซียมซี ฟรี ไม่มีค่าใช้จ่าย</p>
+        <div class="fld-row">
+          <label class="fld-lbl">อยากถามเรื่องอะไร (ไม่บังคับ)</label>
+          <input type="text" id="siamsi-q" class="fld-inp" placeholder="เช่น จะได้เลื่อนตำแหน่งไหม" maxlength="80">
+        </div>
+        <button class="btn btn-gold" onclick="shakeSiamsi()">🎋 เขย่ากระบอก</button>
+        <button class="btn btn-dim" onclick="closeSiamsiModal()">ปิด</button>
+      </div>
+      <div id="siamsi-shaking" style="display:none;text-align:center;padding:20px 0">
+        <div class="siamsi-shake-ico">🎋</div>
+        <div style="margin-top:14px;color:var(--t2);font-weight:600">กำลังเสี่ยงเซียมซี...</div>
+      </div>
+      <div id="siamsi-result" style="display:none">
+        <div class="modal-title" id="siamsi-no">เซียมซีใบที่ —</div>
+        <div style="text-align:center;margin-bottom:14px"><span class="chong-tag ok" id="siamsi-level">—</span></div>
+        <div class="siamsi-poem" id="siamsi-poem">—</div>
+        <div class="siamsi-meaning" id="siamsi-meaning">—</div>
+        <div id="siamsi-question-wrap" style="display:none">
+          <div class="siamsi-q-echo" id="siamsi-question-text">—</div>
+          <div class="advice-card"><div class="advice-ico">🔮</div><div><div class="advice-title">คำตอบจากเซียมซี</div><div class="advice-text" id="siamsi-verdict">—</div></div></div>
+        </div>
+        <button class="btn btn-gold" onclick="resetSiamsi()">🎋 เสี่ยงใหม่</button>
+        <button class="btn btn-dim" onclick="closeSiamsiModal()">ปิด</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div id="print-output"></div>
 <script>
@@ -813,6 +862,46 @@ const KARMA_TEXTS = [
   'บวชเนกขัมมะหรือถือศีลอุโบสถระยะสั้น เป็นการล้างกรรมทางใจอย่างจริงจัง',
 ];
 
+const SIAMSI = [
+  { no:1,  level:'ดีมาก',   poem:'รุ่งอรุณทองส่องฟ้าไกล\nทุกสิ่งที่หวังใกล้สมดังใจ', meaning:'ช่วงนี้ดวงกำลังรุ่งสุดขีด สิ่งที่ตั้งใจไว้จะสำเร็จได้ไม่ยาก ลงมือทำได้เลย' },
+  { no:2,  level:'ดี',      poem:'สายลมพัดพาเรือแล่นลิ่ว\nถึงฝั่งฝันแม้ทางจะไกล', meaning:'ต้องใช้ความอดทนอีกนิด แต่ทิศทางถูกต้องแล้ว เดินหน้าต่อไปได้' },
+  { no:3,  level:'กลาง',    poem:'เมฆบางบังจันทร์ยามค่ำคืน\nรอเวลาที่ลมจะพัดผ่าน', meaning:'ตอนนี้ยังไม่ใช่จังหวะที่ดีที่สุด ควรรอดูสถานการณ์อีกสักระยะ' },
+  { no:4,  level:'ควรระวัง', poem:'คลื่นลมแรงกลางทะเลกว้าง\nระวังเรือจะโคลงเคลง', meaning:'ช่วงนี้มีอุปสรรคเข้ามาทดสอบ ต้องระมัดระวังเป็นพิเศษในการตัดสินใจ' },
+  { no:5,  level:'ดีมาก',   poem:'ดอกไม้บานสะพรั่งกลางฤดู\nผลบุญเก่าส่งผลให้ชื่นใจ', meaning:'ผลบุญที่สั่งสมมาจะเริ่มออกดอกผล เป็นช่วงเวลาที่ดีมากสำหรับทุกเรื่อง' },
+  { no:6,  level:'ดี',      poem:'นกบินกลับรังยามเย็นย่ำ\nความสุขกำลังเดินทางมาหา', meaning:'ข่าวดีกำลังจะมาถึง ให้อดทนรอด้วยใจที่สงบ' },
+  { no:7,  level:'กลาง',    poem:'สะพานข้ามธารยังสร้างไม่เสร็จ\nต้องใช้เวลาอีกนิดหน่อย', meaning:'สิ่งที่ทำอยู่ต้องใช้เวลาสะสมอีกหน่อยถึงจะเห็นผล อย่าเพิ่งท้อ' },
+  { no:8,  level:'รอก่อน',  poem:'หมอกหนาปกคลุมยอดเขาสูง\nมองไม่เห็นทางที่จะก้าวไป', meaning:'ตอนนี้ยังไม่ชัดเจน ควรรอให้สถานการณ์คลี่คลายก่อนตัดสินใจ' },
+  { no:9,  level:'ดี',      poem:'ปลาทองแหวกว่ายในบ่อใส\nเก็บเกี่ยวโชคลาภได้ไม่ยาก', meaning:'ดวงโชคลาภกำลังดี มีเกณฑ์ได้รับสิ่งดีๆ แบบไม่คาดคิด' },
+  { no:10, level:'ควรระวัง', poem:'เสือหมอบรอในพงหญ้าลึก\nระวังภัยที่แฝงมากับความเงียบ', meaning:'ระวังคนใกล้ตัวที่หวังร้าย อย่าเพิ่งไว้ใจใครง่ายๆ ในช่วงนี้' },
+  { no:11, level:'ดีมาก',   poem:'มังกรทะยานฟ้าสู่เมฆสูง\nบุญบารมีเพิ่มพูนไม่หยุดยั้ง', meaning:'ดวงชะตาก้าวกระโดด มีเกณฑ์ได้ตำแหน่งหรือโอกาสใหญ่ในชีวิต' },
+  { no:12, level:'กลาง',    poem:'แม่น้ำไหลเอื่อยไม่รีบเร่ง\nทุกอย่างเป็นไปตามจังหวะของมัน', meaning:'ทุกอย่างกำลังดำเนินไปตามปกติ ไม่มีอะไรน่ากังวลเป็นพิเศษ' },
+  { no:13, level:'ดี',      poem:'ต้นสนยืนหยัดกลางลมหนาว\nความมั่นคงคือรางวัลของผู้อดทน', meaning:'ความอดทนที่ผ่านมาจะได้รับผลตอบแทนที่คุ้มค่า' },
+  { no:14, level:'รอก่อน',  poem:'ประตูยังปิดอยู่รอเวลาเปิด\nอย่าเพิ่งฝืนดันเข้าไป', meaning:'จังหวะยังไม่มา ฝืนทำตอนนี้อาจไม่ได้ผลดี ให้รอสัญญาณที่ชัดเจนกว่า' },
+  { no:15, level:'ดี',      poem:'ผีเสื้อโบยบินหาดอกไม้ใหม่\nการเปลี่ยนแปลงนำมาซึ่งสิ่งดี', meaning:'การเปลี่ยนแปลงที่กำลังจะเกิดขึ้นจะเป็นผลดีต่อชีวิตในระยะยาว' },
+  { no:16, level:'กลาง',    poem:'ฝนโปรยปรายรดผืนนาแห้ง\nค่อยๆ ฟื้นคืนความชุ่มชื้น', meaning:'สถานการณ์กำลังค่อยๆ ดีขึ้น ต้องใช้เวลาแต่ทิศทางถูกต้อง' },
+  { no:17, level:'ดีมาก',   poem:'พระจันทร์เต็มดวงส่องสว่างไสว\nทุกเส้นทางมองเห็นชัดเจน', meaning:'ความคิดแจ่มใส การตัดสินใจในช่วงนี้จะถูกต้องแม่นยำ' },
+  { no:18, level:'ควรระวัง', poem:'งูเลื้อยซ่อนตัวใต้ใบไม้ร่วง\nภัยเงียบที่ต้องระวังให้ดี', meaning:'อาจมีเรื่องไม่คาดฝันแทรกเข้ามา ควรมีสติและวางแผนสำรองไว้' },
+  { no:19, level:'ดี',      poem:'เต่าทองคลานช้าแต่มั่นคง\nถึงเป้าหมายได้แม้ไม่รีบร้อน', meaning:'ค่อยเป็นค่อยไปแล้วจะถึงเป้าหมาย ไม่ต้องเร่งรีบจนเกินไป' },
+  { no:20, level:'ดีมาก',   poem:'ท้องฟ้าแจ่มใสหลังพายุผ่าน\nทุกปัญหาคลี่คลายลงในที่สุด', meaning:'ปัญหาที่กังวลอยู่กำลังจะคลี่คลาย ช่วงต่อไปนี้จะราบรื่นขึ้นมาก' },
+];
+
+const ORACLE_YES = [
+  'ได้แน่นอน! จังหวะนี้เหมาะที่สุดแล้ว ลุยได้เลย',
+  'มีลุ้นสูงมาก โอกาสเข้าข้างคุณ',
+  'คำตอบคือ "ได้" แต่อย่าลืมรอบคอบในรายละเอียด',
+  'ทำเลย! ดวงหนุนนำเต็มที่ในช่วงนี้',
+];
+const ORACLE_MAYBE = [
+  'ยังก้ำกึ่ง 50/50 ขึ้นอยู่กับความพยายามของคุณเอง',
+  'รอดูสถานการณ์อีกนิด แล้วค่อยตัดสินใจ',
+  'ยังไม่ชัดเจน ลองถามใหม่อีกครั้งเมื่อสถานการณ์เปลี่ยน',
+];
+const ORACLE_NO = [
+  'ยังไม่ใช่ตอนนี้ ใจเย็นๆ รอจังหวะที่ดีกว่านี้',
+  'คำตอบคือ "ยังไม่ควร" ทบทวนแผนอีกครั้งก่อนตัดสินใจ',
+  'ควรระงับไว้ก่อน เสี่ยงเกินไปในช่วงนี้',
+];
+
 const BUDDHA_POSTURES = [
   { e:'🙏', name:'ปางถวายเนตร' },
   { e:'🖐️', name:'ปางห้ามญาติ' },
@@ -924,6 +1013,7 @@ function goToRead(reset) {
 /* ── Read flow state ── */
 let form = { date:'', time:'', noTime:false, name:'', gender:'male', leftPhoto:null, rightPhoto:null };
 let scanTimer = null;
+let _paintedEntry = {};
 
 function setGender(g) {
   form.gender = g;
@@ -1275,6 +1365,7 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-lucky-item').textContent = r.luckyItem;
   document.getElementById(prefix+'-remedy').textContent = r.remedy;
   document.getElementById(prefix+'-karma').textContent = r.karma;
+  _paintedEntry[prefix] = entry;
 }
 
 function exportPDF(prefix) {
@@ -1289,13 +1380,42 @@ function exportPDF(prefix) {
 }
 
 function shareResult(prefix) {
-  const name = document.getElementById(prefix+'-name').textContent;
-  const overall = document.getElementById(prefix+'-overall-num').textContent;
-  const lucky = document.getElementById(prefix+'-lucky-num').textContent;
-  const color = document.getElementById(prefix+'-color-name').textContent;
-  const text = `🔮 ผลดูดวงของ ${name}\nดวงโดยรวม ${overall}/100\nเลขนำโชค ${lucky}\nสีมงคล ${color}\n(จากตู้ดูดวง อาจารย์จรัส แก้กรรม)`;
+  const entry = _paintedEntry[prefix];
+  if (!entry) return;
+  const r = entry.result;
+  const genderLbl = r.gender === 'female' ? 'ผู้หญิง' : 'ผู้ชาย';
+  const catLines = CATS_META.map(m => `${m.icon} ${m.name}: ${r.cats[m.key].score}%`).join('\n');
+  const chongLine = r.chongLevel
+    ? `⚠️ ปีชง${r.chongLevel} — ควรทำบุญแก้ชง`
+    : '✅ ไม่ใช่ปีชง ดวงชะตาโดยพื้นฐานมั่นคง';
+
+  const text =
+`🔮 ผลดูดวงของ ${entry.name || 'คุณลูกค้า'} (${genderLbl})
+${formatThaiDate(entry.date)}${entry.time ? ' เวลา '+entry.time+' น.' : ''}
+ปี${r.zodiac.name} ${r.element.name} | อายุ ${r.age} ปี (${r.stage.label})
+${chongLine}
+
+✨ ดวงโดยรวม ${r.overall}/100
+${r.overallText}
+
+📊 ฟันธงดวงชะตา 8 ด้าน
+${catLines}
+
+✋ ผลอ่านลายมือ
+เส้นชีวิต: ${r.palmRead.life}
+เส้นสมอง: ${r.palmRead.head}
+เส้นใจ: ${r.palmRead.heart}
+เส้นวาสนา: ${r.palmRead.fate}
+
+🎁 เลขนำโชค ${r.luckyNum} | สีมงคล${r.color.name} | อัญมณี${r.gem.name}
+🍀 ของเสริมดวง: ${r.luckyItem}
+🧿 วิธีแก้ดวง: ${r.remedy}
+🙏 วิธีแก้กรรม: ${r.karma}
+
+(จากตู้ดูดวง อาจารย์จรัส แก้กรรม)`;
+
   if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
-  else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('คัดลอกผลดูดวงแล้ว!')).catch(()=>alert(text)); }
+  else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('คัดลอกผลดูดวงฉบับเต็มแล้ว!')).catch(()=>alert(text)); }
   else alert(text);
 }
 
@@ -1427,6 +1547,60 @@ function resetAllData() {
   save();
   renderDash();
   renderHistory();
+}
+
+/* ── Siamsi (temple fortune stick) draw ── */
+let siamsiTimer = null;
+function openSiamsi() {
+  document.getElementById('siamsi-q').value = '';
+  showSiamsiStep('ask');
+  document.getElementById('siamsi-modal').classList.add('open');
+}
+function closeSiamsiModal(e) {
+  if (e && e.target !== document.getElementById('siamsi-modal')) return;
+  clearTimeout(siamsiTimer);
+  document.getElementById('siamsi-modal').classList.remove('open');
+}
+function showSiamsiStep(step) {
+  ['ask','shaking','result'].forEach(s => {
+    document.getElementById('siamsi-'+s).style.display = (s===step) ? 'block' : 'none';
+  });
+}
+function shakeSiamsi() {
+  showSiamsiStep('shaking');
+  vibe(10);
+  siamsiTimer = setTimeout(drawSiamsi, 1600);
+}
+function drawSiamsi() {
+  const q = document.getElementById('siamsi-q').value.trim();
+  const stick = SIAMSI[Math.floor(Math.random()*SIAMSI.length)];
+  const isGood = stick.level==='ดีมาก' || stick.level==='ดี';
+  const isMid  = stick.level==='กลาง';
+  const pool = isGood ? ORACLE_YES : (isMid ? ORACLE_MAYBE : ORACLE_NO);
+  const verdict = pool[Math.floor(Math.random()*pool.length)];
+
+  document.getElementById('siamsi-no').textContent = 'เซียมซีใบที่ ' + stick.no;
+  const levelEl = document.getElementById('siamsi-level');
+  levelEl.textContent = stick.level;
+  levelEl.className = 'chong-tag ' + (isGood ? 'ok' : (isMid ? 'mid' : 'warn'));
+  document.getElementById('siamsi-poem').innerHTML = stick.poem.replace(/\n/g, '<br>');
+  document.getElementById('siamsi-meaning').textContent = stick.meaning;
+
+  const qWrap = document.getElementById('siamsi-question-wrap');
+  if (q) {
+    qWrap.style.display = 'block';
+    document.getElementById('siamsi-question-text').textContent = '“' + q + '”';
+    document.getElementById('siamsi-verdict').textContent = verdict;
+  } else {
+    qWrap.style.display = 'none';
+  }
+  showSiamsiStep('result');
+  vibe([10,30,10]);
+}
+function resetSiamsi() {
+  clearTimeout(siamsiTimer);
+  document.getElementById('siamsi-q').value = '';
+  showSiamsiStep('ask');
 }
 
 renderHome();
