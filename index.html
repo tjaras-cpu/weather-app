@@ -150,7 +150,21 @@ body::before {
 .lucky-color-name { font-size:14px; font-weight:700; }
 .advice-card { background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(249,115,22,.06)); border:1px solid rgba(245,179,1,.28); border-radius:18px; padding:16px; margin:6px 0 18px; text-align:left; display:flex; gap:12px; align-items:flex-start; }
 .advice-ico { font-size:22px; flex-shrink:0; }
+.advice-title { font-size:12px; font-weight:700; color:var(--go); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
 .advice-text { font-size:13px; color:var(--t1); line-height:1.6; }
+.chip-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+.chip { background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:20px; padding:6px 12px; font-size:12px; font-weight:600; color:var(--t2); }
+.found-card { background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(20,184,166,.06)); border:1px solid rgba(139,92,246,.26); border-radius:20px; padding:18px; margin:16px 0 18px; text-align:left; }
+.found-title { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.6px; margin-bottom:12px; }
+.found-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
+.found-age { font-size:26px; font-weight:800; }
+.found-age span { font-size:12px; font-weight:600; color:var(--t2); }
+.found-stage { font-size:13px; font-weight:700; color:var(--t1); text-align:right; }
+.found-desc { font-size:12px; color:var(--t2); line-height:1.6; margin-top:2px; text-align:right; max-width:170px; }
+.found-chong { font-size:13px; color:var(--t1); line-height:1.65; margin-top:12px; padding-top:12px; border-top:1px solid var(--b2); }
+.chong-tag { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; margin-bottom:6px; }
+.chong-tag.warn { background:rgba(239,68,68,.15); color:#fca5a5; }
+.chong-tag.ok   { background:rgba(34,197,94,.15); color:#4ade80; }
 
 /* ── HISTORY ── */
 .hist-item { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:13px 15px; margin-bottom:9px; cursor:pointer; }
@@ -211,7 +225,7 @@ body::before {
       <div class="mystic-hero">
         <div class="mh-emoji">🔮</div>
         <div class="mh-title">ตู้ดูดวงมูเตลู</div>
-        <div class="mh-sub">สแกนลายมือ ใส่วันเดือนปีเกิด รู้ดวงชะตาของคุณได้ทันที</div>
+        <div class="mh-sub">สแกนลายมือ ผูกดวงไทย-จีน ฟันธงดวงชะตา 8 ด้าน พร้อมเลขนำโชคและวิธีแก้ดวง</div>
         <div class="mh-price">฿ 59 บาท / ครั้ง</div>
         <button class="btn btn-pur" style="margin-bottom:0" onclick="goToRead(true)">✨ เริ่มดูดวงเลย</button>
       </div>
@@ -310,6 +324,7 @@ body::before {
           <div class="res-name" id="res-name">—</div>
           <div class="res-date" id="res-date">—</div>
           <div class="res-zodiac" id="res-zodiac">—</div>
+          <div class="chip-row" id="res-chips"></div>
           <div class="res-overall-badge" id="res-overall-badge">
             <div class="res-overall-num" id="res-overall-num">—</div>
             <div class="res-overall-lbl">ดวงโดยรวม</div>
@@ -317,28 +332,24 @@ body::before {
         </div>
         <div class="res-overall-text" id="res-overall-text">—</div>
 
-        <div class="cat-card">
-          <div class="cat-head"><div class="cat-name">💕 ความรัก</div><div class="cat-score" id="res-love-score">—</div></div>
-          <div class="cat-bar"><div class="cat-bar-fill" id="res-love-bar" style="width:0%"></div></div>
-          <div class="cat-text" id="res-love-text">—</div>
+        <div class="found-card">
+          <div class="found-title">🔎 พื้นดวงตอนนี้</div>
+          <div class="found-row">
+            <div class="found-age" id="res-age">— <span>ปี</span></div>
+            <div><div class="found-stage" id="res-stage">—</div><div class="found-desc" id="res-stage-desc">—</div></div>
+          </div>
+          <div class="found-chong" id="res-chong">—</div>
         </div>
-        <div class="cat-card">
-          <div class="cat-head"><div class="cat-name">💰 การงาน/การเงิน</div><div class="cat-score" id="res-career-score">—</div></div>
-          <div class="cat-bar"><div class="cat-bar-fill" id="res-career-bar" style="width:0%"></div></div>
-          <div class="cat-text" id="res-career-text">—</div>
-        </div>
-        <div class="cat-card">
-          <div class="cat-head"><div class="cat-name">🩺 สุขภาพ</div><div class="cat-score" id="res-health-score">—</div></div>
-          <div class="cat-bar"><div class="cat-bar-fill" id="res-health-bar" style="width:0%"></div></div>
-          <div class="cat-text" id="res-health-text">—</div>
-        </div>
+
+        <div class="sec-lbl">ฟันธงดวงชะตา 8 ด้าน</div>
+        <div id="res-cats"></div>
 
         <div class="lucky-row">
           <div class="lucky-box"><div class="lucky-lbl">เลขนำโชค</div><div class="lucky-num" id="res-lucky-num">—</div></div>
           <div class="lucky-box"><div class="lucky-swatch" id="res-color-swatch"></div><div class="lucky-color-name" id="res-color-name">—</div></div>
         </div>
 
-        <div class="advice-card"><div class="advice-ico">🌟</div><div class="advice-text" id="res-advice">—</div></div>
+        <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">วิธีแก้ดวง</div><div class="advice-text" id="res-remedy">—</div></div></div>
         <div class="disclaimer" style="margin-bottom:16px">ผลดูดวงเพื่อความบันเทิงเท่านั้น โปรดใช้วิจารณญาณในการตัดสินใจ</div>
 
         <button class="btn btn-dim" onclick="shareResult('res')">📤 แชร์ผลดูดวง</button>
@@ -414,32 +425,31 @@ body::before {
         <div class="res-name" id="mres-name">—</div>
         <div class="res-date" id="mres-date">—</div>
         <div class="res-zodiac" id="mres-zodiac">—</div>
+        <div class="chip-row" id="mres-chips"></div>
         <div class="res-overall-badge" id="mres-overall-badge">
           <div class="res-overall-num" id="mres-overall-num">—</div>
           <div class="res-overall-lbl">ดวงโดยรวม</div>
         </div>
       </div>
       <div class="res-overall-text" id="mres-overall-text">—</div>
-      <div class="cat-card">
-        <div class="cat-head"><div class="cat-name">💕 ความรัก</div><div class="cat-score" id="mres-love-score">—</div></div>
-        <div class="cat-bar"><div class="cat-bar-fill" id="mres-love-bar" style="width:0%"></div></div>
-        <div class="cat-text" id="mres-love-text">—</div>
+
+      <div class="found-card">
+        <div class="found-title">🔎 พื้นดวงตอนนี้</div>
+        <div class="found-row">
+          <div class="found-age" id="mres-age">— <span>ปี</span></div>
+          <div><div class="found-stage" id="mres-stage">—</div><div class="found-desc" id="mres-stage-desc">—</div></div>
+        </div>
+        <div class="found-chong" id="mres-chong">—</div>
       </div>
-      <div class="cat-card">
-        <div class="cat-head"><div class="cat-name">💰 การงาน/การเงิน</div><div class="cat-score" id="mres-career-score">—</div></div>
-        <div class="cat-bar"><div class="cat-bar-fill" id="mres-career-bar" style="width:0%"></div></div>
-        <div class="cat-text" id="mres-career-text">—</div>
-      </div>
-      <div class="cat-card">
-        <div class="cat-head"><div class="cat-name">🩺 สุขภาพ</div><div class="cat-score" id="mres-health-score">—</div></div>
-        <div class="cat-bar"><div class="cat-bar-fill" id="mres-health-bar" style="width:0%"></div></div>
-        <div class="cat-text" id="mres-health-text">—</div>
-      </div>
+
+      <div class="sec-lbl">ฟันธงดวงชะตา 8 ด้าน</div>
+      <div id="mres-cats"></div>
+
       <div class="lucky-row">
         <div class="lucky-box"><div class="lucky-lbl">เลขนำโชค</div><div class="lucky-num" id="mres-lucky-num">—</div></div>
         <div class="lucky-box"><div class="lucky-swatch" id="mres-color-swatch"></div><div class="lucky-color-name" id="mres-color-name">—</div></div>
       </div>
-      <div class="advice-card"><div class="advice-ico">🌟</div><div class="advice-text" id="mres-advice">—</div></div>
+      <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">วิธีแก้ดวง</div><div class="advice-text" id="mres-remedy">—</div></div></div>
       <button class="btn btn-dim" onclick="shareResult('mres')">📤 แชร์ผลดูดวง</button>
       <button class="btn btn-outline-red" onclick="deleteHistEntry()">🗑️ ลบรายการนี้</button>
       <button class="btn btn-dim" onclick="closeHistModal()">ปิด</button>
@@ -518,60 +528,161 @@ const HOME_QUOTES = [
 ];
 
 const OVERALL_TEXTS = [
-  'ช่วงนี้ดวงชะตาเริ่มเปิด สิ่งที่หวังไว้มีโอกาสสำเร็จมากขึ้น ขอเพียงอดทนอีกนิด',
-  'ดวงกำลังอยู่ในช่วงเปลี่ยนผ่าน สิ่งใหม่ๆ กำลังจะเข้ามาในชีวิต เตรียมใจให้พร้อม',
-  'โชคด้านความคิดสร้างสรรค์กำลังโดดเด่น เหมาะกับการเริ่มต้นสิ่งใหม่',
-  'ดวงชะตาสงบนิ่ง เหมาะแก่การพักผ่อนและทบทวนเป้าหมายชีวิต',
-  'มีเกณฑ์ได้รับข่าวดีจากคนรอบข้าง ความสัมพันธ์รอบตัวจะดีขึ้น',
-  'ดวงกำลังรุ่ง งานที่ทำค้างไว้จะเริ่มเห็นผลลัพธ์ที่ชัดเจน',
-  'ช่วงนี้ควรระมัดระวังเรื่องการตัดสินใจใหญ่ๆ ใคร่ครวญให้รอบคอบ',
-  'ดวงเรื่องโชคลาภกำลังแรง อาจมีเรื่องน่ายินดีเข้ามาแบบไม่คาดคิด',
-  'เป็นช่วงเก็บเกี่ยวผลบุญเก่า ความพยายามที่ผ่านมาจะเริ่มออกดอกผล',
-  'ดวงชะตาผันผวนเล็กน้อย แต่โดยรวมยังไปในทิศทางที่ดี',
-];
-
-const LOVE_TEXTS = [
-  'คนโสดมีเกณฑ์ได้พบเจอคนที่ถูกใจในที่ที่ไม่คาดคิด',
-  'คู่รักควรเปิดใจคุยกันมากขึ้น ความเข้าใจจะนำมาซึ่งความสุข',
-  'ความรักช่วงนี้ราบรื่น เหมาะแก่การวางแผนอนาคตร่วมกัน',
-  'อาจมีเรื่องเข้าใจผิดเล็กน้อย ควรใช้คำพูดด้วยความอ่อนโยน',
-  'คนที่แอบชอบใครอยู่ มีโอกาสได้แสดงความรู้สึกออกไป',
-  'ความสัมพันธ์ในครอบครัวจะอบอุ่นขึ้นในช่วงนี้',
-  'เสน่ห์กำลังเพิ่มขึ้น จะมีคนสนใจเข้ามาทักทายมากกว่าปกติ',
-  'ควรให้เวลากับคนรักมากขึ้น ความสัมพันธ์จะแน่นแฟ้นขึ้น',
+  'ฟันธง! ดวงชะตาช่วงนี้กำลังพลิกจากร้ายกลายเป็นดี สิ่งที่หวังไว้มีเกณฑ์สำเร็จแบบไม่ทันตั้งตัว!',
+  'ฟันธง! ชีวิตกำลังเข้าสู่ช่วงเปลี่ยนผ่านครั้งใหญ่ เตรียมตัวรับสิ่งใหม่ที่จะเข้ามาแบบไม่คาดฝัน!',
+  'ฟันธง! ดวงความคิดสร้างสรรค์พุ่งแรงสุดๆ ไอเดียที่เก็บไว้จะได้ฤกษ์เปิดตัวในเร็ววันนี้!',
+  'ฟันธง! ช่วงนี้ดวงสงบนิ่งเหมือนพายุใกล้สงบ เหมาะแก่การตั้งหลักก่อนลุยรอบใหม่!',
+  'ฟันธง! ข่าวดีกำลังเดินทางมาหาแบบไม่ทันตั้งตัว คนรอบข้างจะนำความสุขมาให้!',
+  'ฟันธง! ดวงกำลังรุ่งพุ่งแรง งานที่ทำค้างไว้จะออกผลชัดเจนแบบเซอร์ไพรส์ตัวเอง!',
+  'ฟันธง! ต้องระวังการตัดสินใจใหญ่ในช่วงนี้เป็นพิเศษ ใคร่ครวญให้รอบคอบก่อนลงมือ!',
+  'ฟันธง! ดวงโชคลาภแรงจัด อาจมีเรื่องน่ายินดีเข้ามาแบบไม่ทันได้ตั้งตัว!',
+  'ฟันธง! เป็นช่วงเก็บเกี่ยวผลบุญเก่า ความพยายามที่สะสมมานานจะออกดอกออกผลให้เห็น!',
+  'ฟันธง! ดวงชะตาผันผวนนิดหน่อยเหมือนคลื่นกระทบฝั่ง แต่ทิศทางรวมยังไปได้สวย!',
 ];
 
 const CAREER_TEXTS = [
-  'งานที่ทำอยู่เริ่มเห็นผล ผู้ใหญ่ใจดีจะเข้ามาสนับสนุน',
-  'การเงินมีเกณฑ์ดีขึ้น แต่ควรวางแผนการใช้จ่ายให้รอบคอบ',
-  'มีโอกาสได้รับข้อเสนอหรืองานใหม่เข้ามาให้พิจารณา',
-  'ควรระวังเรื่องรายจ่ายจุกจิก เก็บออมไว้จะดีในระยะยาว',
-  'ความคิดสร้างสรรค์กำลังเด่น เหมาะกับงานที่ต้องใช้ไอเดียใหม่',
-  'การเจรจาต่อรองมีเกณฑ์เป็นไปด้วยดี กล้าที่จะขอในสิ่งที่ควรได้',
-  'โชคด้านการเงินปานกลาง รายรับรายจ่ายสมดุลดี',
-  'งานเป็นทีมจะราบรื่น ผู้ร่วมงานพร้อมช่วยเหลือกัน',
+  'ฟันธง! งานที่ทำค้างคาจะพลิกกลับมาปังแบบไม่ทันตั้งตัว ผู้ใหญ่เตรียมยื่นมือเข้ามาช่วยแบบเซอร์ไพรส์!',
+  'ฟันธง! ช่วงนี้ต้องมีเรื่องท้าทายเข้ามาทดสอบฝีมือ แต่ถ้าผ่านไปได้ ตำแหน่งใหม่รอคุณอยู่ไม่ไกล!',
+  'ฟันธง! ไอเดียที่คิดไว้นานจะได้ฤกษ์เปิดตัว คนรอบข้างจะทึ่งในฝีมือคุณแบบสุดๆ!',
+  'ฟันธง! ระวังคนแปลกหน้าที่เข้ามาป้ายสีเรื่องงาน อย่าเพิ่งเชื่อใครง่ายๆ ในช่วงนี้!',
+  'ฟันธง! ดวงงานกำลังทะยาน มีเกณฑ์ได้รับมอบหมายงานใหญ่ที่จะเปลี่ยนชีวิตคุณไปเลย!',
+  'ฟันธง! การเจรจาสำคัญจะจบแบบสวยงาม ฝ่ายตรงข้ามยอมง้อก่อนแบบไม่คาดคิด!',
+  'ฟันธง! ต้องอดทนอีกนิด งานที่ดูเหมือนจะไปไม่รอดกำลังจะพลิกกลับมาดีในไม่ช้า!',
+  'ฟันธง! เพื่อนร่วมงานจะกลายเป็นตัวช่วยสำคัญ อย่าลืมขอบคุณคนที่อยู่เบื้องหลังความสำเร็จ!',
+];
+
+const MONEY_TEXTS = [
+  'ฟันธง! การเงินจะพลิกจากหน้ามือเป็นหลังมือ มีเกณฑ์ได้เงินก้อนแบบไม่ทันตั้งตัว!',
+  'ฟันธง! ระวังรายจ่ายจุกจิกที่ถาโถมเข้ามาแบบไม่รู้ตัว ควรกุมกระเป๋าให้แน่นในช่วงนี้!',
+  'ฟันธง! มีเกณฑ์ได้โชคจากของที่ลืมไปแล้วหรือหนี้เก่าที่ทวงคืนได้แบบเซอร์ไพรส์!',
+  'ฟันธง! การลงทุนที่วางแผนไว้จะเริ่มออกดอกผล แต่ต้องใจเย็นอย่ารีบร้อนถอนก่อนเวลา!',
+  'ฟันธง! ระวังการเซ็นสัญญาหรือค้ำประกันในช่วงนี้ อ่านให้ละเอียดก่อนทุกครั้ง!',
+  'ฟันธง! ดวงโชคลาภด้านการเงินพุ่งแรง หยิบจับอะไรก็มีเกณฑ์เป็นเงินเป็นทอง!',
+  'ฟันธง! รายรับรายจ่ายสมดุลดี เหมาะแก่การวางแผนออมเงินระยะยาวแบบจริงจัง!',
+  'ฟันธง! อาจมีค่าใช้จ่ายก้อนใหญ่เข้ามาแบบไม่คาดฝัน แต่สุดท้ายจะจัดการได้ลงตัว!',
+];
+
+const LOVE_TEXTS = [
+  'ฟันธง! คนโสดมีเกณฑ์เจอคนที่ใช่แบบไม่ทันตั้งตัว อาจเป็นคนที่รู้จักกันมานานแล้วก็ได้!',
+  'ฟันธง! คู่รักจะมีเรื่องกระทบกระทั่งเล็กๆ แต่สุดท้ายจะกลับมาหวานกว่าเดิมแบบพลิกล็อก!',
+  'ฟันธง! เสน่ห์แรงจนคนรอบข้างเผลอใจ ระวังจะมีคนแอบชอบแบบไม่รู้ตัว!',
+  'ฟันธง! คนมีคู่จะได้ยินข่าวดีเกี่ยวกับอนาคตคู่รัก อาจถึงขั้นวางแผนเรื่องใหญ่ร่วมกัน!',
+  'ฟันธง! คนที่กำลังห่างเหินกันจะมีโอกาสได้กลับมาคุยกันใหม่แบบไม่คาดคิด!',
+  'ฟันธง! ต้องระวังคำพูดแรงๆ ในความสัมพันธ์ ใจเย็นไว้จะพลิกสถานการณ์ได้!',
+  'ฟันธง! ความรักช่วงนี้ราบรื่นสุดๆ เหมาะแก่การขอแต่งงานหรือคบกันจริงจัง!',
+  'ฟันธง! มิตรภาพอาจพัฒนาไปเป็นความรักแบบไม่ทันตั้งตัว ให้เวลาดูใจกันอีกนิด!',
 ];
 
 const HEALTH_TEXTS = [
-  'ควรพักผ่อนให้เพียงพอ ร่างกายต้องการเวลาฟื้นฟู',
-  'สุขภาพโดยรวมแข็งแรงดี ออกกำลังกายสม่ำเสมอจะยิ่งดีขึ้น',
-  'ระวังเรื่องความเครียดสะสม หาเวลาผ่อนคลายจิตใจบ้าง',
-  'ควรดื่มน้ำให้มากขึ้นและนอนหลับให้เป็นเวลา',
-  'พลังงานกำลังดี เหมาะแก่การเริ่มกิจกรรมออกกำลังกายใหม่ๆ',
-  'ระบบย่อยอาหารอาจอ่อนแอเล็กน้อย ควรเลือกทานอาหารที่ย่อยง่าย',
-  'สุขภาพจิตแจ่มใส ความคิดบวกจะช่วยเสริมพลังชีวิต',
-  'ควรตรวจสุขภาพประจำปีเพื่อความอุ่นใจ',
+  'ฟันธง! ร่างกายจะส่งสัญญาณเตือนบางอย่าง อย่าฝืนงานหนักเกินไปในช่วงนี้!',
+  'ฟันธง! พลังกายพลังใจเต็มเปี่ยม เหมาะแก่การเริ่มออกกำลังกายแบบจริงจัง!',
+  'ฟันธง! ระวังอุบัติเหตุเล็กๆ น้อยๆ จากความรีบร้อน ตั้งสติก่อนทำทุกอย่าง!',
+  'ฟันธง! ความเครียดสะสมอาจทำร้ายสุขภาพแบบไม่รู้ตัว หาเวลาพักผ่อนใจด่วน!',
+  'ฟันธง! สุขภาพโดยรวมแข็งแรงดี แต่อย่าลืมตรวจร่างกายประจำปีไว้อุ่นใจ!',
+  'ฟันธง! ระบบย่อยอาหารอาจแปรปรวน ควรเลือกกินของที่ย่อยง่ายในช่วงนี้!',
+  'ฟันธง! การนอนหลับพักผ่อนคือกุญแจสำคัญ นอนดึกเกินไปจะบั่นทอนดวงสุขภาพ!',
+  'ฟันธง! พลังบวกในใจจะช่วยเสริมภูมิคุ้มกัน ยิ้มเยอะๆ แล้วสุขภาพจะดีตาม!',
 ];
 
-const ADVICE_TEXTS = [
-  'ทำบุญตักบาตรยามเช้า จะช่วยเสริมสิริมงคลให้ชีวิต',
-  'สวมใส่สีมงคลประจำวันเกิด จะช่วยเพิ่มความมั่นใจ',
-  'หมั่นแผ่เมตตาให้ผู้อื่น จะทำให้จิตใจสงบและโชคดีตาม',
-  'จัดโต๊ะทำงานให้เป็นระเบียบ จะช่วยให้ความคิดปลอดโปร่ง',
-  'พูดคำดีกับคนรอบข้าง พลังบวกจะย้อนกลับมาหาตัวเอง',
-  'หลีกเลี่ยงการทะเลาะเบาะแว้งในช่วงนี้ ใจเย็นไว้จะดีที่สุด',
-  'ให้เวลากับครอบครัวมากขึ้น จะเสริมดวงด้านความสัมพันธ์',
-  'ตั้งเป้าหมายใหม่ให้ชัดเจน จะช่วยให้ชีวิตมีทิศทางมากขึ้น',
+const FAMILY_TEXTS = [
+  'ฟันธง! ญาติผู้ใหญ่จะนำข่าวดีมาบอกแบบไม่ทันตั้งตัว เตรียมยินดีกับครอบครัวได้เลย!',
+  'ฟันธง! อาจมีเรื่องเข้าใจผิดในครอบครัวเล็กน้อย ใช้คำพูดดีๆ จะช่วยคลี่คลายได้ไว!',
+  'ฟันธง! ความอบอุ่นในบ้านจะกลับมาเต็มเปี่ยม เหมาะแก่การจัดกิจกรรมร่วมกัน!',
+  'ฟันธง! คนในบ้านอาจต้องการกำลังใจจากคุณมากเป็นพิเศษ อย่าละเลยความรู้สึกใคร!',
+  'ฟันธง! มีเกณฑ์ได้ข่าวมงคลจากคนในครอบครัว อาจเป็นเรื่องบวชแต่งหรือขึ้นบ้านใหม่!',
+  'ฟันธง! ควรให้เวลากับพ่อแม่ผู้ใหญ่มากขึ้น จะเสริมบุญบารมีให้ตัวเองแบบไม่รู้ตัว!',
+  'ฟันธง! เรื่องมรดกหรือทรัพย์สินในครอบครัวควรพูดคุยให้ชัดเจน กันปัญหาในอนาคต!',
+  'ฟันธง! ครอบครัวจะเป็นกำลังใจสำคัญที่ช่วยพาคุณผ่านช่วงเวลานี้ไปได้แบบสวยงาม!',
+];
+
+const STUDY_TEXTS = [
+  'ฟันธง! สมองแล่นสุดๆ ช่วงนี้เหมาะแก่การสอบหรือเริ่มเรียนรู้ทักษะใหม่แบบจริงจัง!',
+  'ฟันธง! ความคิดสร้างสรรค์พุ่งกระฉูด ไอเดียที่คิดไว้จะกลายเป็นผลงานชิ้นโบว์แดง!',
+  'ฟันธง! อาจมีเรื่องให้เสียสมาธิเข้ามาบ่อย ต้องจัดตารางเวลาให้ดีขึ้นกว่าเดิม!',
+  'ฟันธง! มีเกณฑ์ได้รับคำแนะนำดีๆ จากครูอาจารย์หรือผู้มีประสบการณ์แบบไม่คาดคิด!',
+  'ฟันธง! การตัดสินใจเรื่องเรียนต่อหรือคอร์สใหม่จะเป็นไปในทิศทางที่ถูกต้อง!',
+  'ฟันธง! ความจำจะดีเป็นพิเศษในช่วงนี้ รีบท่องรีบอ่านตอนนี้ได้ผลชัวร์!',
+  'ฟันธง! งานวิจัยหรือโปรเจกต์ที่ทำค้างไว้จะเริ่มเห็นแสงสว่างที่ปลายอุโมงค์!',
+  'ฟันธง! ควรเปิดใจรับความรู้ใหม่ๆ อย่ายึดติดวิธีเดิม จะพาไปได้ไกลกว่าที่คิด!',
+];
+
+const LUCK_TEXTS = [
+  'ฟันธง! มีเกณฑ์ได้ของขวัญหรือรางวัลแบบไม่คาดฝัน โชคจะเข้าข้างแบบสุดๆ!',
+  'ฟันธง! อาจมีคนใจดีหยิบยื่นโอกาสดีๆ เข้ามาแบบไม่ทันตั้งตัว อย่าปฏิเสธง่ายๆ!',
+  'ฟันธง! ดวงเสี่ยงโชคปานกลาง ลองเสี่ยงดูได้แต่อย่าทุ่มจนเกินพอดี!',
+  'ฟันธง! อาจเจอของมงคลหรือสิ่งนำโชคระหว่างเดินทาง เก็บไว้ใกล้ตัวจะดี!',
+  'ฟันธง! โชคลาภจะมาในรูปแบบของโอกาส ไม่ใช่เงินทอง จับให้ไวอย่าปล่อยผ่าน!',
+  'ฟันธง! ช่วงนี้ควรทำบุญเสริมดวงเป็นพิเศษ จะช่วยดึงโชคลาภเข้ามาได้ไว!',
+  'ฟันธง! มีเกณฑ์ถูกรางวัลเล็กๆ น้อยๆ จากความบังเอิญที่คาดไม่ถึง!',
+  'ฟันธง! ดวงโชคลาภยังไม่แรงนัก ควรเน้นสร้างด้วยความพยายามจะยั่งยืนกว่า!',
+];
+
+const FRIEND_TEXTS = [
+  'ฟันธง! จะมีผู้ใหญ่ใจดีเข้ามาอุปถัมภ์แบบไม่ทันตั้งตัว ช่วยพลิกสถานการณ์ให้ดีขึ้น!',
+  'ฟันธง! เพื่อนเก่าที่ห่างหายไปนานจะกลับมาติดต่ออีกครั้งแบบเซอร์ไพรส์!',
+  'ฟันธง! ระวังคนใกล้ตัวที่พูดจาหวานแต่คิดร้าย ฟังหูไว้หูจะปลอดภัยกว่า!',
+  'ฟันธง! เครือข่ายคนรู้จักจะช่วยเปิดประตูโอกาสใหม่ๆ ให้แบบไม่คาดคิด!',
+  'ฟันธง! มีเกณฑ์ได้พบเพื่อนใหม่ที่จะกลายเป็นคนสำคัญในชีวิตระยะยาว!',
+  'ฟันธง! ควรเลือกคบคนให้รอบคอบขึ้น ไม่ใช่ทุกคนที่หวังดีกับคุณจริงๆ!',
+  'ฟันธง! การช่วยเหลือคนอื่นในตอนนี้จะย้อนกลับมาเป็นบุญคุณให้คุณในวันข้างหน้า!',
+  'ฟันธง! บริวารรอบตัวพร้อมสนับสนุนเต็มที่ ใช้จังหวะนี้ผลักดันงานใหญ่ได้เลย!',
+];
+
+const REMEDY_TEXTS = [
+  'ทำบุญตักบาตรด้วยของสีทองในเช้าวันเกิด จะช่วยเสริมบารมีและดึงโชคเข้าตัว',
+  'ปล่อยปลาหรือปล่อยนกในวันพระ ช่วยสะเดาะเคราะห์และเสริมดวงให้ราบรื่นขึ้น',
+  'สวมเครื่องประดับหรือของมงคลสีตามวันเกิด จะช่วยเพิ่มพลังบวกให้ชีวิต',
+  'ไหว้ศาลพระภูมิหรือสิ่งศักดิ์สิทธิ์ประจำบ้านให้บ่อยขึ้น จะช่วยคุ้มครองดวงชะตา',
+  'บริจาคสิ่งของหรือเงินให้ผู้ยากไร้ จะช่วยเสริมดวงโชคลาภและมิตรภาพ',
+  'สวดมนต์ไหว้พระก่อนนอน จะช่วยให้จิตใจสงบและดวงชะตาราบรื่นขึ้น',
+  'จุดธูปเทียนไหว้เทพเจ้าไท้ส่วยเอี๊ยที่ศาลเจ้า จะช่วยเสริมสิริมงคลตามความเชื่อจีน',
+  'ทำความสะอาดบ้านและจัดของให้เป็นระเบียบ จะช่วยเปิดทางให้พลังงานดีไหลเวียน',
+];
+
+const CHONG_REMEDY_STRONG = 'ปีนี้เป็น "ปีชงตรง" ของคุณตามความเชื่อจีน! แนะนำให้ทำบุญแก้ชงโดยเร็ว ไหว้เทพเจ้าไท้ส่วยเอี๊ยหรือปล่อยนกปล่อยปลาเพื่อสะเดาะเคราะห์ จะช่วยให้ปีนี้ราบรื่นขึ้นมาก';
+const CHONG_REMEDY_MID    = 'ปีนี้เป็น "ปีชงกลาง" ของคุณตามความเชื่อจีน! ควรระมัดระวังเป็นพิเศษเรื่องอุบัติเหตุและการตัดสินใจใหญ่ แนะนำทำบุญเสริมดวงหรือสวมของมงคลติดตัวไว้';
+
+const CHINESE_ELEMENTS = [
+  { e:'🌳', name:'ธาตุไม้ (หยาง)' },
+  { e:'🌱', name:'ธาตุไม้ (หยิน)' },
+  { e:'🔥', name:'ธาตุไฟ (หยาง)' },
+  { e:'🕯️', name:'ธาตุไฟ (หยิน)' },
+  { e:'⛰️', name:'ธาตุดิน (หยาง)' },
+  { e:'🏞️', name:'ธาตุดิน (หยิน)' },
+  { e:'⚔️', name:'ธาตุทอง (หยาง)' },
+  { e:'💍', name:'ธาตุทอง (หยิน)' },
+  { e:'🌊', name:'ธาตุน้ำ (หยาง)' },
+  { e:'💧', name:'ธาตุน้ำ (หยิน)' },
+];
+
+const BUDDHA_POSTURES = [
+  { e:'🙏', name:'ปางถวายเนตร' },
+  { e:'🖐️', name:'ปางห้ามญาติ' },
+  { e:'🛏️', name:'ปางไสยาสน์' },
+  { e:'🍚', name:'ปางอุ้มบาตร' },
+  { e:'🧘', name:'ปางสมาธิ' },
+  { e:'🤲', name:'ปางรำพึง' },
+  { e:'🐍', name:'ปางนาคปรก' },
+];
+
+const LIFE_STAGES = [
+  { max:12,  label:'วัยเยาว์',     desc:'ช่วงแห่งการวางรากฐานและเรียนรู้โลกกว้าง' },
+  { max:22,  label:'วัยศึกษา',     desc:'ช่วงสั่งสมวิชาความรู้เพื่อปูทางอนาคต' },
+  { max:35,  label:'วัยบุกเบิก',   desc:'ช่วงสร้างเนื้อสร้างตัวอย่างเต็มกำลัง' },
+  { max:48,  label:'วัยเก็บเกี่ยว', desc:'ช่วงผลบุญเก่าเริ่มส่งผล การงานและเงินทองรุ่งเรือง' },
+  { max:60,  label:'วัยมั่นคง',    desc:'ช่วงแห่งความมั่นคงและบารมีที่สั่งสมมา' },
+  { max:200, label:'วัยพักผ่อนใจ', desc:'ช่วงแห่งความสงบสุขและถ่ายทอดประสบการณ์ให้รุ่นหลัง' },
+];
+
+const CATS_META = [
+  { key:'career', icon:'💼', name:'การงาน' },
+  { key:'money',  icon:'💰', name:'การเงิน' },
+  { key:'love',   icon:'💕', name:'ความรัก' },
+  { key:'health', icon:'🩺', name:'สุขภาพ' },
+  { key:'family', icon:'👨‍👩‍👧', name:'ครอบครัว' },
+  { key:'study',  icon:'📚', name:'การเรียน/สติปัญญา' },
+  { key:'luck',   icon:'🍀', name:'โชคลาภ' },
+  { key:'friend', icon:'🤝', name:'มิตรภาพ/ผู้อุปถัมภ์' },
 ];
 
 function blank(){ return { history:[], settings:{ location:'เซ็นทรัล ขอนแก่น', price:59, targetPerDay:100 } }; }
@@ -710,22 +821,52 @@ function buildResult(f) {
   const draw = () => { seed = (seed*1103515245 + 12345) >>> 0; return seed; };
   const pick = arr => arr[draw() % arr.length];
   const score = () => 50 + (draw() % 46);
-  const loveScore = score(), careerScore = score(), healthScore = score();
-  const overall = Math.round((loveScore+careerScore+healthScore)/3);
+
+  const cats = {
+    career: { score:score(), text:pick(CAREER_TEXTS) },
+    money:  { score:score(), text:pick(MONEY_TEXTS) },
+    love:   { score:score(), text:pick(LOVE_TEXTS) },
+    health: { score:score(), text:pick(HEALTH_TEXTS) },
+    family: { score:score(), text:pick(FAMILY_TEXTS) },
+    study:  { score:score(), text:pick(STUDY_TEXTS) },
+    luck:   { score:score(), text:pick(LUCK_TEXTS) },
+    friend: { score:score(), text:pick(FRIEND_TEXTS) },
+  };
+  const overall = Math.round(Object.values(cats).reduce((a,c)=>a+c.score,0) / 8);
+
   const d = new Date(f.date+'T00:00:00');
-  const year = d.getFullYear();
-  const zIdx = ((year-2020) % 12 + 12) % 12;
+  const byear = d.getFullYear();
+  const zIdx = ((byear-2020) % 12 + 12) % 12;
   const wIdx = d.getDay();
+  const stemIdx = ((byear-4) % 10 + 10) % 10;
+
+  const now = new Date();
+  const curZIdx = ((now.getFullYear()-2020) % 12 + 12) % 12;
+  const diff = (curZIdx - zIdx + 12) % 12;
+  const chongLevel = diff===0 ? 'ตรง' : (diff===6 ? 'กลาง' : null);
+
+  let age = now.getFullYear() - byear;
+  if (now.getMonth() < d.getMonth() || (now.getMonth()===d.getMonth() && now.getDate() < d.getDate())) age--;
+  age = Math.max(0, age);
+  const stage = LIFE_STAGES.find(s => age <= s.max);
+
+  const remedy = chongLevel === 'ตรง' ? CHONG_REMEDY_STRONG
+               : chongLevel === 'กลาง' ? CHONG_REMEDY_MID
+               : pick(REMEDY_TEXTS);
+
   return {
     overall,
     overallText: pick(OVERALL_TEXTS),
-    love:   { score:loveScore,   text:pick(LOVE_TEXTS) },
-    career: { score:careerScore, text:pick(CAREER_TEXTS) },
-    health: { score:healthScore, text:pick(HEALTH_TEXTS) },
-    advice: pick(ADVICE_TEXTS),
+    cats,
     zodiac: ZODIAC[zIdx],
-    color:  DAY_COLORS[wIdx],
+    element: CHINESE_ELEMENTS[stemIdx],
+    buddha: BUDDHA_POSTURES[wIdx],
+    color: DAY_COLORS[wIdx],
     luckyNum: String(draw() % 100).padStart(2,'0'),
+    age,
+    stage,
+    chongLevel,
+    remedy,
   };
 }
 
@@ -746,27 +887,47 @@ function finishReading() {
   document.getElementById('pay-status').textContent = '';
 }
 
+function catCardsHTML(cats) {
+  return CATS_META.map(m => {
+    const c = cats[m.key];
+    return `<div class="cat-card">
+      <div class="cat-head"><div class="cat-name">${m.icon} ${m.name}</div><div class="cat-score">${c.score}%</div></div>
+      <div class="cat-bar"><div class="cat-bar-fill" style="width:${c.score}%"></div></div>
+      <div class="cat-text">${c.text}</div>
+    </div>`;
+  }).join('');
+}
+
 function paintResult(prefix, entry) {
   const r = entry.result;
   document.getElementById(prefix+'-name').textContent = entry.name || 'คุณลูกค้า';
   document.getElementById(prefix+'-date').textContent = formatThaiDate(entry.date) + (entry.time ? ` เวลา ${entry.time} น.` : '');
   document.getElementById(prefix+'-zodiac').textContent = r.zodiac.e + ' ปี' + r.zodiac.name;
+  document.getElementById(prefix+'-chips').innerHTML =
+    `<span class="chip">${r.element.e} ${r.element.name}</span><span class="chip">${r.buddha.e} ${r.buddha.name}</span>`;
   document.getElementById(prefix+'-overall-badge').style.setProperty('--pct', r.overall);
   document.getElementById(prefix+'-overall-num').textContent = r.overall;
   document.getElementById(prefix+'-overall-text').textContent = r.overallText;
-  document.getElementById(prefix+'-love-bar').style.width = r.love.score+'%';
-  document.getElementById(prefix+'-love-score').textContent = r.love.score+'%';
-  document.getElementById(prefix+'-love-text').textContent = r.love.text;
-  document.getElementById(prefix+'-career-bar').style.width = r.career.score+'%';
-  document.getElementById(prefix+'-career-score').textContent = r.career.score+'%';
-  document.getElementById(prefix+'-career-text').textContent = r.career.text;
-  document.getElementById(prefix+'-health-bar').style.width = r.health.score+'%';
-  document.getElementById(prefix+'-health-score').textContent = r.health.score+'%';
-  document.getElementById(prefix+'-health-text').textContent = r.health.text;
+
+  document.getElementById(prefix+'-age').innerHTML = r.age + ' <span>ปี</span>';
+  document.getElementById(prefix+'-stage').textContent = r.stage.label;
+  document.getElementById(prefix+'-stage-desc').textContent = r.stage.desc;
+  const chongEl = document.getElementById(prefix+'-chong');
+  if (r.chongLevel) {
+    chongEl.innerHTML = `<span class="chong-tag warn">⚠️ ปีชง${r.chongLevel}</span><br>` +
+      (r.chongLevel==='ตรง'
+        ? 'ฟันธง! ปีนี้ดวงชะตาจะปะทะกับปีเกิดของคุณโดยตรงตามความเชื่อจีน ต้องระวังเป็นพิเศษ แต่แก้ไขได้ด้วยการทำบุญเสริมดวง'
+        : 'ฟันธง! ปีนี้ดวงชะตามีการปะทะกับปีเกิดของคุณบางส่วนตามความเชื่อจีน ควรระมัดระวังเรื่องใหญ่ๆ ไว้บ้าง');
+  } else {
+    chongEl.innerHTML = `<span class="chong-tag ok">✅ ไม่ใช่ปีชง</span><br>ฟันธง! ปีนี้ไม่ใช่ปีชงของคุณ ดวงชะตาโดยพื้นฐานมั่นคงดี เดินหน้าลุยได้เต็มที่!`;
+  }
+
+  document.getElementById(prefix+'-cats').innerHTML = catCardsHTML(r.cats);
+
   document.getElementById(prefix+'-color-swatch').style.background = r.color.hex;
   document.getElementById(prefix+'-color-name').textContent = r.color.name;
   document.getElementById(prefix+'-lucky-num').textContent = r.luckyNum;
-  document.getElementById(prefix+'-advice').textContent = r.advice;
+  document.getElementById(prefix+'-remedy').textContent = r.remedy;
 }
 
 function shareResult(prefix) {
