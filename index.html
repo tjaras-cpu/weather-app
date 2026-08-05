@@ -123,8 +123,12 @@ body::before {
 .palm-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; }
 .palm-check { position:absolute; top:8px; right:8px; font-size:16px; background:rgba(0,0,0,.45); border-radius:50%; padding:4px 6px; display:none; }
 .palm-retake { position:absolute; bottom:6px; left:0; right:0; text-align:center; font-size:10px; font-weight:700; color:#fff; background:rgba(0,0,0,.45); padding:4px 0; display:none; }
-.palm-result-row { display:flex; gap:10px; justify-content:center; margin-top:12px; }
+.palm-result-row { display:flex; gap:10px; justify-content:center; margin-bottom:14px; }
 .palm-result-thumb { width:56px; height:56px; border-radius:14px; object-fit:cover; border:1px solid var(--b1); }
+.palm-line { margin-bottom:12px; }
+.palm-line:last-child { margin-bottom:0; }
+.palm-line-name { font-size:13px; font-weight:700; color:var(--pk); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.palm-line-text { font-size:13px; color:var(--t2); line-height:1.6; }
 .scan-progress-wrap { width:100%; height:8px; background:rgba(255,255,255,.08); border-radius:4px; overflow:hidden; margin:14px 0 26px; }
 .scan-progress-fill { height:100%; width:0%; background:linear-gradient(90deg,#8b5cf6,#e879f9); border-radius:4px; transition:width .15s linear; }
 
@@ -349,7 +353,6 @@ body::before {
           <div class="res-name" id="res-name">—</div>
           <div class="res-date" id="res-date">—</div>
           <div class="res-zodiac" id="res-zodiac">—</div>
-          <div class="palm-result-row" id="res-palms"></div>
           <div class="chip-row" id="res-chips"></div>
           <div class="res-overall-badge" id="res-overall-badge">
             <div class="res-overall-num" id="res-overall-num">—</div>
@@ -357,6 +360,15 @@ body::before {
           </div>
         </div>
         <div class="res-overall-text" id="res-overall-text">—</div>
+
+        <div class="found-card">
+          <div class="found-title">✋ ผลอ่านลายมือ</div>
+          <div class="palm-result-row" id="res-palms"></div>
+          <div class="palm-line"><div class="palm-line-name">🫀 เส้นชีวิต</div><div class="palm-line-text" id="res-line-life">—</div></div>
+          <div class="palm-line"><div class="palm-line-name">🧠 เส้นสมอง</div><div class="palm-line-text" id="res-line-head">—</div></div>
+          <div class="palm-line"><div class="palm-line-name">💗 เส้นใจ</div><div class="palm-line-text" id="res-line-heart">—</div></div>
+          <div class="palm-line"><div class="palm-line-name">⭐ เส้นวาสนา</div><div class="palm-line-text" id="res-line-fate">—</div></div>
+        </div>
 
         <div class="found-card">
           <div class="found-title">🔎 พื้นดวงตอนนี้</div>
@@ -451,7 +463,6 @@ body::before {
         <div class="res-name" id="mres-name">—</div>
         <div class="res-date" id="mres-date">—</div>
         <div class="res-zodiac" id="mres-zodiac">—</div>
-        <div class="palm-result-row" id="mres-palms"></div>
         <div class="chip-row" id="mres-chips"></div>
         <div class="res-overall-badge" id="mres-overall-badge">
           <div class="res-overall-num" id="mres-overall-num">—</div>
@@ -459,6 +470,15 @@ body::before {
         </div>
       </div>
       <div class="res-overall-text" id="mres-overall-text">—</div>
+
+      <div class="found-card">
+        <div class="found-title">✋ ผลอ่านลายมือ</div>
+        <div class="palm-result-row" id="mres-palms"></div>
+        <div class="palm-line"><div class="palm-line-name">🫀 เส้นชีวิต</div><div class="palm-line-text" id="mres-line-life">—</div></div>
+        <div class="palm-line"><div class="palm-line-name">🧠 เส้นสมอง</div><div class="palm-line-text" id="mres-line-head">—</div></div>
+        <div class="palm-line"><div class="palm-line-name">💗 เส้นใจ</div><div class="palm-line-text" id="mres-line-heart">—</div></div>
+        <div class="palm-line"><div class="palm-line-name">⭐ เส้นวาสนา</div><div class="palm-line-text" id="mres-line-fate">—</div></div>
+      </div>
 
       <div class="found-card">
         <div class="found-title">🔎 พื้นดวงตอนนี้</div>
@@ -699,6 +719,46 @@ const LIFE_STAGES = [
   { max:48,  label:'วัยเก็บเกี่ยว', desc:'ช่วงผลบุญเก่าเริ่มส่งผล การงานและเงินทองรุ่งเรือง' },
   { max:60,  label:'วัยมั่นคง',    desc:'ช่วงแห่งความมั่นคงและบารมีที่สั่งสมมา' },
   { max:200, label:'วัยพักผ่อนใจ', desc:'ช่วงแห่งความสงบสุขและถ่ายทอดประสบการณ์ให้รุ่นหลัง' },
+];
+
+const LIFE_LINE_TEXTS = [
+  'ฟันธง! เส้นชีวิตของคุณยาวและลึกชัดเจน บ่งบอกถึงพลังชีวิตที่แข็งแรงและมีแรงฮึดสู้ไม่ยอมแพ้ง่ายๆ!',
+  'ฟันธง! เส้นชีวิตมีแขนงแตกออกด้านข้าง แสดงว่าชีวิตคุณจะมีจุดเปลี่ยนสำคัญที่ทำให้ทุกอย่างพลิกผัน!',
+  'ฟันธง! เส้นชีวิตโค้งกว้างรอบนิ้วโป้ง บ่งบอกถึงพลังงานล้นเหลือและความกระตือรือร้นในการใช้ชีวิต!',
+  'ฟันธง! เส้นชีวิตค่อนข้างตื้นในบางช่วง ควรดูแลสุขภาพและพักผ่อนให้เพียงพอเป็นพิเศษ!',
+  'ฟันธง! เส้นชีวิตมีเกาะเล็กๆ ตรงกลาง บ่งบอกถึงช่วงเวลาที่ต้องเผชิญความท้าทาย แต่จะผ่านไปได้ด้วยดี!',
+  'ฟันธง! เส้นชีวิตชัดเจนไม่ขาดตอน แสดงถึงชีวิตที่มั่นคงและมีแรงสนับสนุนรอบตัวเสมอ!',
+  'ฟันธง! เส้นชีวิตทอดยาวเข้าใกล้ข้อมือ บ่งบอกถึงพลังชีวิตที่ยืนยาวและสุขภาพที่แข็งแรงในระยะยาว!',
+];
+
+const HEAD_LINE_TEXTS = [
+  'ฟันธง! เส้นสมองของคุณตรงและยาว แสดงถึงความคิดที่เป็นเหตุเป็นผลและตัดสินใจได้เฉียบขาด!',
+  'ฟันธง! เส้นสมองโค้งลงเล็กน้อย บ่งบอกถึงความคิดสร้างสรรค์และจินตนาการที่กว้างไกลกว่าคนทั่วไป!',
+  'ฟันธง! เส้นสมองแยกเป็นสองแขนงช่วงปลาย แสดงว่าคุณมองเห็นหลายมุมมองพร้อมกัน เหมาะกับงานที่ต้องคิดรอบด้าน!',
+  'ฟันธง! เส้นสมองค่อนข้างสั้น บ่งบอกถึงคนที่ตัดสินใจเร็วและชอบลงมือทำมากกว่าคิดนาน!',
+  'ฟันธง! เส้นสมองลึกและชัดเจนตลอดเส้น แสดงถึงสมาธิที่ดีและความสามารถในการโฟกัสกับเป้าหมาย!',
+  'ฟันธง! เส้นสมองมีจุดขาดช่วงสั้นๆ บ่งบอกถึงช่วงที่ต้องปรับเปลี่ยนความคิดครั้งใหญ่ในชีวิต!',
+  'ฟันธง! เส้นสมองทอดขนานกับเส้นชีวิตในช่วงต้น แสดงถึงความรอบคอบและระมัดระวังก่อนตัดสินใจสำคัญ!',
+];
+
+const HEART_LINE_TEXTS = [
+  'ฟันธง! เส้นใจของคุณโค้งสวยและลึก แสดงถึงคนที่มีความรักความอบอุ่นเต็มเปี่ยมและรักใครรักจริง!',
+  'ฟันธง! เส้นใจทอดยาวตรงไปถึงนิ้วชี้ บ่งบอกถึงคนที่ให้ความสำคัญกับความรักเป็นอันดับต้นๆ ของชีวิต!',
+  'ฟันธง! เส้นใจมีแขนงเล็กๆ แตกขึ้นด้านบน แสดงถึงโอกาสที่จะพบความรักครั้งสำคัญในไม่ช้า!',
+  'ฟันธง! เส้นใจค่อนข้างตรงและสั้น บ่งบอกถึงคนที่ใช้เหตุผลมากกว่าอารมณ์ในเรื่องความรัก!',
+  'ฟันธง! เส้นใจโค้งขึ้นไปทางนิ้วกลาง แสดงถึงคนที่รักอิสระและต้องการพื้นที่ส่วนตัวในความสัมพันธ์!',
+  'ฟันธง! เส้นใจมีเกาะเล็กๆ ตรงกลาง บ่งบอกถึงช่วงเวลาที่หัวใจเคยบอบช้ำ แต่จะกลับมาเข้มแข็งกว่าเดิม!',
+  'ฟันธง! เส้นใจชัดลึกไม่ขาดตอน แสดงถึงความสัมพันธ์ที่มั่นคงและคนรอบข้างที่จริงใจ!',
+];
+
+const FATE_LINE_TEXTS = [
+  'ฟันธง! เส้นวาสนาของคุณพาดตรงขึ้นกลางฝ่ามือชัดเจน บ่งบอกถึงเส้นทางอาชีพที่มั่นคงและก้าวหน้าตามแผน!',
+  'ฟันธง! เส้นวาสนาเริ่มต้นจากกลางฝ่ามือ บ่งบอกว่าความสำเร็จจะมาในช่วงกลางชีวิต ตอนนี้กำลังก่อร่างสร้างฐาน!',
+  'ฟันธง! เส้นวาสนาขาดเป็นช่วงๆ แสดงว่าเส้นทางอาชีพจะมีการเปลี่ยนสายงานหรือย้ายที่ทำงานหลายครั้ง!',
+  'ฟันธง! เส้นวาสนาไม่ชัดเจนนัก บ่งบอกถึงคนที่กำหนดชะตาชีวิตด้วยตัวเองมากกว่าพึ่งพาโชคชะตา!',
+  'ฟันธง! เส้นวาสนาทอดยาวจากข้อมือขึ้นไปจรดนิ้วกลาง แสดงถึงเส้นทางความสำเร็จที่ชัดเจนตั้งแต่วัยเยาว์!',
+  'ฟันธง! เส้นวาสนามีแขนงแตกไปทางนิ้วชี้ บ่งบอกถึงโอกาสก้าวขึ้นเป็นผู้นำหรือเจ้าของกิจการในอนาคต!',
+  'ฟันธง! เส้นวาสนาขนานกับเส้นชีวิต แสดงถึงคนที่ได้รับการสนับสนุนจากครอบครัวในเส้นทางอาชีพเสมอ!',
 ];
 
 const CATS_META = [
@@ -948,10 +1008,18 @@ function buildResult(f) {
                : chongLevel === 'กลาง' ? CHONG_REMEDY_MID
                : pick(REMEDY_TEXTS);
 
+  const palmRead = {
+    life:  pick(LIFE_LINE_TEXTS),
+    head:  pick(HEAD_LINE_TEXTS),
+    heart: pick(HEART_LINE_TEXTS),
+    fate:  pick(FATE_LINE_TEXTS),
+  };
+
   return {
     overall,
     overallText: pick(OVERALL_TEXTS),
     cats,
+    palmRead,
     zodiac: ZODIAC[zIdx],
     element: CHINESE_ELEMENTS[stemIdx],
     buddha: BUDDHA_POSTURES[wIdx],
@@ -1000,6 +1068,10 @@ function paintResult(prefix, entry) {
   const palmsEl = document.getElementById(prefix+'-palms');
   const palmImgs = [entry.leftPhoto, entry.rightPhoto].filter(Boolean);
   palmsEl.innerHTML = palmImgs.map(src => `<img class="palm-result-thumb" src="${src}">`).join('');
+  document.getElementById(prefix+'-line-life').textContent = r.palmRead.life;
+  document.getElementById(prefix+'-line-head').textContent = r.palmRead.head;
+  document.getElementById(prefix+'-line-heart').textContent = r.palmRead.heart;
+  document.getElementById(prefix+'-line-fate').textContent = r.palmRead.fate;
   document.getElementById(prefix+'-chips').innerHTML =
     `<span class="chip">${r.element.e} ${r.element.name}</span><span class="chip">${r.buddha.e} ${r.buddha.name}</span>`;
   document.getElementById(prefix+'-overall-badge').style.setProperty('--pct', r.overall);
