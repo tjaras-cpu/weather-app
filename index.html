@@ -106,6 +106,9 @@ body::before {
 .fld-inp  { width:100%; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:14px; padding:14px 16px; font-size:16px; font-weight:600; color:var(--t1); font-family:inherit; -webkit-appearance:none; }
 .fld-inp:focus { outline:none; border-color:var(--p); }
 .fld-inp::-webkit-calendar-picker-indicator { filter:invert(1); opacity:.6; }
+.gender-toggle { display:flex; gap:10px; }
+.gender-btn { flex:1; text-align:center; padding:13px; border-radius:14px; font-size:15px; font-weight:700; cursor:pointer; background:rgba(255,255,255,.06); border:1px solid var(--b1); color:var(--t2); transition:all .2s; }
+.gender-btn.on { background:linear-gradient(135deg,#dc2626,#f6ad37); color:#fff; border-color:transparent; }
 .chk-row { display:flex; align-items:center; gap:10px; margin:-4px 0 20px; }
 .chk-row input { width:18px; height:18px; accent-color:var(--p); }
 .chk-row label { font-size:13px; color:var(--t2); }
@@ -164,12 +167,16 @@ body::before {
 .lucky-num { font-size:30px; font-weight:800; color:var(--go); font-variant-numeric:tabular-nums; }
 .lucky-swatch { width:34px; height:34px; border-radius:50%; margin:0 auto 6px; box-shadow:0 0 0 3px rgba(255,255,255,.08); }
 .lucky-color-name { font-size:14px; font-weight:700; }
+.lucky-gem { font-size:26px; margin-bottom:6px; }
+.karma-card { background:linear-gradient(135deg,rgba(220,38,38,.14),rgba(139,0,0,.06)); border-color:rgba(220,38,38,.28); }
 .advice-card { background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(249,115,22,.06)); border:1px solid rgba(245,179,1,.28); border-radius:18px; padding:16px; margin:6px 0 18px; text-align:left; display:flex; gap:12px; align-items:flex-start; }
 .advice-ico { font-size:22px; flex-shrink:0; }
 .advice-title { font-size:12px; font-weight:700; color:var(--go); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
 .advice-text { font-size:13px; color:var(--t1); line-height:1.6; }
 .chip-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
 .chip { background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:20px; padding:6px 12px; font-size:12px; font-weight:600; color:var(--t2); }
+.element-desc { font-size:12px; color:var(--t2); line-height:1.6; text-align:center; padding:0 12px; margin-top:8px; }
+.hand-note { font-size:12px; color:var(--pk); font-weight:600; text-align:center; background:rgba(246,173,55,.10); border-radius:12px; padding:8px 10px; margin-bottom:12px; }
 .found-card { background:linear-gradient(135deg,rgba(220,38,38,.16),rgba(20,184,166,.06)); border:1px solid rgba(220,38,38,.26); border-radius:20px; padding:18px; margin:16px 0 18px; text-align:left; }
 .found-title { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.6px; margin-bottom:12px; }
 .found-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
@@ -306,6 +313,13 @@ body::before {
           <input type="text" id="rd-name" class="fld-inp" placeholder="เช่น น้องมิ้นท์" maxlength="30">
         </div>
         <div class="fld-row">
+          <label class="fld-lbl">เพศ</label>
+          <div class="gender-toggle">
+            <div class="gender-btn on" id="gender-male" onclick="setGender('male')">👨 ชาย</div>
+            <div class="gender-btn" id="gender-female" onclick="setGender('female')">👩 หญิง</div>
+          </div>
+        </div>
+        <div class="fld-row">
           <label class="fld-lbl">วันเดือนปีเกิด</label>
           <input type="date" id="rd-date" class="fld-inp">
         </div>
@@ -367,6 +381,7 @@ body::before {
           <div class="res-date" id="res-date">—</div>
           <div class="res-zodiac" id="res-zodiac">—</div>
           <div class="chip-row" id="res-chips"></div>
+          <div class="element-desc" id="res-element-desc">—</div>
           <div class="res-overall-badge" id="res-overall-badge">
             <div class="res-overall-num" id="res-overall-num">—</div>
             <div class="res-overall-lbl">ดวงโดยรวม</div>
@@ -376,6 +391,7 @@ body::before {
 
         <div class="found-card">
           <div class="found-title">✋ ผลอ่านลายมือ</div>
+          <div class="hand-note" id="res-hand-note">—</div>
           <div class="palm-result-row" id="res-palms"></div>
           <div class="palm-line"><div class="palm-line-name">🫀 เส้นชีวิต</div><div class="palm-line-text" id="res-line-life">—</div></div>
           <div class="palm-line"><div class="palm-line-name">🧠 เส้นสมอง</div><div class="palm-line-text" id="res-line-head">—</div></div>
@@ -399,9 +415,12 @@ body::before {
         <div class="lucky-row">
           <div class="lucky-box"><div class="lucky-lbl">เลขนำโชค</div><div class="lucky-num" id="res-lucky-num">—</div></div>
           <div class="lucky-box"><div class="lucky-swatch" id="res-color-swatch"></div><div class="lucky-color-name" id="res-color-name">—</div></div>
+          <div class="lucky-box"><div class="lucky-gem" id="res-gem-ico">—</div><div class="lucky-color-name" id="res-gem-name">—</div></div>
         </div>
 
+        <div class="advice-card"><div class="advice-ico">🍀</div><div><div class="advice-title">ของเสริมดวง</div><div class="advice-text" id="res-lucky-item">—</div></div></div>
         <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">วิธีแก้ดวง</div><div class="advice-text" id="res-remedy">—</div></div></div>
+        <div class="advice-card karma-card"><div class="advice-ico">🙏</div><div><div class="advice-title">วิธีแก้กรรม</div><div class="advice-text" id="res-karma">—</div></div></div>
         <div class="disclaimer" style="margin-bottom:16px">ผลดูดวงเพื่อความบันเทิงเท่านั้น โปรดใช้วิจารณญาณในการตัดสินใจ</div>
         </div>
 
@@ -481,6 +500,7 @@ body::before {
         <div class="res-date" id="mres-date">—</div>
         <div class="res-zodiac" id="mres-zodiac">—</div>
         <div class="chip-row" id="mres-chips"></div>
+        <div class="element-desc" id="mres-element-desc">—</div>
         <div class="res-overall-badge" id="mres-overall-badge">
           <div class="res-overall-num" id="mres-overall-num">—</div>
           <div class="res-overall-lbl">ดวงโดยรวม</div>
@@ -490,6 +510,7 @@ body::before {
 
       <div class="found-card">
         <div class="found-title">✋ ผลอ่านลายมือ</div>
+        <div class="hand-note" id="mres-hand-note">—</div>
         <div class="palm-result-row" id="mres-palms"></div>
         <div class="palm-line"><div class="palm-line-name">🫀 เส้นชีวิต</div><div class="palm-line-text" id="mres-line-life">—</div></div>
         <div class="palm-line"><div class="palm-line-name">🧠 เส้นสมอง</div><div class="palm-line-text" id="mres-line-head">—</div></div>
@@ -513,8 +534,11 @@ body::before {
       <div class="lucky-row">
         <div class="lucky-box"><div class="lucky-lbl">เลขนำโชค</div><div class="lucky-num" id="mres-lucky-num">—</div></div>
         <div class="lucky-box"><div class="lucky-swatch" id="mres-color-swatch"></div><div class="lucky-color-name" id="mres-color-name">—</div></div>
+        <div class="lucky-box"><div class="lucky-gem" id="mres-gem-ico">—</div><div class="lucky-color-name" id="mres-gem-name">—</div></div>
       </div>
+      <div class="advice-card"><div class="advice-ico">🍀</div><div><div class="advice-title">ของเสริมดวง</div><div class="advice-text" id="mres-lucky-item">—</div></div></div>
       <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">วิธีแก้ดวง</div><div class="advice-text" id="mres-remedy">—</div></div></div>
+      <div class="advice-card karma-card"><div class="advice-ico">🙏</div><div><div class="advice-title">วิธีแก้กรรม</div><div class="advice-text" id="mres-karma">—</div></div></div>
       </div>
 
       <button class="btn btn-gold" onclick="exportPDF('mres')">📄 บันทึกเป็น PDF</button>
@@ -724,6 +748,48 @@ const CHINESE_ELEMENTS = [
   { e:'💧', name:'ธาตุน้ำ (หยิน)' },
 ];
 
+const ELEMENT_DESC = [
+  'มีความคิดสร้างสรรค์ ชอบเติบโตและพัฒนาตัวเองอยู่เสมอ ปรับตัวเก่งเหมือนต้นไม้ที่แตกกิ่งก้านไม่หยุดนิ่ง',
+  'มีพลังและความกระตือรือร้นสูง เป็นผู้นำโดยธรรมชาติ กล้าตัดสินใจและลงมือทำทันที',
+  'มั่นคง หนักแน่น น่าเชื่อถือ เป็นที่พึ่งของคนรอบข้างเสมอ เหมือนผืนแผ่นดินที่รองรับทุกสิ่ง',
+  'มีระเบียบวินัย เด็ดขาด และรักความยุติธรรม ทำอะไรทำจริง เหมือนโลหะที่แข็งแกร่งและคมชัด',
+  'ยืดหยุ่น ปรับตัวเก่ง และมีไหวพริบสูง ไหลลื่นไปตามสถานการณ์ได้อย่างชาญฉลาดเหมือนสายน้ำ',
+];
+
+const GEMSTONES = [
+  { e:'❤️', name:'ทับทิม' },
+  { e:'🤍', name:'มุกดาหาร' },
+  { e:'🟤', name:'โกเมน' },
+  { e:'💚', name:'มรกต' },
+  { e:'💛', name:'บุษราคัม' },
+  { e:'🤎', name:'เพชร' },
+  { e:'💙', name:'นิล' },
+];
+
+const LUCKY_ITEMS = [
+  'กบสามขาคาบเหรียญ 🐸 เสริมโชคลาภและการค้าขาย',
+  'แมวกวักทองคำ 🐱 เรียกทรัพย์เรียกลูกค้า',
+  'ต้นเงินต้นทองปลอมประดับโต๊ะทำงาน 🌳 เสริมความมั่งคั่ง',
+  'กระดิ่งลมแขวนหน้าบ้าน 🔔 ไล่พลังงานไม่ดี',
+  'รูปปั้นมังกรทองตั้งโต๊ะทำงาน 🐉 เสริมบารมีและอำนาจ',
+  'พระเครื่ององค์ปางประจำวันเกิด 🪷 คุ้มครองและเสริมสิริมงคล',
+  'เครื่องรางตาปีศาจ (นาซาร์) 🧿 ป้องกันสิ่งไม่ดีและคำครหา',
+  'ช้างคู่หันหน้าเข้าบ้าน 🐘 เสริมความมั่นคงในครอบครัว',
+  'ต้นไผ่มงคลปลูกในน้ำ 🎋 เสริมความเจริญก้าวหน้า',
+  'เหรียญโป๊ยเซียนพกติดกระเป๋าสตางค์ 🪙 เสริมโชคลาภรอบด้าน',
+];
+
+const KARMA_TEXTS = [
+  'ปล่อยนกปล่อยปลาเพื่ออุทิศส่วนกุศลให้เจ้ากรรมนายเวร จะช่วยผ่อนหนักให้เป็นเบา',
+  'สวดบทแผ่เมตตาทุกคืนก่อนนอน อุทิศบุญให้ผู้ที่เคยล่วงเกินกันทั้งที่รู้ตัวและไม่รู้ตัว',
+  'ถวายสังฆทานอุทิศให้บิดามารดาและญาติผู้ล่วงลับ จะช่วยเสริมบุญบารมีให้ตัวเอง',
+  'ทำบุญไถ่ชีวิตโค-กระบือหรือสัตว์ใหญ่ เป็นการสร้างบุญใหญ่เพื่อล้างกรรมเก่า',
+  'สร้างหนังสือธรรมะหรือพระพุทธรูปแจกเป็นธรรมทาน จะช่วยเสริมปัญญาและแก้กรรมด้านการเรียนรู้',
+  'ขอขมาลาโทษต่อผู้ที่เคยล่วงเกิน ทั้งต่อหน้าและในใจ จะช่วยคลี่คลายกรรมเก่าให้เบาลง',
+  'หมั่นรักษาศีล 5 ให้บริสุทธิ์ ไม่สร้างกรรมใหม่ซ้อนกรรมเก่า ชีวิตจะค่อยๆ ดีขึ้น',
+  'บวชเนกขัมมะหรือถือศีลอุโบสถระยะสั้น เป็นการล้างกรรมทางใจอย่างจริงจัง',
+];
+
 const BUDDHA_POSTURES = [
   { e:'🙏', name:'ปางถวายเนตร' },
   { e:'🖐️', name:'ปางห้ามญาติ' },
@@ -833,11 +899,18 @@ function goToRead(reset) {
 }
 
 /* ── Read flow state ── */
-let form = { date:'', time:'', noTime:false, name:'', leftPhoto:null, rightPhoto:null };
+let form = { date:'', time:'', noTime:false, name:'', gender:'male', leftPhoto:null, rightPhoto:null };
 let scanTimer = null;
 
+function setGender(g) {
+  form.gender = g;
+  document.getElementById('gender-male').classList.toggle('on', g==='male');
+  document.getElementById('gender-female').classList.toggle('on', g==='female');
+}
+
 function resetReadFlow() {
-  form = { date:'', time:'', noTime:false, name:'', leftPhoto:null, rightPhoto:null };
+  form = { date:'', time:'', noTime:false, name:'', gender:'male', leftPhoto:null, rightPhoto:null };
+  setGender('male');
   document.getElementById('rd-name').value = '';
   document.getElementById('rd-date').value = '';
   document.getElementById('rd-time').value = '';
@@ -993,7 +1066,7 @@ function seedFromStr(str) {
 }
 
 function buildResult(f) {
-  let seed = seedFromStr(f.date+'|'+f.time+'|'+f.name);
+  let seed = seedFromStr(f.date+'|'+f.time+'|'+f.name+'|'+f.gender);
   const draw = () => { seed = (seed*1103515245 + 12345) >>> 0; return seed; };
   const pick = arr => arr[draw() % arr.length];
   const score = () => 50 + (draw() % 46);
@@ -1037,15 +1110,26 @@ function buildResult(f) {
     fate:  pick(FATE_LINE_TEXTS),
   };
 
+  const primaryHand = f.gender === 'female' ? 'ขวา' : 'ซ้าย';
+  const gem = GEMSTONES[wIdx];
+  const luckyItem = pick(LUCKY_ITEMS);
+  const karma = pick(KARMA_TEXTS);
+
   return {
     overall,
     overallText: pick(OVERALL_TEXTS),
     cats,
     palmRead,
+    gender: f.gender,
+    primaryHand,
     zodiac: ZODIAC[zIdx],
     element: CHINESE_ELEMENTS[stemIdx],
+    elementDesc: ELEMENT_DESC[Math.floor(stemIdx/2)],
     buddha: BUDDHA_POSTURES[wIdx],
     color: DAY_COLORS[wIdx],
+    gem,
+    luckyItem,
+    karma,
     luckyNum: String(draw() % 100).padStart(2,'0'),
     age,
     stage,
@@ -1136,6 +1220,10 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-line-fate').textContent = r.palmRead.fate;
   document.getElementById(prefix+'-chips').innerHTML =
     `<span class="chip">${r.element.e} ${r.element.name}</span><span class="chip">${r.buddha.e} ${r.buddha.name}</span>`;
+  document.getElementById(prefix+'-element-desc').textContent = r.elementDesc;
+  const genderLbl = r.gender === 'female' ? 'ผู้หญิง' : 'ผู้ชาย';
+  document.getElementById(prefix+'-hand-note').innerHTML =
+    `👐 ตามความเชื่อจีน (男左女右): ${genderLbl}เน้นดูลายมือข้าง<b>${r.primaryHand}</b>เป็นหลัก`;
   document.getElementById(prefix+'-overall-badge').style.setProperty('--pct', r.overall);
   document.getElementById(prefix+'-overall-num').textContent = r.overall;
   document.getElementById(prefix+'-overall-text').textContent = r.overallText;
@@ -1158,8 +1246,12 @@ function paintResult(prefix, entry) {
 
   document.getElementById(prefix+'-color-swatch').style.background = r.color.hex;
   document.getElementById(prefix+'-color-name').textContent = r.color.name;
+  document.getElementById(prefix+'-gem-ico').textContent = r.gem.e;
+  document.getElementById(prefix+'-gem-name').textContent = r.gem.name;
   document.getElementById(prefix+'-lucky-num').textContent = r.luckyNum;
+  document.getElementById(prefix+'-lucky-item').textContent = r.luckyItem;
   document.getElementById(prefix+'-remedy').textContent = r.remedy;
+  document.getElementById(prefix+'-karma').textContent = r.karma;
 }
 
 function exportPDF(prefix) {
