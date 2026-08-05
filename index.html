@@ -807,10 +807,6 @@ body::before {
           </div>
         </div>
         <div class="fld-row">
-          <label class="fld-lbl">อยากถามเรื่องอะไร (ไม่บังคับ)</label>
-          <input type="text" id="gypsy-q" class="fld-inp" placeholder="เช่น ควรตัดสินใจเรื่องนี้ไหม" maxlength="80">
-        </div>
-        <div class="fld-row">
           <label class="fld-lbl">เลือกหมวดที่อยากรู้ (ไม่บังคับ)</label>
           <div class="gypsy-cat-row" id="gypsy-cat-row">
             <button type="button" class="gypsy-cat-chip" data-key="love" onclick="toggleGypsyCategory('love')">💕 ความรัก</button>
@@ -818,6 +814,10 @@ body::before {
             <button type="button" class="gypsy-cat-chip" data-key="money" onclick="toggleGypsyCategory('money')">💰 การเงิน</button>
             <button type="button" class="gypsy-cat-chip" data-key="health" onclick="toggleGypsyCategory('health')">🩺 สุขภาพ</button>
           </div>
+        </div>
+        <div class="fld-row">
+          <label class="fld-lbl">ระบุรายละเอียดคำถามเจาะจง (ไม่บังคับ)</label>
+          <input type="text" id="gypsy-q" class="fld-inp" placeholder="เช่น ควรตัดสินใจเรื่องนี้ไหม" maxlength="120">
         </div>
         <button class="btn btn-gold" onclick="goToTarotCards()">🃏 เลือกไพ่ทาโรต์</button>
         <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
@@ -1206,32 +1206,39 @@ const GYPSY_VISIONS = [
   'ลูกแก้วมองเห็นแสงจันทร์นวลผ่องใส จิตใจจะสงบขึ้นและมองเห็นทางออกชัดเจน',
 ];
 
-const GYPSY_ANSWERS = [
+const GYPSY_ANSWERS_YES = [
   'ลูกแก้วบอกว่า ใช่ คำตอบที่คุณรอคอยกำลังจะปรากฏชัดเจน',
-  'ลูกแก้วบอกว่า ยังไม่ถึงเวลา ให้อดทนรออีกสักระยะ',
   'ลูกแก้วบอกว่า มีความเป็นไปได้สูง แต่ต้องอาศัยความพยายามของคุณเองด้วย',
-  'ลูกแก้วบอกว่า ควรคิดทบทวนอีกครั้งก่อนตัดสินใจ',
   'ลูกแก้วบอกว่า สิ่งที่ถามมามีเกณฑ์เป็นไปได้ดี อย่ากังวลมากเกินไป',
+  'ลูกแก้วบอกว่า โอกาสเปิดกว้างสำหรับคุณแล้ว กล้าที่จะก้าวไปข้างหน้า',
+  'ลูกแก้วบอกว่า ทุกอย่างจะเป็นไปด้วยดีหากคุณใจเย็นและรอจังหวะที่เหมาะสม',
+];
+const GYPSY_ANSWERS_MAYBE = [
+  'ลูกแก้วบอกว่า ยังไม่ถึงเวลา ให้อดทนรออีกสักระยะ',
   'ลูกแก้วบอกว่า คำตอบอยู่ในใจคุณอยู่แล้ว ลองฟังเสียงหัวใจตัวเองดู',
   'ลูกแก้วบอกว่า ยังไม่ชัดเจนนัก ลองถามใหม่อีกครั้งในภายหลัง',
-  'ลูกแก้วบอกว่า โอกาสเปิดกว้างสำหรับคุณแล้ว กล้าที่จะก้าวไปข้างหน้า',
+  'ลูกแก้วบอกว่า ครึ่งหนึ่งขึ้นอยู่กับโชค อีกครึ่งขึ้นอยู่กับการกระทำของคุณเอง',
+];
+const GYPSY_ANSWERS_CAUTION = [
+  'ลูกแก้วบอกว่า ควรคิดทบทวนอีกครั้งก่อนตัดสินใจ',
   'ลูกแก้วบอกว่า ระวังการตัดสินใจที่หุนหันพลันแล่นในเรื่องนี้',
-  'ลูกแก้วบอกว่า ทุกอย่างจะเป็นไปด้วยดีหากคุณใจเย็นและรอจังหวะที่เหมาะสม',
+  'ลูกแก้วบอกว่า สัญญาณตอนนี้ยังไม่เป็นใจนัก ควรรอให้สถานการณ์นิ่งกว่านี้ก่อน',
+  'ลูกแก้วบอกว่า มีอุปสรรคบางอย่างที่ต้องระวังเป็นพิเศษในเรื่องนี้',
 ];
 
 const TAROT_CARDS = [
-  { name:'ไพ่จักรพรรดิ', icon:'👑', meaning:'ไพ่นี้ฟันธงว่า คุณกำลังจะได้อำนาจหรือตำแหน่งที่มั่นคงขึ้น การตัดสินใจของคุณช่วงนี้จะมีน้ำหนักและมีคนรับฟังมากขึ้น' },
-  { name:'ไพ่คนรัก', icon:'💞', meaning:'ไพ่นี้ฟันธงว่า กำลังจะมีจุดเปลี่ยนสำคัญเรื่องความสัมพันธ์ คุณจะต้องเลือกระหว่างสองทางที่ต่างกันชัดเจน เลือกทางที่ใจสงบที่สุด' },
-  { name:'ไพ่ล้อแห่งโชคชะตา', icon:'🎡', meaning:'ไพ่นี้ฟันธงว่า วงล้อชีวิตกำลังหมุน โชคจะพลิกผันแบบไม่ทันตั้งตัวในเร็ววันนี้ ให้เตรียมใจรับสิ่งใหม่ไว้ล่วงหน้า' },
-  { name:'ไพ่ดวงดาว', icon:'⭐', meaning:'ไพ่นี้ฟันธงว่า หลังจากผ่านช่วงยากลำบากมา นี่คือสัญญาณของความหวังและการเยียวยาที่กำลังจะเข้ามาในชีวิตคุณ' },
-  { name:'ไพ่ดวงอาทิตย์', icon:'☀️', meaning:'ไพ่นี้ฟันธงว่า เป็นไพ่แห่งความสำเร็จและความสุขที่แท้จริง สิ่งที่ตั้งใจทำอยู่จะประสบผลสำเร็จเกินคาด' },
-  { name:'ไพ่การเปลี่ยนผ่าน', icon:'🦋', meaning:'ไพ่นี้ฟันธงว่า ไม่ใช่เรื่องร้าย แต่หมายถึงการปิดฉากบทหนึ่งของชีวิต เพื่อเปิดทางให้สิ่งใหม่ที่ดีกว่าเข้ามาแทนที่' },
-  { name:'ไพ่พระจันทร์', icon:'🌙', meaning:'ไพ่นี้ฟันธงว่า ช่วงนี้มีบางเรื่องยังไม่ชัดเจนหรือมีคนไม่จริงใจอยู่ใกล้ตัว ให้เชื่อสัญชาตญาณของตัวเองมากกว่าคำพูดคนอื่น' },
-  { name:'ไพ่หอคอย', icon:'🏯', meaning:'ไพ่นี้ฟันธงว่า จะมีการเปลี่ยนแปลงกะทันหันเกิดขึ้น แม้ช่วงแรกจะรู้สึกไม่มั่นคง แต่ผลลัพธ์ระยะยาวจะดีกว่าเดิม' },
-  { name:'ไพ่ผู้เริ่มต้น', icon:'🃏', meaning:'ไพ่นี้ฟันธงว่า เป็นสัญญาณของการเริ่มต้นใหม่ที่เต็มไปด้วยความกล้า อย่ากลัวที่จะก้าวออกจากพื้นที่ปลอดภัยของตัวเอง' },
-  { name:'ไพ่ขุมทรัพย์', icon:'💰', meaning:'ไพ่นี้ฟันธงว่า โชคลาภด้านการเงินกำลังจะเข้ามา แต่ต้องระวังเรื่องการใช้จ่ายเกินตัวในช่วงนี้ด้วย' },
-  { name:'ไพ่ปัญญาญาณ', icon:'🌟', meaning:'ไพ่นี้ฟันธงว่า มีบางเรื่องที่ยังไม่ถูกเปิดเผยต่อคุณ ให้ใช้ปัญญาและความอดทนในการค้นหาความจริงด้วยตัวเอง' },
-  { name:'ไพ่ความยุติธรรม', icon:'⚖️', meaning:'ไพ่นี้ฟันธงว่า สิ่งที่คุณทำมาจะได้รับการตอบแทนอย่างยุติธรรม ทั้งเรื่องดีที่จะได้รับและเรื่องที่ต้องแก้ไขให้ถูกต้อง' },
+  { name:'ไพ่จักรพรรดิ', icon:'👑', sentiment:'good', meaning:'ไพ่นี้ฟันธงว่า คุณกำลังจะได้อำนาจหรือตำแหน่งที่มั่นคงขึ้น การตัดสินใจของคุณช่วงนี้จะมีน้ำหนักและมีคนรับฟังมากขึ้น' },
+  { name:'ไพ่คนรัก', icon:'💞', sentiment:'mid', meaning:'ไพ่นี้ฟันธงว่า กำลังจะมีจุดเปลี่ยนสำคัญเรื่องความสัมพันธ์ คุณจะต้องเลือกระหว่างสองทางที่ต่างกันชัดเจน เลือกทางที่ใจสงบที่สุด' },
+  { name:'ไพ่ล้อแห่งโชคชะตา', icon:'🎡', sentiment:'mid', meaning:'ไพ่นี้ฟันธงว่า วงล้อชีวิตกำลังหมุน โชคจะพลิกผันแบบไม่ทันตั้งตัวในเร็ววันนี้ ให้เตรียมใจรับสิ่งใหม่ไว้ล่วงหน้า' },
+  { name:'ไพ่ดวงดาว', icon:'⭐', sentiment:'good', meaning:'ไพ่นี้ฟันธงว่า หลังจากผ่านช่วงยากลำบากมา นี่คือสัญญาณของความหวังและการเยียวยาที่กำลังจะเข้ามาในชีวิตคุณ' },
+  { name:'ไพ่ดวงอาทิตย์', icon:'☀️', sentiment:'good', meaning:'ไพ่นี้ฟันธงว่า เป็นไพ่แห่งความสำเร็จและความสุขที่แท้จริง สิ่งที่ตั้งใจทำอยู่จะประสบผลสำเร็จเกินคาด' },
+  { name:'ไพ่การเปลี่ยนผ่าน', icon:'🦋', sentiment:'mid', meaning:'ไพ่นี้ฟันธงว่า ไม่ใช่เรื่องร้าย แต่หมายถึงการปิดฉากบทหนึ่งของชีวิต เพื่อเปิดทางให้สิ่งใหม่ที่ดีกว่าเข้ามาแทนที่' },
+  { name:'ไพ่พระจันทร์', icon:'🌙', sentiment:'caution', meaning:'ไพ่นี้ฟันธงว่า ช่วงนี้มีบางเรื่องยังไม่ชัดเจนหรือมีคนไม่จริงใจอยู่ใกล้ตัว ให้เชื่อสัญชาตญาณของตัวเองมากกว่าคำพูดคนอื่น' },
+  { name:'ไพ่หอคอย', icon:'🏯', sentiment:'caution', meaning:'ไพ่นี้ฟันธงว่า จะมีการเปลี่ยนแปลงกะทันหันเกิดขึ้น แม้ช่วงแรกจะรู้สึกไม่มั่นคง แต่ผลลัพธ์ระยะยาวจะดีกว่าเดิม' },
+  { name:'ไพ่ผู้เริ่มต้น', icon:'🃏', sentiment:'good', meaning:'ไพ่นี้ฟันธงว่า เป็นสัญญาณของการเริ่มต้นใหม่ที่เต็มไปด้วยความกล้า อย่ากลัวที่จะก้าวออกจากพื้นที่ปลอดภัยของตัวเอง' },
+  { name:'ไพ่ขุมทรัพย์', icon:'💰', sentiment:'mid', meaning:'ไพ่นี้ฟันธงว่า โชคลาภด้านการเงินกำลังจะเข้ามา แต่ต้องระวังเรื่องการใช้จ่ายเกินตัวในช่วงนี้ด้วย' },
+  { name:'ไพ่ปัญญาญาณ', icon:'🌟', sentiment:'mid', meaning:'ไพ่นี้ฟันธงว่า มีบางเรื่องที่ยังไม่ถูกเปิดเผยต่อคุณ ให้ใช้ปัญญาและความอดทนในการค้นหาความจริงด้วยตัวเอง' },
+  { name:'ไพ่ความยุติธรรม', icon:'⚖️', sentiment:'good', meaning:'ไพ่นี้ฟันธงว่า สิ่งที่คุณทำมาจะได้รับการตอบแทนอย่างยุติธรรม ทั้งเรื่องดีที่จะได้รับและเรื่องที่ต้องแก้ไขให้ถูกต้อง' },
 ];
 
 const CATEGORY_TAROT_INSIGHTS = {
@@ -2194,8 +2201,16 @@ let gypsySpread = [];
 let gypsyPicked = [];
 let gypsyCategory = null;
 const GYPSY_POSITIONS = ['อดีต','ปัจจุบัน','อนาคต'];
+const GYPSY_Q_PLACEHOLDER_DEFAULT = 'เช่น ควรตัดสินใจเรื่องนี้ไหม';
+const GYPSY_Q_PLACEHOLDERS = {
+  love: 'เช่น คนที่คบอยู่ตอนนี้ใช่คนที่ใช่ไหม',
+  career: 'เช่น งานที่ทำอยู่จะไปต่อได้ไหม',
+  money: 'เช่น ปีนี้จะได้เงินก้อนใหญ่ไหม',
+  health: 'เช่น อาการที่เป็นอยู่จะดีขึ้นไหม',
+};
 function openGypsy() {
   document.getElementById('gypsy-q').value = '';
+  document.getElementById('gypsy-q').placeholder = GYPSY_Q_PLACEHOLDER_DEFAULT;
   gypsyPicked = [];
   gypsyCategory = null;
   document.querySelectorAll('#gypsy-cat-row .gypsy-cat-chip').forEach(el => el.classList.remove('active'));
@@ -2207,6 +2222,7 @@ function toggleGypsyCategory(key) {
   document.querySelectorAll('#gypsy-cat-row .gypsy-cat-chip').forEach(el => {
     el.classList.toggle('active', el.dataset.key === gypsyCategory);
   });
+  document.getElementById('gypsy-q').placeholder = gypsyCategory ? GYPSY_Q_PLACEHOLDERS[gypsyCategory] : GYPSY_Q_PLACEHOLDER_DEFAULT;
 }
 function closeGypsyModal(e) {
   if (e && e.target !== document.getElementById('gypsy-modal')) return;
@@ -2261,10 +2277,12 @@ function drawGypsy() {
   document.getElementById('gypsy-tarot-results').innerHTML = gypsyPicked.map((c, i) =>
     `<div class="advice-card" style="margin-bottom:10px"><div class="advice-ico">${c.icon}</div><div><div class="advice-title">${GYPSY_POSITIONS[i]} · ${c.name}</div><div class="advice-text">${c.meaning}</div></div></div>`
   ).join('');
+  const detectedTopic = q ? findTopic(q) : null;
+  const effectiveCategory = gypsyCategory || (['love','career','money','health'].includes(detectedTopic) ? detectedTopic : null);
   const catResult = document.getElementById('gypsy-cat-result');
-  if (gypsyCategory) {
-    const meta = CATS_META.find(c => c.key === gypsyCategory);
-    const pool = CATEGORY_TAROT_INSIGHTS[gypsyCategory];
+  if (effectiveCategory) {
+    const meta = CATS_META.find(c => c.key === effectiveCategory);
+    const pool = CATEGORY_TAROT_INSIGHTS[effectiveCategory];
     catResult.style.display = 'block';
     document.getElementById('gypsy-cat-icon').textContent = meta.icon;
     document.getElementById('gypsy-cat-title').textContent = 'คำทำนายเฉพาะเรื่อง' + meta.name;
@@ -2276,9 +2294,11 @@ function drawGypsy() {
   document.getElementById('gypsy-vision').textContent = vision;
   const qWrap = document.getElementById('gypsy-question-wrap');
   if (q) {
+    const score = gypsyPicked.reduce((s,c) => s + (c.sentiment==='good'?1:c.sentiment==='caution'?-1:0), 0);
+    const answerPool = score > 0 ? GYPSY_ANSWERS_YES : score < 0 ? GYPSY_ANSWERS_CAUTION : GYPSY_ANSWERS_MAYBE;
     qWrap.style.display = 'block';
     document.getElementById('gypsy-question-text').textContent = '“' + q + '”';
-    document.getElementById('gypsy-answer').textContent = GYPSY_ANSWERS[Math.floor(Math.random()*GYPSY_ANSWERS.length)];
+    document.getElementById('gypsy-answer').textContent = answerPool[Math.floor(Math.random()*answerPool.length)];
   } else {
     qWrap.style.display = 'none';
   }
@@ -2288,6 +2308,7 @@ function drawGypsy() {
 function resetGypsy() {
   clearTimeout(gypsyTimer);
   document.getElementById('gypsy-q').value = '';
+  document.getElementById('gypsy-q').placeholder = GYPSY_Q_PLACEHOLDER_DEFAULT;
   gypsyPicked = [];
   gypsyCategory = null;
   document.querySelectorAll('#gypsy-cat-row .gypsy-cat-chip').forEach(el => el.classList.remove('active'));
