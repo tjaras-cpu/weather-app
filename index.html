@@ -85,6 +85,12 @@ body::before {
 .gypsy-photo { width:110px; height:110px; border-radius:50%; object-fit:cover; object-position:top center; margin:0 auto 10px; display:block; border:3px solid rgba(139,92,246,.4); box-shadow:0 8px 20px rgba(0,0,0,.4); }
 .gypsy-gaze-ico { font-size:64px; display:inline-block; animation:gypsyGlow 1.1s ease-in-out infinite; }
 @keyframes gypsyGlow { 0%,100%{ transform:scale(1); filter:drop-shadow(0 0 8px rgba(139,92,246,.6)); } 50%{ transform:scale(1.15); filter:drop-shadow(0 0 22px rgba(139,92,246,.9)); } }
+.tarot-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.tarot-card { aspect-ratio:2/3; border-radius:10px; border:1px solid rgba(139,92,246,.4); background:linear-gradient(135deg,#2a1454,#4c1d95); display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; transition:transform .3s ease, box-shadow .3s ease, background .3s ease; padding:0; }
+.tarot-card:active { transform:scale(.94); }
+.tarot-card:disabled { cursor:default; }
+.tarot-card.flipped { background:linear-gradient(135deg,rgba(246,173,55,.3),rgba(139,92,246,.3)); border-color:var(--pk); box-shadow:0 0 16px rgba(246,173,55,.5); transform:scale(1.06); }
+.tarot-card-back { opacity:.85; }
 .siamsi-shake-ico { font-size:64px; display:inline-block; animation:siamsiShake .35s ease-in-out infinite; }
 @keyframes siamsiShake { 0%{transform:rotate(-14deg)} 50%{transform:rotate(14deg)} 100%{transform:rotate(-14deg)} }
 .siamsi-poem { background:rgba(255,255,255,.05); border:1px solid var(--b2); border-radius:16px; padding:16px; text-align:center; font-size:15px; font-weight:600; line-height:1.8; color:var(--t1); margin-bottom:12px; }
@@ -800,20 +806,27 @@ body::before {
           <label class="fld-lbl">อยากถามเรื่องอะไร (ไม่บังคับ)</label>
           <input type="text" id="gypsy-q" class="fld-inp" placeholder="เช่น ควรตัดสินใจเรื่องนี้ไหม" maxlength="80">
         </div>
-        <button class="btn btn-gold" onclick="gazeGypsy()">🔮 ส่องลูกแก้ว</button>
+        <button class="btn btn-gold" onclick="goToTarotCards()">🃏 เลือกไพ่ทาโรต์</button>
+        <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
+      </div>
+      <div id="gypsy-cards" style="display:none">
+        <div class="modal-title" style="text-align:center;margin-bottom:4px">เลือกไพ่ 1 ใบที่ใจสั่งให้เลือก</div>
+        <p class="modal-sub" style="text-align:center;margin-bottom:16px">ไพ่ที่คุณเลือกเอง คือไพ่ที่ใช่สำหรับคุณตอนนี้</p>
+        <div class="tarot-grid" id="gypsy-cards-grid"></div>
         <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
       </div>
       <div id="gypsy-gazing" style="display:none;text-align:center;padding:20px 0">
         <div class="gypsy-gaze-ico">🔮</div>
-        <div style="margin-top:14px;color:var(--t2);font-weight:600">กำลังส่องลูกแก้ว...</div>
+        <div style="margin-top:14px;color:var(--t2);font-weight:600">กำลังตีความไพ่และส่องลูกแก้ว...</div>
       </div>
       <div id="gypsy-result" style="display:none">
+        <div class="advice-card" style="margin-bottom:12px"><div class="advice-ico" id="gypsy-tarot-icon">🃏</div><div><div class="advice-title" id="gypsy-tarot-name">—</div><div class="advice-text" id="gypsy-tarot-meaning">—</div></div></div>
         <div class="siamsi-poem" id="gypsy-vision">—</div>
         <div id="gypsy-question-wrap" style="display:none">
           <div class="siamsi-q-echo" id="gypsy-question-text">—</div>
           <div class="advice-card"><div class="advice-ico">🔮</div><div><div class="advice-title">คำตอบจากลูกแก้ว</div><div class="advice-text" id="gypsy-answer">—</div></div></div>
         </div>
-        <button class="btn btn-gold" onclick="resetGypsy()">🔮 ส่องอีกครั้ง</button>
+        <button class="btn btn-gold" onclick="resetGypsy()">🔮 ดูอีกครั้ง</button>
         <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
       </div>
     </div>
@@ -1190,6 +1203,21 @@ const GYPSY_ANSWERS = [
   'ลูกแก้วบอกว่า โอกาสเปิดกว้างสำหรับคุณแล้ว กล้าที่จะก้าวไปข้างหน้า',
   'ลูกแก้วบอกว่า ระวังการตัดสินใจที่หุนหันพลันแล่นในเรื่องนี้',
   'ลูกแก้วบอกว่า ทุกอย่างจะเป็นไปด้วยดีหากคุณใจเย็นและรอจังหวะที่เหมาะสม',
+];
+
+const TAROT_CARDS = [
+  { name:'ไพ่จักรพรรดิ', icon:'👑', meaning:'ไพ่นี้ฟันธงว่า คุณกำลังจะได้อำนาจหรือตำแหน่งที่มั่นคงขึ้น การตัดสินใจของคุณช่วงนี้จะมีน้ำหนักและมีคนรับฟังมากขึ้น' },
+  { name:'ไพ่คนรัก', icon:'💞', meaning:'ไพ่นี้ฟันธงว่า กำลังจะมีจุดเปลี่ยนสำคัญเรื่องความสัมพันธ์ คุณจะต้องเลือกระหว่างสองทางที่ต่างกันชัดเจน เลือกทางที่ใจสงบที่สุด' },
+  { name:'ไพ่ล้อแห่งโชคชะตา', icon:'🎡', meaning:'ไพ่นี้ฟันธงว่า วงล้อชีวิตกำลังหมุน โชคจะพลิกผันแบบไม่ทันตั้งตัวในเร็ววันนี้ ให้เตรียมใจรับสิ่งใหม่ไว้ล่วงหน้า' },
+  { name:'ไพ่ดวงดาว', icon:'⭐', meaning:'ไพ่นี้ฟันธงว่า หลังจากผ่านช่วงยากลำบากมา นี่คือสัญญาณของความหวังและการเยียวยาที่กำลังจะเข้ามาในชีวิตคุณ' },
+  { name:'ไพ่ดวงอาทิตย์', icon:'☀️', meaning:'ไพ่นี้ฟันธงว่า เป็นไพ่แห่งความสำเร็จและความสุขที่แท้จริง สิ่งที่ตั้งใจทำอยู่จะประสบผลสำเร็จเกินคาด' },
+  { name:'ไพ่การเปลี่ยนผ่าน', icon:'🦋', meaning:'ไพ่นี้ฟันธงว่า ไม่ใช่เรื่องร้าย แต่หมายถึงการปิดฉากบทหนึ่งของชีวิต เพื่อเปิดทางให้สิ่งใหม่ที่ดีกว่าเข้ามาแทนที่' },
+  { name:'ไพ่พระจันทร์', icon:'🌙', meaning:'ไพ่นี้ฟันธงว่า ช่วงนี้มีบางเรื่องยังไม่ชัดเจนหรือมีคนไม่จริงใจอยู่ใกล้ตัว ให้เชื่อสัญชาตญาณของตัวเองมากกว่าคำพูดคนอื่น' },
+  { name:'ไพ่หอคอย', icon:'🏯', meaning:'ไพ่นี้ฟันธงว่า จะมีการเปลี่ยนแปลงกะทันหันเกิดขึ้น แม้ช่วงแรกจะรู้สึกไม่มั่นคง แต่ผลลัพธ์ระยะยาวจะดีกว่าเดิม' },
+  { name:'ไพ่ผู้เริ่มต้น', icon:'🃏', meaning:'ไพ่นี้ฟันธงว่า เป็นสัญญาณของการเริ่มต้นใหม่ที่เต็มไปด้วยความกล้า อย่ากลัวที่จะก้าวออกจากพื้นที่ปลอดภัยของตัวเอง' },
+  { name:'ไพ่ขุมทรัพย์', icon:'💰', meaning:'ไพ่นี้ฟันธงว่า โชคลาภด้านการเงินกำลังจะเข้ามา แต่ต้องระวังเรื่องการใช้จ่ายเกินตัวในช่วงนี้ด้วย' },
+  { name:'ไพ่ปัญญาญาณ', icon:'🌟', meaning:'ไพ่นี้ฟันธงว่า มีบางเรื่องที่ยังไม่ถูกเปิดเผยต่อคุณ ให้ใช้ปัญญาและความอดทนในการค้นหาความจริงด้วยตัวเอง' },
+  { name:'ไพ่ความยุติธรรม', icon:'⚖️', meaning:'ไพ่นี้ฟันธงว่า สิ่งที่คุณทำมาจะได้รับการตอบแทนอย่างยุติธรรม ทั้งเรื่องดีที่จะได้รับและเรื่องที่ต้องแก้ไขให้ถูกต้อง' },
 ];
 
 const MONTH_TEXTS = [
@@ -2105,8 +2133,11 @@ function resetSiamsi() {
 
 /* ── Gypsy fortune (อาจารย์ไก่) ── */
 let gypsyTimer = null;
+let gypsySpread = [];
+let gypsyCardChosen = null;
 function openGypsy() {
   document.getElementById('gypsy-q').value = '';
+  gypsyCardChosen = null;
   showGypsyStep('ask');
   document.getElementById('gypsy-modal').classList.add('open');
 }
@@ -2116,17 +2147,40 @@ function closeGypsyModal(e) {
   document.getElementById('gypsy-modal').classList.remove('open');
 }
 function showGypsyStep(step) {
-  ['ask','gazing','result'].forEach(s => {
+  ['ask','cards','gazing','result'].forEach(s => {
     document.getElementById('gypsy-'+s).style.display = (s===step) ? 'block' : 'none';
   });
 }
-function gazeGypsy() {
-  showGypsyStep('gazing');
+function goToTarotCards() {
+  renderGypsyCards();
+  showGypsyStep('cards');
+}
+function renderGypsyCards() {
+  gypsySpread = [...TAROT_CARDS].sort(() => Math.random() - 0.5).slice(0, 6);
+  document.getElementById('gypsy-cards-grid').innerHTML = gypsySpread.map((c, i) =>
+    `<button type="button" class="tarot-card" onclick="pickTarotCard(${i})"><span class="tarot-card-back">🔮</span></button>`
+  ).join('');
+}
+function pickTarotCard(i) {
+  const cards = document.querySelectorAll('#gypsy-cards-grid .tarot-card');
+  cards.forEach(el => el.disabled = true);
+  gypsyCardChosen = gypsySpread[i];
+  const btn = cards[i];
+  btn.classList.add('flipped');
+  btn.innerHTML = '<span>' + gypsyCardChosen.icon + '</span>';
   vibe(10);
-  gypsyTimer = setTimeout(drawGypsy, 1600);
+  gypsyTimer = setTimeout(() => {
+    showGypsyStep('gazing');
+    gypsyTimer = setTimeout(drawGypsy, 1400);
+  }, 700);
 }
 function drawGypsy() {
   const q = document.getElementById('gypsy-q').value.trim();
+  if (gypsyCardChosen) {
+    document.getElementById('gypsy-tarot-icon').textContent = gypsyCardChosen.icon;
+    document.getElementById('gypsy-tarot-name').textContent = gypsyCardChosen.name;
+    document.getElementById('gypsy-tarot-meaning').textContent = gypsyCardChosen.meaning;
+  }
   const vision = GYPSY_VISIONS[Math.floor(Math.random()*GYPSY_VISIONS.length)];
   document.getElementById('gypsy-vision').textContent = vision;
   const qWrap = document.getElementById('gypsy-question-wrap');
@@ -2143,6 +2197,7 @@ function drawGypsy() {
 function resetGypsy() {
   clearTimeout(gypsyTimer);
   document.getElementById('gypsy-q').value = '';
+  gypsyCardChosen = null;
   showGypsyStep('ask');
 }
 
