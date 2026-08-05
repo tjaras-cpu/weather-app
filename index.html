@@ -87,6 +87,14 @@ body::before {
 .siamsi-meaning { font-size:13px; color:var(--t2); line-height:1.6; margin-bottom:16px; text-align:center; }
 .siamsi-q-echo { font-size:13px; color:var(--pk); font-style:italic; text-align:center; margin-bottom:10px; }
 .chong-tag.mid { background:rgba(245,179,1,.15); color:#f6ad37; }
+.ask-header { display:flex; gap:12px; align-items:center; margin-bottom:16px; }
+.ask-avatar { width:48px; height:48px; border-radius:50%; object-fit:cover; object-position:top center; border:2px solid rgba(245,179,1,.4); flex-shrink:0; }
+.ask-chat { max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; padding-right:2px; }
+.ask-bubble { max-width:85%; padding:11px 14px; border-radius:16px; font-size:13px; line-height:1.55; }
+.ask-bubble.teacher { align-self:flex-start; background:rgba(245,179,1,.12); border:1px solid rgba(245,179,1,.25); color:var(--t1); border-bottom-left-radius:4px; }
+.ask-bubble.user { align-self:flex-end; background:linear-gradient(135deg,#dc2626,#f6ad37); color:#fff; border-bottom-right-radius:4px; }
+.ask-input-row { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
+.ask-input-row .fld-inp { margin-bottom:0; }
 .home-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
 .sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 8px; text-align:center; }
 .sv { font-size:18px; font-weight:700; margin-bottom:4px; }
@@ -487,7 +495,8 @@ body::before {
         <div class="disclaimer" style="margin-bottom:16px">ผลดูดวงเพื่อความบันเทิงเท่านั้น โปรดใช้วิจารณญาณในการตัดสินใจ</div>
         </div>
 
-        <button class="btn btn-gold" onclick="exportPDF('res')">📄 บันทึกเป็น PDF</button>
+        <button class="btn btn-gold" onclick="openAskModal('res')">🗣️ ถามอาจารย์จรัส</button>
+        <button class="btn btn-dim" onclick="exportPDF('res')">📄 บันทึกเป็น PDF</button>
         <button class="btn btn-dim" onclick="shareResult('res')">📤 แชร์ผลดูดวง</button>
         <button class="btn btn-pur" onclick="goToRead(true)">🔄 ดูดวงอีกครั้ง</button>
         <button class="btn btn-dim" onclick="switchTab('home')">🏠 กลับหน้าแรก</button>
@@ -627,7 +636,8 @@ body::before {
       <div class="advice-card karma-card"><div class="advice-ico">🙏</div><div><div class="advice-title">วิธีแก้กรรม</div><div class="advice-text" id="mres-karma">—</div></div></div>
       </div>
 
-      <button class="btn btn-gold" onclick="exportPDF('mres')">📄 บันทึกเป็น PDF</button>
+      <button class="btn btn-gold" onclick="openAskModal('mres')">🗣️ ถามอาจารย์จรัส</button>
+      <button class="btn btn-dim" onclick="exportPDF('mres')">📄 บันทึกเป็น PDF</button>
       <button class="btn btn-dim" onclick="shareResult('mres')">📤 แชร์ผลดูดวง</button>
       <button class="btn btn-outline-red" onclick="deleteHistEntry()">🗑️ ลบรายการนี้</button>
       <button class="btn btn-dim" onclick="closeHistModal()">ปิด</button>
@@ -689,6 +699,26 @@ body::before {
         <button class="btn btn-gold" onclick="resetSiamsi()">🎋 เสี่ยงใหม่</button>
         <button class="btn btn-dim" onclick="closeSiamsiModal()">ปิด</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Ask Teacher Jarat modal -->
+  <div class="modal-overlay" id="ask-modal" onclick="closeAskModal(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="ask-header">
+        <img class="ask-avatar" id="ask-avatar" alt="อาจารย์จรัส">
+        <div>
+          <div class="modal-title" style="margin-bottom:2px;text-align:left">ถามอาจารย์จรัส</div>
+          <p class="modal-sub" style="margin-bottom:0;text-align:left">ปรึกษาต่อจากพื้นดวงของคุณ ถามเฉพาะเรื่องที่อยากรู้ได้เลย</p>
+        </div>
+      </div>
+      <div class="ask-chat" id="ask-chat"></div>
+      <div class="ask-input-row">
+        <input type="text" id="ask-q" class="fld-inp" placeholder="เช่น เรื่องงานจะเป็นยังไงบ้าง" maxlength="120" onkeydown="if(event.key==='Enter')submitAsk();">
+        <button class="btn btn-gold" style="margin-bottom:0;width:auto;padding:14px 20px" onclick="submitAsk()">ถาม</button>
+      </div>
+      <button class="btn btn-dim" onclick="closeAskModal()">ปิด</button>
     </div>
   </div>
 
@@ -1046,6 +1076,47 @@ const CATS_META = [
   { key:'luck',   icon:'🍀', name:'โชคลาภ' },
   { key:'friend', icon:'🤝', name:'มิตรภาพ/ผู้อุปถัมภ์' },
 ];
+
+const TOPIC_KEYWORDS = {
+  career: ['งาน','อาชีพ','เจ้านาย','ลูกน้อง','บริษัท','สัมภาษณ์','เลื่อนตำแหน่ง','องค์กร'],
+  money:  ['เงิน','การเงิน','หนี้','เก็บเงิน','รายได้','ธุรกิจ','ค้าขาย','ทรัพย์'],
+  love:   ['รัก','แฟน','คู่','แต่งงาน','สามี','ภรรยา','จีบ','เลิก','ความสัมพันธ์'],
+  health: ['สุขภาพ','ป่วย','โรค','หมอ','ร่างกาย'],
+  family: ['ครอบครัว','พ่อ','แม่','ลูก','พี่น้อง','บ้าน'],
+  study:  ['เรียน','สอบ','การศึกษา','มหาลัย','เกรด','ทักษะ'],
+  luck:   ['โชค','ลาภ','เสี่ยงโชค','ดวง'],
+  friend: ['เพื่อน','มิตร','คนรู้จัก','สังคม','บริวาร'],
+};
+
+function findTopic(q) {
+  for (const [key, words] of Object.entries(TOPIC_KEYWORDS)) {
+    if (words.some(w => q.includes(w))) return key;
+  }
+  if (q.includes('ชง')) return 'chong';
+  if (q.includes('กรรม')) return 'karma';
+  if (q.includes('เคราะห์') || q.includes('แก้ดวง') || q.includes('สะเดาะ')) return 'remedy';
+  if (q.includes('ลายมือ') || q.includes('มือ')) return 'palm';
+  return null;
+}
+
+function buildTeacherAnswer(entry, question) {
+  const r = entry.result;
+  const meta = CATS_META.find(m => m.key === findTopic(question));
+  if (meta) {
+    const c = r.cats[meta.key];
+    return `${meta.icon} เรื่อง${meta.name}ของคุณตอนนี้อยู่ที่ ${c.score}% นะครับ — ${c.text}`;
+  }
+  const topic = findTopic(question);
+  if (topic === 'chong') {
+    return r.chongLevel
+      ? `ปีนี้เป็นปีชง${r.chongLevel}ของคุณครับ ควรทำบุญแก้ชงโดยเร็วนะ — ${r.remedy}`
+      : `ปีนี้ไม่ใช่ปีชงของคุณครับ ดวงชะตาโดยพื้นฐานมั่นคงดี ไม่ต้องกังวลมากนะครับ`;
+  }
+  if (topic === 'karma') return `เรื่องกรรมเก่า อาจารย์แนะนำว่า ${r.karma}`;
+  if (topic === 'remedy') return `วิธีเสริมดวงตอนนี้ที่เหมาะกับคุณคือ ${r.remedy}`;
+  if (topic === 'palm') return `จากลายมือที่ดูไปนะครับ — ${r.palmRead.life} ${r.palmRead.fate}`;
+  return `เรื่องนี้อาจารย์ขอดูจากดวงโดยรวมนะครับ ตอนนี้ดวงของคุณอยู่ที่ ${r.overall}/100 — ${r.overallText} ลองถามให้เจาะจงเรื่องงาน เงิน ความรัก สุขภาพ ครอบครัว การเรียน โชคลาภ หรือมิตรภาพ จะได้คำตอบชัดเจนขึ้นนะครับ`;
+}
 
 function blank(){ return { history:[], settings:{ location:'เซ็นทรัล ขอนแก่น', price:59, targetPerDay:100 } }; }
 let S = blank();
@@ -1797,6 +1868,44 @@ function resetSiamsi() {
   clearTimeout(siamsiTimer);
   document.getElementById('siamsi-q').value = '';
   showSiamsiStep('ask');
+}
+
+/* ── Ask Teacher Jarat ── */
+let _askPrefix = 'res';
+function openAskModal(prefix) {
+  const entry = _paintedEntry[prefix];
+  if (!entry) return;
+  _askPrefix = prefix;
+  const photo = document.querySelector('.mh-photo');
+  if (photo) document.getElementById('ask-avatar').src = photo.src;
+  document.getElementById('ask-chat').innerHTML = '';
+  addAskBubble('teacher', `สวัสดีครับคุณ${entry.name || ''} ผมอาจารย์จรัสเองนะครับ มีอะไรอยากถามเพิ่มเติมจากผลดวงที่ได้ไป ถามมาได้เลยครับ`);
+  document.getElementById('ask-q').value = '';
+  document.getElementById('ask-modal').classList.add('open');
+}
+function closeAskModal(e) {
+  if (e && e.target !== document.getElementById('ask-modal')) return;
+  document.getElementById('ask-modal').classList.remove('open');
+}
+function addAskBubble(who, text) {
+  const chat = document.getElementById('ask-chat');
+  const div = document.createElement('div');
+  div.className = 'ask-bubble ' + who;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+function submitAsk() {
+  const input = document.getElementById('ask-q');
+  const q = input.value.trim();
+  if (!q) return;
+  const entry = _paintedEntry[_askPrefix];
+  if (!entry) return;
+  addAskBubble('user', q);
+  input.value = '';
+  vibe(10);
+  const answer = buildTeacherAnswer(entry, q);
+  setTimeout(() => addAskBubble('teacher', answer), 400);
 }
 
 renderHome();
