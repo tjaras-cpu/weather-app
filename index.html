@@ -89,8 +89,9 @@ body::before {
 .tarot-card { aspect-ratio:2/3; border-radius:10px; border:1px solid rgba(139,92,246,.4); background:linear-gradient(135deg,#2a1454,#4c1d95); display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; transition:transform .3s ease, box-shadow .3s ease, background .3s ease; padding:0; }
 .tarot-card:active { transform:scale(.94); }
 .tarot-card:disabled { cursor:default; }
-.tarot-card.flipped { background:linear-gradient(135deg,rgba(246,173,55,.3),rgba(139,92,246,.3)); border-color:var(--pk); box-shadow:0 0 16px rgba(246,173,55,.5); transform:scale(1.06); }
+.tarot-card.flipped { background:linear-gradient(135deg,rgba(246,173,55,.3),rgba(139,92,246,.3)); border-color:var(--pk); box-shadow:0 0 16px rgba(246,173,55,.5); transform:scale(1.06); flex-direction:column; }
 .tarot-card-back { opacity:.85; }
+.tarot-pos-label { display:block; font-size:9px; font-weight:700; color:var(--pk); margin-bottom:2px; }
 .siamsi-shake-ico { font-size:64px; display:inline-block; animation:siamsiShake .35s ease-in-out infinite; }
 @keyframes siamsiShake { 0%{transform:rotate(-14deg)} 50%{transform:rotate(14deg)} 100%{transform:rotate(-14deg)} }
 .siamsi-poem { background:rgba(255,255,255,.05); border:1px solid var(--b2); border-radius:16px; padding:16px; text-align:center; font-size:15px; font-weight:600; line-height:1.8; color:var(--t1); margin-bottom:12px; }
@@ -810,8 +811,8 @@ body::before {
         <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
       </div>
       <div id="gypsy-cards" style="display:none">
-        <div class="modal-title" style="text-align:center;margin-bottom:4px">เลือกไพ่ 1 ใบที่ใจสั่งให้เลือก</div>
-        <p class="modal-sub" style="text-align:center;margin-bottom:16px">ไพ่ที่คุณเลือกเอง คือไพ่ที่ใช่สำหรับคุณตอนนี้</p>
+        <div class="modal-title" style="text-align:center;margin-bottom:4px">เลือกไพ่ 3 ใบ: อดีต ปัจจุบัน อนาคต</div>
+        <p class="modal-sub" style="text-align:center;margin-bottom:10px" id="gypsy-cards-hint">—</p>
         <div class="tarot-grid" id="gypsy-cards-grid"></div>
         <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
       </div>
@@ -820,7 +821,7 @@ body::before {
         <div style="margin-top:14px;color:var(--t2);font-weight:600">กำลังตีความไพ่และส่องลูกแก้ว...</div>
       </div>
       <div id="gypsy-result" style="display:none">
-        <div class="advice-card" style="margin-bottom:12px"><div class="advice-ico" id="gypsy-tarot-icon">🃏</div><div><div class="advice-title" id="gypsy-tarot-name">—</div><div class="advice-text" id="gypsy-tarot-meaning">—</div></div></div>
+        <div id="gypsy-tarot-results" style="margin-bottom:12px"></div>
         <div class="siamsi-poem" id="gypsy-vision">—</div>
         <div id="gypsy-question-wrap" style="display:none">
           <div class="siamsi-q-echo" id="gypsy-question-text">—</div>
@@ -2134,10 +2135,11 @@ function resetSiamsi() {
 /* ── Gypsy fortune (อาจารย์ไก่) ── */
 let gypsyTimer = null;
 let gypsySpread = [];
-let gypsyCardChosen = null;
+let gypsyPicked = [];
+const GYPSY_POSITIONS = ['อดีต','ปัจจุบัน','อนาคต'];
 function openGypsy() {
   document.getElementById('gypsy-q').value = '';
-  gypsyCardChosen = null;
+  gypsyPicked = [];
   showGypsyStep('ask');
   document.getElementById('gypsy-modal').classList.add('open');
 }
@@ -2152,7 +2154,9 @@ function showGypsyStep(step) {
   });
 }
 function goToTarotCards() {
+  gypsyPicked = [];
   renderGypsyCards();
+  updateGypsyCardsHint();
   showGypsyStep('cards');
 }
 function renderGypsyCards() {
@@ -2161,26 +2165,37 @@ function renderGypsyCards() {
     `<button type="button" class="tarot-card" onclick="pickTarotCard(${i})"><span class="tarot-card-back">🔮</span></button>`
   ).join('');
 }
+function updateGypsyCardsHint() {
+  const n = gypsyPicked.length;
+  document.getElementById('gypsy-cards-hint').textContent = n < 3
+    ? `เลือกไพ่ใบที่ ${n+1} แทน “${GYPSY_POSITIONS[n]}” (เลือกแล้ว ${n}/3)`
+    : 'เลือกครบแล้ว กำลังทำนาย...';
+}
 function pickTarotCard(i) {
+  if (gypsyPicked.length >= 3) return;
   const cards = document.querySelectorAll('#gypsy-cards-grid .tarot-card');
-  cards.forEach(el => el.disabled = true);
-  gypsyCardChosen = gypsySpread[i];
   const btn = cards[i];
+  if (btn.disabled) return;
+  btn.disabled = true;
+  const card = gypsySpread[i];
+  gypsyPicked.push(card);
   btn.classList.add('flipped');
-  btn.innerHTML = '<span>' + gypsyCardChosen.icon + '</span>';
+  btn.innerHTML = '<span class="tarot-pos-label">' + GYPSY_POSITIONS[gypsyPicked.length-1] + '</span><span>' + card.icon + '</span>';
   vibe(10);
-  gypsyTimer = setTimeout(() => {
-    showGypsyStep('gazing');
-    gypsyTimer = setTimeout(drawGypsy, 1400);
-  }, 700);
+  updateGypsyCardsHint();
+  if (gypsyPicked.length === 3) {
+    cards.forEach(el => el.disabled = true);
+    gypsyTimer = setTimeout(() => {
+      showGypsyStep('gazing');
+      gypsyTimer = setTimeout(drawGypsy, 1400);
+    }, 700);
+  }
 }
 function drawGypsy() {
   const q = document.getElementById('gypsy-q').value.trim();
-  if (gypsyCardChosen) {
-    document.getElementById('gypsy-tarot-icon').textContent = gypsyCardChosen.icon;
-    document.getElementById('gypsy-tarot-name').textContent = gypsyCardChosen.name;
-    document.getElementById('gypsy-tarot-meaning').textContent = gypsyCardChosen.meaning;
-  }
+  document.getElementById('gypsy-tarot-results').innerHTML = gypsyPicked.map((c, i) =>
+    `<div class="advice-card" style="margin-bottom:10px"><div class="advice-ico">${c.icon}</div><div><div class="advice-title">${GYPSY_POSITIONS[i]} · ${c.name}</div><div class="advice-text">${c.meaning}</div></div></div>`
+  ).join('');
   const vision = GYPSY_VISIONS[Math.floor(Math.random()*GYPSY_VISIONS.length)];
   document.getElementById('gypsy-vision').textContent = vision;
   const qWrap = document.getElementById('gypsy-question-wrap');
@@ -2197,7 +2212,7 @@ function drawGypsy() {
 function resetGypsy() {
   clearTimeout(gypsyTimer);
   document.getElementById('gypsy-q').value = '';
-  gypsyCardChosen = null;
+  gypsyPicked = [];
   showGypsyStep('ask');
 }
 
