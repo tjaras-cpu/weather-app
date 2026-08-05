@@ -195,6 +195,7 @@ body::before {
 .found-stage { font-size:13px; font-weight:700; color:var(--t1); text-align:right; }
 .found-desc { font-size:12px; color:var(--t2); line-height:1.6; margin-top:2px; text-align:right; max-width:170px; }
 .found-chong { font-size:13px; color:var(--t1); line-height:1.65; margin-top:12px; padding-top:12px; border-top:1px solid var(--b2); }
+.found-summary-text { font-size:13px; color:var(--t1); line-height:1.75; text-align:left; }
 .chong-tag { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; margin-bottom:6px; }
 .chong-tag.warn { background:rgba(239,68,68,.15); color:#fca5a5; }
 .chong-tag.ok   { background:rgba(34,197,94,.15); color:#4ade80; }
@@ -447,6 +448,17 @@ body::before {
           <div class="found-chong" id="res-chong">—</div>
         </div>
 
+        <div class="sec-lbl">ดวงรายเดือน (6 เดือนข้างหน้า)</div>
+        <div id="res-months"></div>
+
+        <div class="sec-lbl">ดวงรายปี (5 ปีข้างหน้า)</div>
+        <div id="res-years"></div>
+
+        <div class="found-card">
+          <div class="found-title">📌 สรุปรวม</div>
+          <div class="found-summary-text" id="res-summary">—</div>
+        </div>
+
         <div class="sec-lbl">ฟันธงดวงชะตา 8 ด้าน</div>
         <div class="radar-card"><div id="res-radar"></div></div>
         <div id="res-cats"></div>
@@ -564,6 +576,17 @@ body::before {
           <div><div class="found-stage" id="mres-stage">—</div><div class="found-desc" id="mres-stage-desc">—</div></div>
         </div>
         <div class="found-chong" id="mres-chong">—</div>
+      </div>
+
+      <div class="sec-lbl">ดวงรายเดือน (6 เดือนข้างหน้า)</div>
+      <div id="mres-months"></div>
+
+      <div class="sec-lbl">ดวงรายปี (5 ปีข้างหน้า)</div>
+      <div id="mres-years"></div>
+
+      <div class="found-card">
+        <div class="found-title">📌 สรุปรวม</div>
+        <div class="found-summary-text" id="mres-summary">—</div>
       </div>
 
       <div class="sec-lbl">ฟันธงดวงชะตา 8 ด้าน</div>
@@ -902,6 +925,34 @@ const ORACLE_NO = [
   'ควรระงับไว้ก่อน เสี่ยงเกินไปในช่วงนี้',
 ];
 
+const MONTH_TEXTS = [
+  'ฟันธง! เดือนนี้เหมาะกับการเริ่มต้นสิ่งใหม่ ไอเดียที่คิดไว้จะได้ฤกษ์ลงมือทำจริง!',
+  'ฟันธง! ช่วงนี้เรื่องเงินทองไหลเวียนดี แต่ควรระวังรายจ่ายที่ไม่จำเป็น!',
+  'ฟันธง! เดือนนี้อารมณ์อาจแปรปรวนง่าย ควรใจเย็นก่อนตัดสินใจเรื่องสำคัญ!',
+  'ฟันธง! มีเกณฑ์ได้พบคนสำคัญที่จะช่วยผลักดันเป้าหมายในเดือนนี้!',
+  'ฟันธง! งานที่ทำค้างจะเริ่มเห็นผลชัดเจนขึ้นในช่วงนี้!',
+  'ฟันธง! ควรดูแลสุขภาพเป็นพิเศษ ร่างกายอาจส่งสัญญาณเตือนเล็กน้อย!',
+  'ฟันธง! เดือนนี้เหมาะแก่การเจรจาต่อรอง โอกาสจะเป็นไปในทางที่ดี!',
+  'ฟันธง! ความสัมพันธ์ในครอบครัวจะอบอุ่นขึ้น เหมาะแก่การใช้เวลาร่วมกัน!',
+  'ฟันธง! ระวังการตัดสินใจเรื่องใหญ่แบบเร่งรีบ ควรใคร่ครวญให้รอบคอบ!',
+  'ฟันธง! โชคลาภกำลังเข้าข้าง อาจมีเรื่องน่ายินดีแบบไม่คาดคิด!',
+  'ฟันธง! เป็นช่วงพักผ่อนและทบทวนตัวเอง เหมาะแก่การวางแผนล่วงหน้า!',
+  'ฟันธง! ความคิดสร้างสรรค์พุ่งแรง เหมาะกับงานที่ต้องใช้ไอเดียใหม่ๆ!',
+];
+
+const YEAR_TEXTS = [
+  'ฟันธง! ปีนี้เป็นปีแห่งการเริ่มต้นบทใหม่ของชีวิต การเปลี่ยนแปลงจะนำสิ่งดีเข้ามา!',
+  'ฟันธง! ปีนี้เหมาะแก่การลงหลักปักฐาน ทั้งเรื่องงานและครอบครัว!',
+  'ฟันธง! ปีนี้ผลบุญเก่าจะส่งผล ความพยายามที่ผ่านมาจะเห็นผลชัดเจน!',
+  'ฟันธง! ปีนี้ควรระมัดระวังเรื่องสุขภาพและการเงินเป็นพิเศษ!',
+  'ฟันธง! ปีนี้มีเกณฑ์ได้เลื่อนตำแหน่งหรือโอกาสก้าวหน้าในหน้าที่การงาน!',
+  'ฟันธง! ปีนี้เหมาะแก่การขยายกิจการหรือเริ่มต้นธุรกิจใหม่!',
+  'ฟันธง! ปีนี้ความสัมพันธ์จะเป็นหัวข้อสำคัญ อาจมีข่าวดีเรื่องครอบครัว!',
+  'ฟันธง! ปีนี้ควรเน้นเก็บออมมากกว่าลงทุนเสี่ยง!',
+  'ฟันธง! ปีนี้เป็นปีแห่งการเรียนรู้และพัฒนาตัวเอง โอกาสใหม่ๆ จะเข้ามาผ่านความรู้!',
+  'ฟันธง! ปีนี้ดวงชะตาโดยรวมมั่นคง เหมาะแก่การเดินหน้าตามแผนที่วางไว้!',
+];
+
 const BUDDHA_POSTURES = [
   { e:'🙏', name:'ปางถวายเนตร' },
   { e:'🖐️', name:'ปางห้ามญาติ' },
@@ -1228,6 +1279,31 @@ function buildResult(f) {
   const luckyItem = pick(LUCKY_ITEMS);
   const karma = pick(KARMA_TEXTS);
 
+  const months = [];
+  for (let i=0;i<6;i++) {
+    const mi = (now.getMonth()+i) % 12;
+    const my = now.getFullYear() + Math.floor((now.getMonth()+i)/12);
+    months.push({ label: THAI_MONTHS[mi] + ' ' + (my+543), score:score(), text:pick(MONTH_TEXTS) });
+  }
+
+  const years = [];
+  for (let i=0;i<5;i++) {
+    const yy = now.getFullYear() + i;
+    const yIdx = ((yy-2020) % 12 + 12) % 12;
+    const yDiff = (yIdx - zIdx + 12) % 12;
+    const yChong = yDiff===0 ? 'ตรง' : (yDiff===6 ? 'กลาง' : null);
+    years.push({ year: yy+543, zodiac: ZODIAC[yIdx], chong: yChong, score:score(), text:pick(YEAR_TEXTS) });
+  }
+
+  const catEntries = CATS_META.map(m => ({ icon:m.icon, name:m.name, score:cats[m.key].score }));
+  const topCat = catEntries.reduce((a,b) => b.score > a.score ? b : a);
+  const bottomCat = catEntries.reduce((a,b) => b.score < a.score ? b : a);
+  const summary =
+    `สรุปรวม: จากลายมือและดวงชะตาปี${ZODIAC[zIdx].name} ${CHINESE_ELEMENTS[stemIdx].name} ของคุณ ผสานกับ` +
+    (chongLevel ? `ปีชง${chongLevel}ที่ต้องระวังเป็นพิเศษในปีนี้` : `ปีที่ดวงชะตาโดยพื้นฐานมั่นคงดี`) +
+    ` จุดแข็งที่สุดตอนนี้คือด้าน${topCat.icon} ${topCat.name} (${topCat.score}%) ควรเร่งผลักดันเรื่องนี้เป็นพิเศษ ` +
+    `ส่วนด้านที่ควรเสริมคือ${bottomCat.icon} ${bottomCat.name} (${bottomCat.score}%) ให้เพิ่มความรอบคอบมากขึ้นในช่วงนี้`;
+
   return {
     overall,
     overallText: pick(OVERALL_TEXTS),
@@ -1248,6 +1324,9 @@ function buildResult(f) {
     stage,
     chongLevel,
     remedy,
+    months,
+    years,
+    summary,
   };
 }
 
@@ -1308,6 +1387,22 @@ function radarSVG(cats) {
   return `<svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible">${grid}${spokes}<polygon points="${dataPts.join(' ')}" fill="rgba(220,38,38,.38)" stroke="#f6ad37" stroke-width="2.5"/>${dots}${labels}</svg>`;
 }
 
+function monthCardsHTML(months) {
+  return months.map(m => `<div class="cat-card">
+    <div class="cat-head"><div class="cat-name">📅 ${m.label}</div><div class="cat-score">${m.score}%</div></div>
+    <div class="cat-bar"><div class="cat-bar-fill" style="width:${m.score}%"></div></div>
+    <div class="cat-text">${m.text}</div>
+  </div>`).join('');
+}
+
+function yearCardsHTML(years) {
+  return years.map(y => `<div class="cat-card">
+    <div class="cat-head"><div class="cat-name">${y.zodiac.e} พ.ศ. ${y.year}${y.chong ? ` <span class="chong-tag ${y.chong==='ตรง'?'warn':'mid'}" style="margin-left:6px">ชง${y.chong}</span>` : ''}</div><div class="cat-score">${y.score}%</div></div>
+    <div class="cat-bar"><div class="cat-bar-fill" style="width:${y.score}%"></div></div>
+    <div class="cat-text">${y.text}</div>
+  </div>`).join('');
+}
+
 function catCardsHTML(cats) {
   return CATS_META.map(m => {
     const c = cats[m.key];
@@ -1356,6 +1451,9 @@ function paintResult(prefix, entry) {
 
   document.getElementById(prefix+'-radar').innerHTML = radarSVG(r.cats);
   document.getElementById(prefix+'-cats').innerHTML = catCardsHTML(r.cats);
+  document.getElementById(prefix+'-months').innerHTML = monthCardsHTML(r.months);
+  document.getElementById(prefix+'-years').innerHTML = yearCardsHTML(r.years);
+  document.getElementById(prefix+'-summary').textContent = r.summary;
 
   document.getElementById(prefix+'-color-swatch').style.background = r.color.hex;
   document.getElementById(prefix+'-color-name').textContent = r.color.name;
@@ -1388,6 +1486,8 @@ function shareResult(prefix) {
   const chongLine = r.chongLevel
     ? `⚠️ ปีชง${r.chongLevel} — ควรทำบุญแก้ชง`
     : '✅ ไม่ใช่ปีชง ดวงชะตาโดยพื้นฐานมั่นคง';
+  const monthLines = r.months.map(m => `${m.label}: ${m.score}%`).join('\n');
+  const yearLines = r.years.map(y => `พ.ศ.${y.year} ${y.zodiac.name}${y.chong ? ' (ชง'+y.chong+')' : ''}: ${y.score}%`).join('\n');
 
   const text =
 `🔮 ผลดูดวงของ ${entry.name || 'คุณลูกค้า'} (${genderLbl})
@@ -1397,6 +1497,12 @@ ${chongLine}
 
 ✨ ดวงโดยรวม ${r.overall}/100
 ${r.overallText}
+
+📅 ดวงรายเดือน (6 เดือนข้างหน้า)
+${monthLines}
+
+📆 ดวงรายปี (5 ปีข้างหน้า)
+${yearLines}
 
 📊 ฟันธงดวงชะตา 8 ด้าน
 ${catLines}
@@ -1411,6 +1517,8 @@ ${catLines}
 🍀 ของเสริมดวง: ${r.luckyItem}
 🧿 วิธีแก้ดวง: ${r.remedy}
 🙏 วิธีแก้กรรม: ${r.karma}
+
+📌 ${r.summary}
 
 (จากตู้ดูดวง อาจารย์จรัส แก้กรรม)`;
 
