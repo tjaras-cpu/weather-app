@@ -235,11 +235,34 @@ body::before {
 
 #print-output { display:none; }
 @media print {
-  html, body { height:auto !important; overflow:visible !important; }
+  html, body { height:auto !important; overflow:visible !important; background:#fff !important; }
+  body.printing::before { display:none !important; }
   body.printing > *:not(#print-output) { display:none !important; }
+  body.printing {
+    /* Printed paper is white regardless of the app's dark theme, so flip
+       the palette to a light, print-safe one for the cloned content. */
+    --bg:   #ffffff;
+    --card: rgba(0,0,0,.035);
+    --b1:   rgba(0,0,0,.14);
+    --b2:   rgba(0,0,0,.08);
+    --pk:   #b8790a;
+    --t1:   #201209;
+    --t2:   rgba(32,18,9,.68);
+    --t3:   rgba(32,18,9,.42);
+  }
   body.printing #print-output {
     display:block !important; max-width:430px; margin:0 auto; padding:24px;
+    background:#fff;
     -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body.printing #print-output .res-wrap,
+  body.printing #print-output .found-card,
+  body.printing #print-output .cat-card,
+  body.printing #print-output .advice-card,
+  body.printing #print-output .radar-card,
+  body.printing #print-output .lucky-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 </style>
