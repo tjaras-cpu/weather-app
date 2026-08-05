@@ -92,6 +92,9 @@ body::before {
 .tarot-card.flipped { background:linear-gradient(135deg,rgba(246,173,55,.3),rgba(139,92,246,.3)); border-color:var(--pk); box-shadow:0 0 16px rgba(246,173,55,.5); transform:scale(1.06); flex-direction:column; }
 .tarot-card-back { opacity:.85; }
 .tarot-pos-label { display:block; font-size:9px; font-weight:700; color:var(--pk); margin-bottom:2px; }
+.gypsy-cat-row { display:flex; flex-wrap:wrap; gap:8px; }
+.gypsy-cat-chip { border:1px solid var(--b2); background:rgba(255,255,255,.04); color:var(--t2); border-radius:999px; padding:8px 14px; font-size:13px; font-weight:600; cursor:pointer; }
+.gypsy-cat-chip.active { border-color:var(--pk); background:rgba(246,173,55,.18); color:var(--pk); }
 .siamsi-shake-ico { font-size:64px; display:inline-block; animation:siamsiShake .35s ease-in-out infinite; }
 @keyframes siamsiShake { 0%{transform:rotate(-14deg)} 50%{transform:rotate(14deg)} 100%{transform:rotate(-14deg)} }
 .siamsi-poem { background:rgba(255,255,255,.05); border:1px solid var(--b2); border-radius:16px; padding:16px; text-align:center; font-size:15px; font-weight:600; line-height:1.8; color:var(--t1); margin-bottom:12px; }
@@ -807,6 +810,15 @@ body::before {
           <label class="fld-lbl">อยากถามเรื่องอะไร (ไม่บังคับ)</label>
           <input type="text" id="gypsy-q" class="fld-inp" placeholder="เช่น ควรตัดสินใจเรื่องนี้ไหม" maxlength="80">
         </div>
+        <div class="fld-row">
+          <label class="fld-lbl">เลือกหมวดที่อยากรู้ (ไม่บังคับ)</label>
+          <div class="gypsy-cat-row" id="gypsy-cat-row">
+            <button type="button" class="gypsy-cat-chip" data-key="love" onclick="toggleGypsyCategory('love')">💕 ความรัก</button>
+            <button type="button" class="gypsy-cat-chip" data-key="career" onclick="toggleGypsyCategory('career')">💼 การงาน</button>
+            <button type="button" class="gypsy-cat-chip" data-key="money" onclick="toggleGypsyCategory('money')">💰 การเงิน</button>
+            <button type="button" class="gypsy-cat-chip" data-key="health" onclick="toggleGypsyCategory('health')">🩺 สุขภาพ</button>
+          </div>
+        </div>
         <button class="btn btn-gold" onclick="goToTarotCards()">🃏 เลือกไพ่ทาโรต์</button>
         <button class="btn btn-dim" onclick="closeGypsyModal()">ปิด</button>
       </div>
@@ -822,6 +834,7 @@ body::before {
       </div>
       <div id="gypsy-result" style="display:none">
         <div id="gypsy-tarot-results" style="margin-bottom:12px"></div>
+        <div class="advice-card" id="gypsy-cat-result" style="display:none;margin-bottom:12px"><div class="advice-ico" id="gypsy-cat-icon">🔎</div><div><div class="advice-title" id="gypsy-cat-title">—</div><div class="advice-text" id="gypsy-cat-text">—</div></div></div>
         <div class="siamsi-poem" id="gypsy-vision">—</div>
         <div id="gypsy-question-wrap" style="display:none">
           <div class="siamsi-q-echo" id="gypsy-question-text">—</div>
@@ -1220,6 +1233,49 @@ const TAROT_CARDS = [
   { name:'ไพ่ปัญญาญาณ', icon:'🌟', meaning:'ไพ่นี้ฟันธงว่า มีบางเรื่องที่ยังไม่ถูกเปิดเผยต่อคุณ ให้ใช้ปัญญาและความอดทนในการค้นหาความจริงด้วยตัวเอง' },
   { name:'ไพ่ความยุติธรรม', icon:'⚖️', meaning:'ไพ่นี้ฟันธงว่า สิ่งที่คุณทำมาจะได้รับการตอบแทนอย่างยุติธรรม ทั้งเรื่องดีที่จะได้รับและเรื่องที่ต้องแก้ไขให้ถูกต้อง' },
 ];
+
+const CATEGORY_TAROT_INSIGHTS = {
+  love: [
+    'ฟันธง! ความสัมพันธ์กำลังเข้าสู่บทใหม่ คนโสดมีเกณฑ์เจอคนที่ถูกใจ คนมีคู่ควรเปิดใจคุยกันมากขึ้น',
+    'ฟันธง! ความรักช่วงนี้ต้องอาศัยความอดทนและความเข้าใจ อย่าตัดสินใจอะไรเร็วเกินไปในเรื่องหัวใจ',
+    'ฟันธง! มีคนแอบชื่นชอบคุณอยู่ห่างๆ ให้สังเกตคนรอบตัวให้ดี',
+    'ฟันธง! ความสัมพันธ์เก่าอาจหวนกลับมา แต่ควรพิจารณาให้ถี่ถ้วนก่อนตัดสินใจ',
+    'ฟันธง! นี่คือช่วงเวลาทองของความรัก หากยังโสดให้ออกไปพบปะผู้คนใหม่ๆ',
+    'ฟันธง! ระวังบุคคลที่สามเข้ามาแทรกในความสัมพันธ์ ควรรักษาความไว้ใจกันไว้ให้มั่น',
+    'ฟันธง! ความรักของคุณกำลังพัฒนาไปสู่ความมั่นคง อาจมีข่าวดีเรื่องการหมั้นหรือแต่งงาน',
+    'ฟันธง! ให้เวลากับตัวเองสักพักก่อนเริ่มความสัมพันธ์ใหม่ จะช่วยให้ตัดสินใจได้ดีขึ้น',
+  ],
+  career: [
+    'ฟันธง! หน้าที่การงานกำลังจะมีการเปลี่ยนแปลงครั้งใหญ่ เตรียมรับโอกาสใหม่ที่กำลังเข้ามา',
+    'ฟันธง! ความพยายามที่ทำมาตลอดกำลังจะเห็นผล มีเกณฑ์ได้รับการยอมรับจากเจ้านายหรือหุ้นส่วน',
+    'ฟันธง! ระวังปัญหากับเพื่อนร่วมงานในช่วงนี้ ควรสื่อสารด้วยความสุภาพและตรงไปตรงมา',
+    'ฟันธง! เป็นช่วงที่เหมาะกับการเริ่มโปรเจกต์ใหม่หรือแผนธุรกิจที่วางไว้',
+    'ฟันธง! อาจมีข้อเสนองานใหม่เข้ามา ให้พิจารณาให้รอบคอบก่อนตัดสินใจเปลี่ยนงาน',
+    'ฟันธง! ภาระงานอาจหนักขึ้นชั่วคราว แต่ผลตอบแทนที่ได้จะคุ้มค่าในระยะยาว',
+    'ฟันธง! นี่คือจังหวะที่ดีในการขอเพิ่มเงินเดือนหรือเลื่อนตำแหน่ง',
+    'ฟันธง! ควรระมัดระวังเรื่องเอกสารสัญญาในการทำงานช่วงนี้เป็นพิเศษ',
+  ],
+  money: [
+    'ฟันธง! การเงินกำลังจะดีขึ้นอย่างเห็นได้ชัด แต่ต้องรู้จักเก็บออมไว้ด้วย',
+    'ฟันธง! มีเกณฑ์ได้รับเงินก้อนจากแหล่งที่ไม่คาดคิด',
+    'ฟันธง! ระวังการลงทุนหรือการค้ำประกันที่มีความเสี่ยงสูงในช่วงนี้',
+    'ฟันธง! หนี้สินที่มีอยู่มีเกณฑ์คลี่คลายไปในทางที่ดีขึ้น',
+    'ฟันธง! เป็นช่วงที่เหมาะกับการวางแผนการเงินระยะยาวมากกว่าการเก็งกำไรระยะสั้น',
+    'ฟันธง! รายได้เสริมมีเกณฑ์เข้ามา หากมีโอกาสอย่าลังเลที่จะลองทำดู',
+    'ฟันธง! ควรตรวจสอบรายจ่ายที่ไม่จำเป็นในช่วงนี้ เงินอาจรั่วไหลโดยไม่รู้ตัว',
+    'ฟันธง! โชคลาภด้านการเงินมีเกณฑ์ดีเป็นพิเศษ ลองเสี่ยงโชคเล็กๆ น้อยๆ ดูได้',
+  ],
+  health: [
+    'ฟันธง! ร่างกายกำลังส่งสัญญาณเตือน ควรตรวจสุขภาพประจำปีไว้อุ่นใจ',
+    'ฟันธง! ความเครียดสะสมคือศัตรูตัวร้ายในช่วงนี้ หาเวลาพักผ่อนใจให้มากขึ้น',
+    'ฟันธง! สุขภาพโดยรวมมีเกณฑ์ดีขึ้น หากดูแลเรื่องการนอนและอาหารการกินให้ดี',
+    'ฟันธง! ควรระวังอุบัติเหตุเล็กๆ น้อยๆ ในชีวิตประจำวันเป็นพิเศษ',
+    'ฟันธง! การออกกำลังกายสม่ำเสมอจะช่วยเสริมดวงสุขภาพให้แข็งแรงขึ้นมาก',
+    'ฟันธง! สุขภาพจิตสำคัญไม่แพ้สุขภาพกาย ให้เวลาทำสิ่งที่ทำให้ใจสงบบ้าง',
+    'ฟันธง! หากมีอาการเจ็บป่วยเรื้อรัง ช่วงนี้มีเกณฑ์ดีขึ้นหากดูแลอย่างต่อเนื่อง',
+    'ฟันธง! ควรพักผ่อนให้เพียงพอ การนอนดึกจะบั่นทอนพลังงานและสุขภาพของคุณ',
+  ],
+};
 
 const MONTH_TEXTS = [
   'ฟันธง! เดือนนี้เหมาะกับการเริ่มต้นสิ่งใหม่ ไอเดียที่คิดไว้จะได้ฤกษ์ลงมือทำจริง!',
@@ -2136,12 +2192,21 @@ function resetSiamsi() {
 let gypsyTimer = null;
 let gypsySpread = [];
 let gypsyPicked = [];
+let gypsyCategory = null;
 const GYPSY_POSITIONS = ['อดีต','ปัจจุบัน','อนาคต'];
 function openGypsy() {
   document.getElementById('gypsy-q').value = '';
   gypsyPicked = [];
+  gypsyCategory = null;
+  document.querySelectorAll('#gypsy-cat-row .gypsy-cat-chip').forEach(el => el.classList.remove('active'));
   showGypsyStep('ask');
   document.getElementById('gypsy-modal').classList.add('open');
+}
+function toggleGypsyCategory(key) {
+  gypsyCategory = (gypsyCategory === key) ? null : key;
+  document.querySelectorAll('#gypsy-cat-row .gypsy-cat-chip').forEach(el => {
+    el.classList.toggle('active', el.dataset.key === gypsyCategory);
+  });
 }
 function closeGypsyModal(e) {
   if (e && e.target !== document.getElementById('gypsy-modal')) return;
@@ -2196,6 +2261,17 @@ function drawGypsy() {
   document.getElementById('gypsy-tarot-results').innerHTML = gypsyPicked.map((c, i) =>
     `<div class="advice-card" style="margin-bottom:10px"><div class="advice-ico">${c.icon}</div><div><div class="advice-title">${GYPSY_POSITIONS[i]} · ${c.name}</div><div class="advice-text">${c.meaning}</div></div></div>`
   ).join('');
+  const catResult = document.getElementById('gypsy-cat-result');
+  if (gypsyCategory) {
+    const meta = CATS_META.find(c => c.key === gypsyCategory);
+    const pool = CATEGORY_TAROT_INSIGHTS[gypsyCategory];
+    catResult.style.display = 'block';
+    document.getElementById('gypsy-cat-icon').textContent = meta.icon;
+    document.getElementById('gypsy-cat-title').textContent = 'คำทำนายเฉพาะเรื่อง' + meta.name;
+    document.getElementById('gypsy-cat-text').textContent = pool[Math.floor(Math.random()*pool.length)];
+  } else {
+    catResult.style.display = 'none';
+  }
   const vision = GYPSY_VISIONS[Math.floor(Math.random()*GYPSY_VISIONS.length)];
   document.getElementById('gypsy-vision').textContent = vision;
   const qWrap = document.getElementById('gypsy-question-wrap');
@@ -2213,6 +2289,8 @@ function resetGypsy() {
   clearTimeout(gypsyTimer);
   document.getElementById('gypsy-q').value = '';
   gypsyPicked = [];
+  gypsyCategory = null;
+  document.querySelectorAll('#gypsy-cat-row .gypsy-cat-chip').forEach(el => el.classList.remove('active'));
   showGypsyStep('ask');
 }
 
