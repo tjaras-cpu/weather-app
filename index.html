@@ -454,6 +454,18 @@ body::before {
         <div class="sec-lbl">ดวงรายปี (5 ปีข้างหน้า)</div>
         <div id="res-years"></div>
 
+        <div class="sec-lbl">กราฟชีวิต</div>
+        <div class="gender-toggle" style="margin-bottom:10px">
+          <div class="gender-btn on" id="res-life-month-btn" onclick="setLifeView('res','month')">รายเดือน</div>
+          <div class="gender-btn" id="res-life-year-btn" onclick="setLifeView('res','year')">รายปี</div>
+        </div>
+        <div class="radar-card"><div id="res-lifechart"></div></div>
+
+        <div class="found-card">
+          <div class="found-title">🔄 ช่วงที่ดวงเปลี่ยน</div>
+          <div class="found-summary-text" id="res-turning">—</div>
+        </div>
+
         <div class="found-card">
           <div class="found-title">📌 สรุปรวม</div>
           <div class="found-summary-text" id="res-summary">—</div>
@@ -583,6 +595,18 @@ body::before {
 
       <div class="sec-lbl">ดวงรายปี (5 ปีข้างหน้า)</div>
       <div id="mres-years"></div>
+
+      <div class="sec-lbl">กราฟชีวิต</div>
+      <div class="gender-toggle" style="margin-bottom:10px">
+        <div class="gender-btn on" id="mres-life-month-btn" onclick="setLifeView('mres','month')">รายเดือน</div>
+        <div class="gender-btn" id="mres-life-year-btn" onclick="setLifeView('mres','year')">รายปี</div>
+      </div>
+      <div class="radar-card"><div id="mres-lifechart"></div></div>
+
+      <div class="found-card">
+        <div class="found-title">🔄 ช่วงที่ดวงเปลี่ยน</div>
+        <div class="found-summary-text" id="mres-turning">—</div>
+      </div>
 
       <div class="found-card">
         <div class="found-title">📌 สรุปรวม</div>
@@ -1283,7 +1307,7 @@ function buildResult(f) {
   for (let i=0;i<6;i++) {
     const mi = (now.getMonth()+i) % 12;
     const my = now.getFullYear() + Math.floor((now.getMonth()+i)/12);
-    months.push({ label: THAI_MONTHS[mi] + ' ' + (my+543), score:score(), text:pick(MONTH_TEXTS) });
+    months.push({ label: THAI_MONTHS[mi] + ' ' + (my+543), shortLabel: THAI_MONTHS_SHORT[mi], score:score(), text:pick(MONTH_TEXTS) });
   }
 
   const years = [];
@@ -1292,8 +1316,25 @@ function buildResult(f) {
     const yIdx = ((yy-2020) % 12 + 12) % 12;
     const yDiff = (yIdx - zIdx + 12) % 12;
     const yChong = yDiff===0 ? 'ตรง' : (yDiff===6 ? 'กลาง' : null);
-    years.push({ year: yy+543, zodiac: ZODIAC[yIdx], chong: yChong, score:score(), text:pick(YEAR_TEXTS) });
+    years.push({ year: yy+543, shortLabel: String(yy+543).slice(-2), zodiac: ZODIAC[yIdx], chong: yChong, score:score(), text:pick(YEAR_TEXTS) });
   }
+
+  let turnIdx = 1, turnDiff = -1;
+  for (let i=1;i<months.length;i++) {
+    const diff = Math.abs(months[i].score - months[i-1].score);
+    if (diff > turnDiff) { turnDiff = diff; turnIdx = i; }
+  }
+  const turnMonth = months[turnIdx], turnPrev = months[turnIdx-1];
+  const turnDir = turnMonth.score > turnPrev.score ? 'ดีขึ้น' : 'ลดลง';
+  const bestMonth = months.reduce((a,b) => b.score > a.score ? b : a);
+  const turning = {
+    month: turnMonth.label,
+    diff: turnDiff,
+    direction: turnDir,
+    bestMonth: bestMonth.label,
+    bestScore: bestMonth.score,
+    text: `ฟันธง! ช่วง${turnMonth.label} ดวงชะตาจะ${turnDir}อย่างชัดเจน (เปลี่ยนแปลงราว ${turnDiff}%) แนะนำให้กลับมาดูดวงละเอียดอีกครั้งในช่วงนี้เพื่อวางแผนรับมือให้ทัน ส่วนช่วงที่ดวงรุ่งที่สุดในรอบ 6 เดือนคือ${bestMonth.label} (${bestMonth.score}%)`,
+  };
 
   const catEntries = CATS_META.map(m => ({ icon:m.icon, name:m.name, score:cats[m.key].score }));
   const topCat = catEntries.reduce((a,b) => b.score > a.score ? b : a);
@@ -1327,6 +1368,7 @@ function buildResult(f) {
     months,
     years,
     summary,
+    turning,
   };
 }
 
@@ -1387,6 +1429,38 @@ function radarSVG(cats) {
   return `<svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible">${grid}${spokes}<polygon points="${dataPts.join(' ')}" fill="rgba(220,38,38,.38)" stroke="#f6ad37" stroke-width="2.5"/>${dots}${labels}</svg>`;
 }
 
+function lifeChartSVG(data) {
+  const W = 340, H = 190, PL = 26, PR = 10, PT = 14, PB = 26;
+  const cW = W-PL-PR, cH = H-PT-PB;
+  const n = data.length;
+  const px = i => n>1 ? PL + (i/(n-1))*cW : PL + cW/2;
+  const py = v => PT + cH - (v/100)*cH;
+  const pts = data.map((d,i) => ({ x:px(i), y:py(d.score) }));
+
+  let line = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i=1;i<pts.length;i++) {
+    const dx = (pts[i].x-pts[i-1].x)/2.5;
+    line += ` C ${(pts[i-1].x+dx).toFixed(1)} ${pts[i-1].y.toFixed(1)} ${(pts[i].x-dx).toFixed(1)} ${pts[i].y.toFixed(1)} ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`;
+  }
+  const fill = line + ` L ${pts[n-1].x.toFixed(1)} ${(PT+cH).toFixed(1)} L ${pts[0].x.toFixed(1)} ${(PT+cH).toFixed(1)} Z`;
+
+  let grid = '';
+  for (let g=0; g<=3; g++) {
+    const y = PT + cH*(g/3);
+    grid += `<line x1="${PL}" y1="${y.toFixed(1)}" x2="${W-PR}" y2="${y.toFixed(1)}" stroke="var(--b2)" stroke-width="1"/>`;
+  }
+  const labels = data.map((d,i) => `<text x="${px(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--t3)">${d.shortLabel}</text>`).join('');
+  const dots = pts.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="#f6ad37" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible">
+    <defs><linearGradient id="lifegrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#dc2626" stop-opacity=".35"/><stop offset="100%" stop-color="#dc2626" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <path d="${fill}" fill="url(#lifegrad)"/>
+    <path d="${line}" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+    ${dots}${labels}
+  </svg>`;
+}
+
 function monthCardsHTML(months) {
   return months.map(m => `<div class="cat-card">
     <div class="cat-head"><div class="cat-name">📅 ${m.label}</div><div class="cat-score">${m.score}%</div></div>
@@ -1401,6 +1475,16 @@ function yearCardsHTML(years) {
     <div class="cat-bar"><div class="cat-bar-fill" style="width:${y.score}%"></div></div>
     <div class="cat-text">${y.text}</div>
   </div>`).join('');
+}
+
+function setLifeView(prefix, view) {
+  const entry = _paintedEntry[prefix];
+  if (!entry) return;
+  const r = entry.result;
+  document.getElementById(prefix+'-life-month-btn').classList.toggle('on', view==='month');
+  document.getElementById(prefix+'-life-year-btn').classList.toggle('on', view==='year');
+  const data = view==='month' ? r.months : r.years;
+  document.getElementById(prefix+'-lifechart').innerHTML = lifeChartSVG(data);
 }
 
 function catCardsHTML(cats) {
@@ -1454,6 +1538,9 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-months').innerHTML = monthCardsHTML(r.months);
   document.getElementById(prefix+'-years').innerHTML = yearCardsHTML(r.years);
   document.getElementById(prefix+'-summary').textContent = r.summary;
+  document.getElementById(prefix+'-turning').textContent = r.turning.text;
+  _paintedEntry[prefix] = entry;
+  setLifeView(prefix, 'month');
 
   document.getElementById(prefix+'-color-swatch').style.background = r.color.hex;
   document.getElementById(prefix+'-color-name').textContent = r.color.name;
@@ -1463,7 +1550,6 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-lucky-item').textContent = r.luckyItem;
   document.getElementById(prefix+'-remedy').textContent = r.remedy;
   document.getElementById(prefix+'-karma').textContent = r.karma;
-  _paintedEntry[prefix] = entry;
 }
 
 function exportPDF(prefix) {
@@ -1517,6 +1603,8 @@ ${catLines}
 🍀 ของเสริมดวง: ${r.luckyItem}
 🧿 วิธีแก้ดวง: ${r.remedy}
 🙏 วิธีแก้กรรม: ${r.karma}
+
+🔄 ${r.turning.text}
 
 📌 ${r.summary}
 
