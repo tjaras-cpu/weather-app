@@ -223,6 +223,16 @@ body::before {
 .inp-f    { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:15px; font-weight:700; color:var(--t1); font-family:inherit; -webkit-appearance:none; }
 .inp-f:focus { outline:none; border-color:var(--p); }
 .inp-unit { font-size:13px; font-weight:600; color:var(--t2); flex-shrink:0; }
+
+#print-output { display:none; }
+@media print {
+  html, body { height:auto !important; overflow:visible !important; }
+  body.printing > *:not(#print-output) { display:none !important; }
+  body.printing #print-output {
+    display:block !important; max-width:430px; margin:0 auto; padding:24px;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+}
 </style>
 </head>
 <body>
@@ -349,6 +359,7 @@ body::before {
 
       <!-- Step 4: result -->
       <div class="rd-step" id="rd-step-4">
+        <div class="print-area" id="res-print-area">
         <div class="res-wrap">
           <div class="res-name" id="res-name">—</div>
           <div class="res-date" id="res-date">—</div>
@@ -389,7 +400,9 @@ body::before {
 
         <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">วิธีแก้ดวง</div><div class="advice-text" id="res-remedy">—</div></div></div>
         <div class="disclaimer" style="margin-bottom:16px">ผลดูดวงเพื่อความบันเทิงเท่านั้น โปรดใช้วิจารณญาณในการตัดสินใจ</div>
+        </div>
 
+        <button class="btn btn-gold" onclick="exportPDF('res')">📄 บันทึกเป็น PDF</button>
         <button class="btn btn-dim" onclick="shareResult('res')">📤 แชร์ผลดูดวง</button>
         <button class="btn btn-pur" onclick="goToRead(true)">🔄 ดูดวงอีกครั้ง</button>
         <button class="btn btn-dim" onclick="switchTab('home')">🏠 กลับหน้าแรก</button>
@@ -459,6 +472,7 @@ body::before {
   <div class="modal-overlay" id="hist-modal" onclick="closeHistModal(event)">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
+      <div class="print-area" id="mres-print-area">
       <div class="res-wrap">
         <div class="res-name" id="mres-name">—</div>
         <div class="res-date" id="mres-date">—</div>
@@ -497,6 +511,9 @@ body::before {
         <div class="lucky-box"><div class="lucky-swatch" id="mres-color-swatch"></div><div class="lucky-color-name" id="mres-color-name">—</div></div>
       </div>
       <div class="advice-card"><div class="advice-ico">🧿</div><div><div class="advice-title">วิธีแก้ดวง</div><div class="advice-text" id="mres-remedy">—</div></div></div>
+      </div>
+
+      <button class="btn btn-gold" onclick="exportPDF('mres')">📄 บันทึกเป็น PDF</button>
       <button class="btn btn-dim" onclick="shareResult('mres')">📤 แชร์ผลดูดวง</button>
       <button class="btn btn-outline-red" onclick="deleteHistEntry()">🗑️ ลบรายการนี้</button>
       <button class="btn btn-dim" onclick="closeHistModal()">ปิด</button>
@@ -529,6 +546,7 @@ body::before {
   </div>
 
 </div>
+<div id="print-output"></div>
 <script>
 const KEY = 'duangdee_v1';
 
@@ -1097,6 +1115,17 @@ function paintResult(prefix, entry) {
   document.getElementById(prefix+'-color-name').textContent = r.color.name;
   document.getElementById(prefix+'-lucky-num').textContent = r.luckyNum;
   document.getElementById(prefix+'-remedy').textContent = r.remedy;
+}
+
+function exportPDF(prefix) {
+  const src = document.getElementById(prefix+'-print-area');
+  const out = document.getElementById('print-output');
+  out.innerHTML = src.innerHTML;
+  out.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+  document.body.classList.add('printing');
+  const cleanup = () => { document.body.classList.remove('printing'); out.innerHTML = ''; };
+  window.addEventListener('afterprint', cleanup, { once:true });
+  setTimeout(() => { window.print(); setTimeout(cleanup, 1000); }, 50);
 }
 
 function shareResult(prefix) {
