@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#090618">
-<title>LeanPath</title>
+<meta name="theme-color" content="#0c0818">
+<title>ดวงดี | ตู้ดูดวงมูเตลู</title>
 <style>
 :root {
-  --bg:  #090618;
+  --bg:  #0c0818;
   --card:rgba(255,255,255,0.07);
   --b1:  rgba(255,255,255,0.10);
   --b2:  rgba(255,255,255,0.06);
   --p:   #8b5cf6;
   --pk:  #e879f9;
   --co:  #f97316;
-  --go:  #f59e0b;
+  --go:  #f5b301;
   --gr:  #22c55e;
   --te:  #14b8a6;
   --t1:  #ffffff;
@@ -27,11 +27,12 @@
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--t1);
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,'Sarabun','Segoe UI',sans-serif;
   -webkit-font-smoothing:antialiased; }
 body::before {
   content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:radial-gradient(ellipse 90% 55% at 50% 18%,rgba(100,30,220,.28) 0%,transparent 68%);
+  background:radial-gradient(ellipse 90% 55% at 50% 12%,rgba(139,30,220,.30) 0%,transparent 68%),
+              radial-gradient(ellipse 70% 40% at 85% 85%,rgba(245,179,1,.10) 0%,transparent 70%);
 }
 #app { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; max-width:430px; margin:0 auto; }
 .sb  { height:var(--safe-top); min-height:44px; }
@@ -46,18 +47,18 @@ body::before {
 
 .screen { display:none; padding:0 20px 32px; }
 .screen.active { display:block; }
-.scr-title { font-size:28px; font-weight:800; padding:22px 0 18px; }
+.scr-title { font-size:26px; font-weight:800; padding:22px 0 16px; }
 .sec-lbl   { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:11px; }
 
 /* Shared */
 .card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:18px; }
 .btn  { width:100%; padding:19px; border:none; border-radius:18px; font-size:17px; font-weight:700; cursor:pointer; letter-spacing:.2px; transition:all .12s; margin-bottom:13px; font-family:inherit; }
 .btn:active { transform:scale(.98); opacity:.87; }
+.btn:disabled { opacity:.5; pointer-events:none; }
 .btn-pur { background:linear-gradient(135deg,#8b5cf6 0%,#d946ef 60%,#f97316 100%); color:#fff; }
 .btn-dim { background:rgba(255,255,255,0.08); border:1px solid var(--b1); color:var(--t1); }
 .btn-grn { background:linear-gradient(135deg,#22c55e,#14b8a6); color:#021a0e; }
-.btn-red { background:rgba(239,68,68,.13); border:1px solid rgba(239,68,68,.22); color:#fca5a5; }
-.btn-org { background:linear-gradient(135deg,#f97316,#f59e0b); color:#1a0700; }
+.btn-gold{ background:linear-gradient(135deg,#f5b301,#f97316); color:#1a0d00; }
 .empty { text-align:center; padding:36px 16px; color:var(--t2); }
 .empty .ee { font-size:48px; margin-bottom:14px; }
 .empty p { font-size:15px; line-height:1.6; }
@@ -65,156 +66,135 @@ body::before {
 /* ── HOME ── */
 .h-top { display:flex; justify-content:space-between; align-items:center; padding:18px 0 0; }
 .greeting { font-size:16px; font-weight:600; color:var(--t2); }
-.greeting b { font-weight:700; }
-.day-badge { background:var(--card); border:1px solid var(--b1); border-radius:20px; padding:6px 14px; font-size:13px; font-weight:700; color:var(--p); }
-.quote-card { background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07)); border:1px solid rgba(139,92,246,.28); border-radius:22px; padding:22px 20px; margin:14px 0 12px; }
-.quote-tag  { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.7px; margin-bottom:10px; }
-.quote-text { font-size:16px; font-weight:600; color:var(--t1); line-height:1.65; }
+.greeting b { font-weight:700; color:var(--t1); }
+.day-badge { background:var(--card); border:1px solid var(--b1); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:700; color:var(--p); white-space:nowrap; }
+.mystic-hero { position:relative; overflow:hidden; background:linear-gradient(135deg,rgba(139,92,246,.24),rgba(232,121,249,.10) 55%,rgba(245,179,1,.10)); border:1px solid rgba(139,92,246,.32); border-radius:26px; padding:26px 22px; margin:16px 0 14px; text-align:center; }
+.mh-emoji { font-size:44px; margin-bottom:8px; }
+.mh-title { font-size:21px; font-weight:800; margin-bottom:6px; }
+.mh-sub   { font-size:13px; color:var(--t2); line-height:1.6; margin-bottom:18px; }
+.mh-price { font-size:13px; font-weight:700; color:var(--go); margin-top:-6px; margin-bottom:14px; }
+.quote-card { background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(232,121,249,.06)); border:1px solid rgba(139,92,246,.26); border-radius:22px; padding:20px; margin:0 0 14px; }
+.quote-tag  { font-size:11px; font-weight:700; color:var(--p); text-transform:uppercase; letter-spacing:.7px; margin-bottom:9px; }
+.quote-text { font-size:15px; font-weight:600; color:var(--t1); line-height:1.65; }
 .home-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
-.sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 10px; text-align:center; }
-.sv { font-size:20px; font-weight:700; margin-bottom:4px; }
+.sc { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 8px; text-align:center; }
+.sv { font-size:18px; font-weight:700; margin-bottom:4px; }
 .sl { font-size:10px; color:var(--t3); font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
 .tip-card { background:var(--card); border:1px solid var(--b2); border-radius:18px; padding:16px; margin-bottom:11px; }
 .tip-row  { display:flex; align-items:flex-start; gap:12px; }
 .tip-ico  { font-size:22px; flex-shrink:0; margin-top:1px; }
 .tip-title { font-size:14px; font-weight:700; color:var(--t1); margin-bottom:4px; }
 .tip-txt  { font-size:13px; color:var(--t2); line-height:1.55; }
+.day-color-card { display:flex; align-items:center; gap:14px; background:var(--card); border:1px solid var(--b2); border-radius:18px; padding:16px; margin-bottom:11px; }
+.dc-swatch { width:42px; height:42px; border-radius:50%; flex-shrink:0; box-shadow:0 0 0 3px rgba(255,255,255,.06); }
+.dc-title { font-size:14px; font-weight:700; }
+.dc-sub { font-size:12px; color:var(--t2); margin-top:2px; }
 
-/* ── CALORIES ── */
-.cal-top { display:flex; justify-content:space-between; align-items:center; padding:18px 0 6px; }
+/* ── READ FLOW ── */
+.step-dots { display:flex; gap:8px; justify-content:center; padding:20px 0 6px; }
+.step-dot { width:8px; height:8px; border-radius:50%; background:var(--b1); transition:all .25s; }
+.step-dot.on   { background:var(--p); width:24px; border-radius:5px; }
+.step-dot.done { background:var(--gr); }
+.rd-step { display:none; }
+.rd-step.active { display:block; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)} }
+.rd-title { font-size:22px; font-weight:800; text-align:center; margin:6px 0 6px; }
+.rd-sub   { font-size:13px; color:var(--t2); text-align:center; line-height:1.6; margin-bottom:22px; }
+.fld-row  { margin-bottom:16px; }
+.fld-lbl  { font-size:13px; font-weight:700; color:var(--t2); margin-bottom:8px; display:block; }
+.fld-inp  { width:100%; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:14px; padding:14px 16px; font-size:16px; font-weight:600; color:var(--t1); font-family:inherit; -webkit-appearance:none; }
+.fld-inp:focus { outline:none; border-color:var(--p); }
+.fld-inp::-webkit-calendar-picker-indicator { filter:invert(1); opacity:.6; }
+.chk-row { display:flex; align-items:center; gap:10px; margin:-4px 0 20px; }
+.chk-row input { width:18px; height:18px; accent-color:var(--p); }
+.chk-row label { font-size:13px; color:var(--t2); }
+.disclaimer { font-size:11px; color:var(--t3); text-align:center; line-height:1.6; margin-top:6px; }
+
+.scan-frame { width:210px; height:210px; margin:8px auto 4px; border-radius:50%; border:2px dashed rgba(139,92,246,.55); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; background:radial-gradient(circle,rgba(139,92,246,.14),transparent 72%); }
+.scan-hand  { font-size:78px; filter:drop-shadow(0 0 14px rgba(139,92,246,.5)); }
+.scan-line  { position:absolute; left:6%; right:6%; height:3px; border-radius:3px; background:linear-gradient(90deg,transparent,#8b5cf6,#e879f9,transparent); box-shadow:0 0 14px 2px rgba(232,121,249,.6); top:8%; animation:scanmove 1.7s ease-in-out infinite; }
+@keyframes scanmove { 0%{top:8%} 50%{top:88%} 100%{top:8%} }
+.scan-status { text-align:center; font-size:14px; font-weight:600; color:var(--t2); margin:18px 0 4px; }
+.scan-progress-wrap { width:100%; height:8px; background:rgba(255,255,255,.08); border-radius:4px; overflow:hidden; margin:14px 0 26px; }
+.scan-progress-fill { height:100%; width:0%; background:linear-gradient(90deg,#8b5cf6,#e879f9); border-radius:4px; transition:width .15s linear; }
+
+.pay-amount-card { text-align:center; padding:8px 0 18px; }
+.pay-amount { font-size:46px; font-weight:800; letter-spacing:-1px; }
+.pay-amount span { font-size:18px; font-weight:700; color:var(--t2); margin-left:4px; }
+.pay-sub { font-size:13px; color:var(--t2); margin-top:4px; }
+.qr-card { background:#fff; border-radius:20px; padding:16px; width:200px; margin:8px auto 16px; }
+.qr-wrap { width:100%; aspect-ratio:1/1; }
+.pay-status { text-align:center; font-size:14px; font-weight:700; color:var(--gr); min-height:20px; margin-bottom:6px; }
+
+.res-wrap { text-align:center; padding:6px 0 8px; }
+.res-name { font-size:20px; font-weight:800; }
+.res-date { font-size:12px; color:var(--t2); margin-top:4px; }
+.res-zodiac { font-size:13px; color:var(--pk); font-weight:700; margin-top:8px; }
+.res-overall-badge { width:132px; height:132px; margin:18px auto 10px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:conic-gradient(var(--p) calc(var(--pct,70)*1%), rgba(255,255,255,.08) 0); position:relative; }
+.res-overall-badge::before { content:''; position:absolute; inset:8px; border-radius:50%; background:var(--bg); }
+.res-overall-num { position:relative; font-size:38px; font-weight:800; }
+.res-overall-lbl { position:relative; font-size:11px; color:var(--t2); font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+.res-overall-text { font-size:14px; color:var(--t1); line-height:1.65; padding:0 6px; margin-bottom:18px; }
+.cat-card { background:var(--card); border:1px solid var(--b2); border-radius:18px; padding:15px 16px; margin-bottom:10px; text-align:left; }
+.cat-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.cat-name { font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.cat-score { font-size:13px; font-weight:700; color:var(--p); }
+.cat-bar { height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; margin-bottom:9px; }
+.cat-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--p),var(--pk)); }
+.cat-text { font-size:13px; color:var(--t2); line-height:1.55; }
+.lucky-row { display:flex; gap:10px; margin:14px 0 10px; }
+.lucky-box { flex:1; background:var(--card); border:1px solid var(--b2); border-radius:18px; padding:16px; text-align:center; }
+.lucky-lbl { font-size:11px; color:var(--t3); font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
+.lucky-num { font-size:30px; font-weight:800; color:var(--go); font-variant-numeric:tabular-nums; }
+.lucky-swatch { width:34px; height:34px; border-radius:50%; margin:0 auto 6px; box-shadow:0 0 0 3px rgba(255,255,255,.08); }
+.lucky-color-name { font-size:14px; font-weight:700; }
+.advice-card { background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(249,115,22,.06)); border:1px solid rgba(245,179,1,.28); border-radius:18px; padding:16px; margin:6px 0 18px; text-align:left; display:flex; gap:12px; align-items:flex-start; }
+.advice-ico { font-size:22px; flex-shrink:0; }
+.advice-text { font-size:13px; color:var(--t1); line-height:1.6; }
+
+/* ── HISTORY ── */
+.hist-item { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:13px 15px; margin-bottom:9px; cursor:pointer; }
+.hist-ico  { width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,.15); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.hist-inf  { flex:1; }
+.hist-name { font-size:14px; font-weight:700; }
+.hist-date { font-size:12px; color:var(--t2); margin-top:1px; }
+.hist-score { font-size:18px; font-weight:800; color:var(--p); }
+.hist-score span { font-size:11px; color:var(--t2); font-weight:600; }
+
+/* ── DASHBOARD ── */
+.dash-top { display:flex; justify-content:space-between; align-items:center; padding:22px 0 4px; }
 .gear-btn { background:none; border:none; color:var(--t2); font-size:22px; cursor:pointer; line-height:1; padding:2px; }
-.ring-sec   { display:flex; flex-direction:column; align-items:center; padding:4px 0 6px; }
-.ring-wrap  { position:relative; }
-.ring-wrap svg { width:252px; height:252px; display:block; overflow:visible; }
-.r-bg   { fill:none; stroke:rgba(255,255,255,.045); stroke-width:17; }
-.r-fill { fill:none; stroke-width:17; stroke-linecap:round; transition:stroke-dashoffset .95s linear; filter:drop-shadow(0 0 12px rgba(34,197,94,.4)); }
-.ring-inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; text-align:center; padding:0 14px; }
-.ri-emoji { font-size:28px; line-height:1; margin-bottom:4px; }
-.ri-num   { font-size:44px; font-weight:800; letter-spacing:-2.5px; font-variant-numeric:tabular-nums; line-height:1; }
-.ri-sub   { font-size:12px; color:var(--t2); font-weight:500; margin-top:3px; }
-.ri-pct   { font-size:13px; font-weight:700; margin-top:2px; }
-.cal-info-card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:14px 16px; margin:8px 0 12px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; }
-.cal-info-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:3px 0 0 3px; background:var(--ci-clr,var(--gr)); }
-.ci-ico  { font-size:26px; flex-shrink:0; }
-.ci-name { font-size:14px; font-weight:700; }
-.ci-desc { font-size:12px; color:var(--t2); margin-top:2px; line-height:1.4; }
-.budget-row { display:flex; justify-content:space-between; align-items:center; background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:12px 16px; margin-bottom:12px; }
-.br-lbl { font-size:12px; color:var(--t2); font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
-.br-val { font-size:16px; font-weight:700; }
-.br-val.good { color:var(--gr); }
-.br-val.warn { color:var(--co); }
-.br-val.over { color:#f87171; }
-.quick-row { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:0 -20px 12px; padding:0 20px 4px; }
-.quick-row::-webkit-scrollbar { display:none; }
-.qa { flex-shrink:0; background:var(--card); border:1.5px solid var(--b2); border-radius:14px; padding:10px 14px; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; min-width:70px; transition:all .15s; }
-.qa:active { transform:scale(.95); border-color:var(--p); }
-.qa-ico { font-size:18px; }
-.qa-lbl { font-size:11px; font-weight:700; color:var(--t2); }
-.qa-cal { font-size:10px; color:var(--p); font-weight:600; }
-.cal-item { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:13px 15px; margin-bottom:9px; display:flex; align-items:center; gap:12px; }
-.ci2-ico  { width:40px; height:40px; border-radius:12px; background:rgba(34,197,94,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-.ci2-inf  { flex:1; }
-.ci2-name { font-size:14px; font-weight:700; }
-.ci2-time { font-size:12px; color:var(--t2); margin-top:1px; }
-.ci2-cals { font-size:18px; font-weight:700; color:var(--gr); margin-right:4px; }
-.ci2-del  { background:none; border:none; color:var(--t3); font-size:18px; cursor:pointer; padding:4px; }
-.ci2-del:active { color:var(--co); }
-
-/* ── SWEETS ── */
-.sw-streak-card { background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(20,184,166,.08)); border:1px solid rgba(34,197,94,.3); border-radius:22px; padding:20px; display:flex; align-items:center; gap:18px; margin-bottom:13px; }
-.sw-str-ico { font-size:42px; }
-.sw-str-num { font-size:44px; font-weight:800; line-height:1; background:linear-gradient(135deg,var(--gr),var(--te)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.sw-str-lbl { font-size:14px; color:var(--t2); margin-top:4px; }
-.sw-today   { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:16px 18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
-.sw-today-tag { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
-.sw-today-val { font-size:18px; font-weight:700; }
-.sw-today-val.good { color:var(--gr); }
-.sw-today-val.bad  { color:var(--co); }
-.sw-today-ico { font-size:34px; }
-.week-row { display:flex; gap:6px; justify-content:center; margin:4px 0 16px; }
-.wd { width:38px; height:44px; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; }
-.wd-e { font-size:16px; line-height:1; }
-.wd-d { font-size:9px; font-weight:700; opacity:.7; }
-.wd-good { background:rgba(34,197,94,.18); }
-.wd-bad  { background:rgba(249,115,22,.15); }
-.wd-none { background:rgba(255,255,255,.05); }
-.sw-log-item { background:var(--card); border:1px solid var(--b2); border-radius:14px; padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
-.sw-log-ico  { font-size:22px; }
-.sw-log-inf  { flex:1; }
-.sw-log-lbl  { font-size:14px; font-weight:600; }
-.sw-log-time { font-size:12px; color:var(--t2); margin-top:1px; }
-.sw-log-del  { background:none; border:none; color:var(--t3); font-size:16px; cursor:pointer; padding:4px; }
-.sw-log-del:active { color:var(--co); }
-
-/* ── WEIGHT ── */
-.wt-top { display:flex; justify-content:space-between; align-items:center; padding:22px 0 18px; }
-.unit-pill { background:var(--card); border:1px solid var(--b1); border-radius:20px; padding:6px 16px; font-size:13px; font-weight:700; cursor:pointer; color:var(--p); transition:all .15s; }
-.unit-pill:active { transform:scale(.97); }
-.wt-hero { background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07)); border:1px solid rgba(139,92,246,.28); border-radius:22px; padding:22px; margin-bottom:12px; display:flex; align-items:center; gap:16px; }
-.wth-left { flex:1; }
-.wth-cur  { display:flex; align-items:baseline; gap:6px; }
-.wth-num  { font-size:52px; font-weight:800; letter-spacing:-2px; font-variant-numeric:tabular-nums; line-height:1; }
-.wth-unit { font-size:18px; font-weight:700; color:var(--t2); }
-.wth-sub  { font-size:13px; color:var(--t2); margin-top:6px; }
-.wth-delta{ display:flex; align-items:center; gap:5px; margin-top:8px; }
-.delta-pill { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:4px 11px; font-size:13px; font-weight:700; }
-.delta-pill.down { background:rgba(34,197,94,.15); color:#22c55e; }
-.delta-pill.up   { background:rgba(249,115,22,.15); color:#f97316; }
-.delta-pill.same { background:rgba(255,255,255,.07); color:var(--t2); }
-.wth-right { text-align:right; }
-.wth-days  { font-size:28px; font-weight:800; color:var(--p); line-height:1; }
-.wth-days-lbl { font-size:12px; color:var(--t2); margin-top:4px; }
-.goal-card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:16px 18px; margin-bottom:12px; }
-.goal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.goal-title { font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; letter-spacing:.5px; }
-.goal-edit  { background:none; border:none; color:var(--p); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
-.goal-display { display:flex; align-items:center; gap:10px; }
-.goal-num { font-size:22px; font-weight:800; }
-.goal-bar-wrap { flex:1; }
-.goal-bar { height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
-.goal-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--p),var(--gr)); transition:width .5s ease; }
-.goal-pct { font-size:12px; color:var(--t2); text-align:right; margin-top:4px; font-weight:600; }
-.goal-unset { display:flex; align-items:center; justify-content:space-between; }
-.goal-unset-txt { font-size:14px; color:var(--t2); }
-.goal-set-btn { background:none; border:1px solid var(--b1); border-radius:12px; padding:7px 14px; font-size:13px; font-weight:600; color:var(--p); cursor:pointer; font-family:inherit; }
-.goal-input-row { display:flex; gap:10px; margin-top:10px; align-items:center; }
-.goal-inp { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:18px; font-weight:700; color:var(--t1); font-family:inherit; font-variant-numeric:tabular-nums; -webkit-appearance:none; }
-.goal-inp:focus { outline:none; border-color:var(--p); }
-.goal-save-btn { background:var(--p); border:none; border-radius:12px; padding:12px 20px; font-size:14px; font-weight:700; color:#fff; cursor:pointer; font-family:inherit; white-space:nowrap; }
-.chart-card { background:var(--card); border:1px solid var(--b2); border-radius:20px; padding:16px 16px 12px; margin-bottom:12px; }
-.chart-title { font-size:11px; font-weight:700; color:var(--t2); margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
-.chart-empty { text-align:center; padding:32px 0; color:var(--t3); font-size:13px; }
-.wt-item { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 16px; margin-bottom:9px; display:flex; align-items:center; gap:12px; }
-.wt-item-ico { width:40px; height:40px; border-radius:12px; background:rgba(139,92,246,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-.wt-item-inf { flex:1; }
-.wt-item-date { font-size:12px; color:var(--t2); margin-bottom:2px; }
-.wt-item-val  { font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; }
-.wt-item-del  { background:none; border:none; color:var(--t3); font-size:18px; cursor:pointer; padding:4px; }
-.wt-item-del:active { color:var(--co); }
-.wt-item-delta { font-size:12px; font-weight:600; }
-.wt-item-delta.dn { color:var(--gr); }
-.wt-item-delta.up { color:var(--co); }
+.loc-card { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 16px; margin-bottom:14px; }
+.loc-ico { font-size:22px; }
+.loc-name { font-size:14px; font-weight:700; }
+.loc-price { font-size:12px; color:var(--t2); margin-top:2px; }
+.dash-hero { background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(232,121,249,.07)); border:1px solid rgba(139,92,246,.28); border-radius:22px; padding:20px; margin-bottom:12px; }
+.dh-row { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px; }
+.dh-num { font-size:38px; font-weight:800; letter-spacing:-1px; }
+.dh-lbl { font-size:12px; color:var(--t2); margin-top:2px; }
+.dh-right { text-align:right; }
+.progress-bar  { height:9px; background:rgba(255,255,255,.08); border-radius:5px; overflow:hidden; margin-bottom:6px; }
+.progress-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,#8b5cf6,#22c55e); transition:width .5s ease; }
+.progress-sub { font-size:12px; color:var(--t2); text-align:right; }
+.dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.dg-card { background:var(--card); border:1px solid var(--b2); border-radius:16px; padding:14px 16px; }
+.dg-lbl { font-size:11px; color:var(--t3); font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; }
+.dg-val { font-size:17px; font-weight:800; }
+.btn-outline-red { background:rgba(239,68,68,.10); border:1px solid rgba(239,68,68,.25); color:#fca5a5; }
 
 /* ── MODAL ── */
 .modal-overlay { position:fixed; inset:0; z-index:200; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
 .modal-overlay.open { display:flex; }
-.modal-sheet { width:100%; max-width:430px; background:#130f2a; border:1px solid var(--b1); border-radius:28px 28px 0 0; padding:12px 24px; padding-bottom:max(32px,calc(16px + env(safe-area-inset-bottom))); animation:slideUp .3s cubic-bezier(0.32,0.72,0,1); }
+.modal-sheet { width:100%; max-width:430px; max-height:88vh; overflow-y:auto; background:#130f2a; border:1px solid var(--b1); border-radius:28px 28px 0 0; padding:12px 24px; padding-bottom:max(32px,calc(16px + env(safe-area-inset-bottom))); animation:slideUp .3s cubic-bezier(0.32,0.72,0,1); }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-.modal-handle { width:40px; height:4px; background:var(--b1); border-radius:2px; margin:0 auto 22px; }
-.modal-title  { font-size:22px; font-weight:800; text-align:center; margin-bottom:8px; }
-.modal-sub    { text-align:center; color:var(--t2); font-size:14px; line-height:1.5; margin-bottom:20px; }
+.modal-handle { width:40px; height:4px; background:var(--b1); border-radius:2px; margin:0 auto 18px; }
+.modal-title  { font-size:21px; font-weight:800; text-align:center; margin-bottom:8px; }
+.modal-sub    { text-align:center; color:var(--t2); font-size:13px; line-height:1.5; margin-bottom:18px; }
 .inp-row  { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-.inp-lbl  { font-size:14px; font-weight:600; color:var(--t2); flex-shrink:0; min-width:72px; }
-.inp-f    { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:17px; font-weight:700; color:var(--t1); font-family:inherit; -webkit-appearance:none; }
+.inp-lbl  { font-size:13px; font-weight:600; color:var(--t2); flex-shrink:0; min-width:78px; }
+.inp-f    { flex:1; background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:12px; padding:12px 14px; font-size:15px; font-weight:700; color:var(--t1); font-family:inherit; -webkit-appearance:none; }
 .inp-f:focus { outline:none; border-color:var(--p); }
-.inp-unit { font-size:15px; font-weight:600; color:var(--t2); flex-shrink:0; }
-.unit-toggle { display:flex; background:rgba(255,255,255,.06); border-radius:14px; padding:4px; margin-bottom:22px; }
-.ut-btn { flex:1; text-align:center; padding:11px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:all .2s; color:var(--t2); }
-.ut-btn.on { background:var(--p); color:#fff; }
-.wt-inp-wrap { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:24px; }
-.wt-inp { background:rgba(255,255,255,.08); border:1px solid var(--b1); border-radius:18px; padding:16px 20px; font-size:48px; font-weight:700; color:var(--t1); text-align:center; width:190px; font-family:inherit; font-variant-numeric:tabular-nums; -webkit-appearance:none; }
-.wt-inp:focus { outline:none; border-color:var(--p); box-shadow:0 0 0 3px rgba(139,92,246,.2); }
-.wt-inp-unit { font-size:24px; font-weight:700; color:var(--t2); }
+.inp-unit { font-size:13px; font-weight:600; color:var(--t2); flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -225,148 +205,180 @@ body::before {
     <!-- HOME -->
     <div class="screen active" id="screen-home">
       <div class="h-top">
-        <div class="greeting" id="greeting"><b>Good morning</b></div>
-        <div class="day-badge" id="day-badge">Day 1</div>
+        <div class="greeting" id="home-greeting"><b>สวัสดี</b></div>
+        <div class="day-badge" id="home-date">—</div>
+      </div>
+      <div class="mystic-hero">
+        <div class="mh-emoji">🔮</div>
+        <div class="mh-title">ตู้ดูดวงมูเตลู</div>
+        <div class="mh-sub">สแกนลายมือ ใส่วันเดือนปีเกิด รู้ดวงชะตาของคุณได้ทันที</div>
+        <div class="mh-price">฿ 59 บาท / ครั้ง</div>
+        <button class="btn btn-pur" style="margin-bottom:0" onclick="goToRead(true)">✨ เริ่มดูดวงเลย</button>
       </div>
       <div class="quote-card">
-        <div class="quote-tag" id="quote-tag">MOTIVATION</div>
-        <div class="quote-text" id="quote-text"></div>
+        <div class="quote-tag">คำทำนายประจำวัน</div>
+        <div class="quote-text" id="home-quote"></div>
       </div>
       <div class="home-stats">
-        <div class="sc"><div class="sv" id="h-remain">—</div><div class="sl">Cal Left</div></div>
-        <div class="sc"><div class="sv" id="h-streak">0</div><div class="sl">Sweet-free Days</div></div>
-        <div class="sc"><div class="sv" id="h-wt">—</div><div class="sl">Weight</div></div>
+        <div class="sc"><div class="sv" id="home-count">0</div><div class="sl">ดูดวงวันนี้</div></div>
+        <div class="sc"><div class="sv" id="home-revenue">0</div><div class="sl">รายได้วันนี้ (฿)</div></div>
+        <div class="sc"><div class="sv" id="home-weekday">—</div><div class="sl">วันนี้</div></div>
       </div>
-      <div class="sec-lbl">Daily Tips</div>
+      <div class="sec-lbl">สีมงคลประจำวัน</div>
+      <div class="day-color-card">
+        <div class="dc-swatch" id="home-color-swatch"></div>
+        <div><div class="dc-title" id="home-color-name">—</div><div class="dc-sub">สวมใส่วันนี้เพื่อเสริมสิริมงคล</div></div>
+      </div>
+      <div class="sec-lbl">เคล็ดลับเสริมดวง</div>
       <div class="tip-card"><div class="tip-row">
-        <div class="tip-ico">🍬</div>
-        <div><div class="tip-title">Beat Sugar Cravings</div>
-        <div class="tip-txt">Cravings peak at 20 minutes then fade. Drink water, take a walk, or chew gum — the urge usually passes on its own.</div></div>
+        <div class="tip-ico">🙏</div>
+        <div><div class="tip-title">ทำบุญตักบาตรยามเช้า</div>
+        <div class="tip-txt">การทำบุญเล็กๆ น้อยๆ ในทุกวัน ช่วยเสริมสิริมงคลและความสงบใจในระยะยาว</div></div>
       </div></div>
       <div class="tip-card"><div class="tip-row">
-        <div class="tip-ico">🔥</div>
-        <div><div class="tip-title">The 500 Calorie Rule</div>
-        <div class="tip-txt">A daily 500 cal deficit creates ~0.5 kg (1 lb) of fat loss per week. Small, consistent deficits beat crash diets every time.</div></div>
+        <div class="tip-ico">🕯️</div>
+        <div><div class="tip-title">จุดธูปไหว้พระประจำบ้าน</div>
+        <div class="tip-txt">ไหว้พระขอพรก่อนออกจากบ้าน ช่วยเสริมความมั่นใจและความปลอดภัยระหว่างวัน</div></div>
       </div></div>
       <div class="tip-card"><div class="tip-row">
-        <div class="tip-ico">💧</div>
-        <div><div class="tip-title">Drink Before Eating</div>
-        <div class="tip-txt">500 ml of water 30 minutes before a meal naturally reduces hunger and can cut calorie intake by up to 13%.</div></div>
+        <div class="tip-ico">🧘</div>
+        <div><div class="tip-title">ทำใจให้สงบก่อนตัดสินใจ</div>
+        <div class="tip-txt">ดวงจะดีแค่ไหน หากใจไม่สงบก็ตัดสินใจพลาดได้ ลองหายใจลึกๆ ก่อนเสมอ</div></div>
       </div></div>
-      <div class="tip-card"><div class="tip-row">
-        <div class="tip-ico">🥗</div>
-        <div><div class="tip-title">Eat Protein First</div>
-        <div class="tip-txt">Starting meals with protein keeps you full longer and reduces the total calories you eat — without counting every bite.</div></div>
-      </div></div>
+      <div class="disclaimer">ผลดูดวงเพื่อความบันเทิงเท่านั้น โปรดใช้วิจารณญาณในการตัดสินใจ</div>
     </div>
 
-    <!-- CALORIES -->
-    <div class="screen" id="screen-cals">
-      <div class="cal-top">
-        <div class="scr-title" style="padding:0">Calories</div>
-        <button class="gear-btn" onclick="openCalSettings()">⚙️</button>
+    <!-- READ FLOW -->
+    <div class="screen" id="screen-read">
+      <div class="step-dots">
+        <div class="step-dot on" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+        <div class="step-dot" id="dot-3"></div>
+        <div class="step-dot" id="dot-4"></div>
       </div>
-      <div class="ring-sec">
-        <div class="ring-wrap">
-          <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%"  stop-color="#22c55e"/>
-                <stop offset="50%" stop-color="#8b5cf6"/>
-                <stop offset="100%"stop-color="#f97316"/>
-              </linearGradient>
-              <linearGradient id="rg2" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%"  stop-color="#f59e0b"/>
-                <stop offset="100%"stop-color="#10b981"/>
-              </linearGradient>
-            </defs>
-            <circle class="r-bg"   cx="140" cy="140" r="122"/>
-            <circle class="r-fill" id="r-fill" cx="140" cy="140" r="122"
-              stroke="url(#rg)" stroke-dasharray="766.55" stroke-dashoffset="766.55"
-              transform="rotate(-90 140 140)"/>
-          </svg>
-          <div class="ring-inner">
-            <div class="ri-emoji" id="ri-emoji">🌱</div>
-            <div class="ri-num"   id="ri-num">—</div>
-            <div class="ri-sub"   id="ri-sub">cal remaining</div>
-            <div class="ri-pct"   id="ri-pct" style="color:var(--gr)"></div>
+
+      <!-- Step 1: birth info -->
+      <div class="rd-step active" id="rd-step-1">
+        <div class="rd-title">กรอกข้อมูลวันเกิด</div>
+        <div class="rd-sub">ใส่วันเดือนปีเกิดและเวลาตกฟาก เพื่อความแม่นยำของดวงชะตา</div>
+        <div class="fld-row">
+          <label class="fld-lbl">ชื่อเล่น (ไม่บังคับ)</label>
+          <input type="text" id="rd-name" class="fld-inp" placeholder="เช่น น้องมิ้นท์" maxlength="30">
+        </div>
+        <div class="fld-row">
+          <label class="fld-lbl">วันเดือนปีเกิด</label>
+          <input type="date" id="rd-date" class="fld-inp">
+        </div>
+        <div class="fld-row">
+          <label class="fld-lbl">เวลาตกฟาก (เวลาเกิด)</label>
+          <input type="time" id="rd-time" class="fld-inp">
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="rd-notime" onchange="document.getElementById('rd-time').disabled=this.checked; if(this.checked)document.getElementById('rd-time').value='';">
+          <label for="rd-notime">ไม่ทราบเวลาเกิด</label>
+        </div>
+        <button class="btn btn-pur" onclick="goStep2()">ถัดไป: สแกนลายมือ →</button>
+      </div>
+
+      <!-- Step 2: palm scan -->
+      <div class="rd-step" id="rd-step-2">
+        <div class="rd-title">สแกนลายมือ</div>
+        <div class="rd-sub">วางฝ่ามือบนเครื่องสแกนให้นิ่ง แล้วแตะปุ่มด้านล่างเพื่อเริ่มสแกน</div>
+        <div class="scan-frame"><div class="scan-hand">🖐️</div><div class="scan-line"></div></div>
+        <div class="scan-status" id="scan-status">แตะปุ่มด้านล่างเพื่อเริ่มสแกน</div>
+        <div class="scan-progress-wrap"><div class="scan-progress-fill" id="scan-progress-fill"></div></div>
+        <button class="btn btn-pur" id="scan-btn" onclick="startScan()">👋 แตะเพื่อสแกนลายมือ</button>
+        <button class="btn btn-grn" id="scan-next-btn" style="display:none" onclick="goStep3()">ถัดไป: ชำระเงิน →</button>
+      </div>
+
+      <!-- Step 3: payment -->
+      <div class="rd-step" id="rd-step-3">
+        <div class="rd-title">ชำระเงิน</div>
+        <div class="rd-sub">สแกน QR พร้อมเพย์เพื่อชำระเงิน แล้วกดยืนยันการชำระเงิน</div>
+        <div class="pay-amount-card">
+          <div class="pay-amount">59<span>บาท</span></div>
+          <div class="pay-sub">ค่าบริการดูดวง 1 ครั้ง</div>
+        </div>
+        <div class="qr-card"><div class="qr-wrap" id="qr-wrap"></div></div>
+        <div class="pay-status" id="pay-status"></div>
+        <button class="btn btn-gold" id="pay-btn" onclick="simulatePay()">✅ ฉันชำระเงินแล้ว</button>
+      </div>
+
+      <!-- Step 4: result -->
+      <div class="rd-step" id="rd-step-4">
+        <div class="res-wrap">
+          <div class="res-name" id="res-name">—</div>
+          <div class="res-date" id="res-date">—</div>
+          <div class="res-zodiac" id="res-zodiac">—</div>
+          <div class="res-overall-badge" id="res-overall-badge">
+            <div class="res-overall-num" id="res-overall-num">—</div>
+            <div class="res-overall-lbl">ดวงโดยรวม</div>
           </div>
         </div>
-      </div>
-      <div class="budget-row">
-        <div><div class="br-lbl">Budget</div><div class="br-val" id="br-budget">—</div></div>
-        <div style="text-align:center"><div class="br-lbl">Eaten</div><div class="br-val" id="br-eaten">0</div></div>
-        <div style="text-align:right"><div class="br-lbl">Deficit</div><div class="br-val good" id="br-deficit">—</div></div>
-      </div>
-      <div class="cal-info-card" id="cal-info-card">
-        <div class="ci-ico" id="ci-ico">🌱</div>
-        <div><div class="ci-name" id="ci-name">Start Your Deficit</div><div class="ci-desc" id="ci-desc">Log your meals to track your 500 cal deficit for today.</div></div>
-      </div>
-      <div class="sec-lbl">Quick Add</div>
-      <div class="quick-row">
-        <div class="qa" onclick="quickAdd('Breakfast','🍳',400)"><div class="qa-ico">🍳</div><div class="qa-lbl">Breakfast</div><div class="qa-cal">~400</div></div>
-        <div class="qa" onclick="quickAdd('Lunch','🥗',600)"><div class="qa-ico">🥗</div><div class="qa-lbl">Lunch</div><div class="qa-cal">~600</div></div>
-        <div class="qa" onclick="quickAdd('Dinner','🍽️',700)"><div class="qa-ico">🍽️</div><div class="qa-lbl">Dinner</div><div class="qa-cal">~700</div></div>
-        <div class="qa" onclick="quickAdd('Snack','🍎',150)"><div class="qa-ico">🍎</div><div class="qa-lbl">Snack</div><div class="qa-cal">~150</div></div>
-        <div class="qa" onclick="quickAdd('Coffee','☕',50)"><div class="qa-ico">☕</div><div class="qa-lbl">Coffee</div><div class="qa-cal">~50</div></div>
-        <div class="qa" onclick="openCalModal()"><div class="qa-ico">✏️</div><div class="qa-lbl">Custom</div><div class="qa-cal">manual</div></div>
-      </div>
-      <button class="btn btn-pur" onclick="openCalModal()">＋ Log Meal</button>
-      <div class="sec-lbl">Today's Log</div>
-      <div id="cal-list"></div>
-    </div>
+        <div class="res-overall-text" id="res-overall-text">—</div>
 
-    <!-- SWEETS -->
-    <div class="screen" id="screen-sweets">
-      <div class="scr-title">Sweets</div>
-      <div id="sw-streak-wrap"></div>
-      <div class="sw-today">
-        <div class="sw-today-l">
-          <div class="sw-today-tag">Today's Status</div>
-          <div class="sw-today-val" id="sw-today-val">No entries yet</div>
+        <div class="cat-card">
+          <div class="cat-head"><div class="cat-name">💕 ความรัก</div><div class="cat-score" id="res-love-score">—</div></div>
+          <div class="cat-bar"><div class="cat-bar-fill" id="res-love-bar" style="width:0%"></div></div>
+          <div class="cat-text" id="res-love-text">—</div>
         </div>
-        <div class="sw-today-ico" id="sw-today-ico">😐</div>
+        <div class="cat-card">
+          <div class="cat-head"><div class="cat-name">💰 การงาน/การเงิน</div><div class="cat-score" id="res-career-score">—</div></div>
+          <div class="cat-bar"><div class="cat-bar-fill" id="res-career-bar" style="width:0%"></div></div>
+          <div class="cat-text" id="res-career-text">—</div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-head"><div class="cat-name">🩺 สุขภาพ</div><div class="cat-score" id="res-health-score">—</div></div>
+          <div class="cat-bar"><div class="cat-bar-fill" id="res-health-bar" style="width:0%"></div></div>
+          <div class="cat-text" id="res-health-text">—</div>
+        </div>
+
+        <div class="lucky-row">
+          <div class="lucky-box"><div class="lucky-lbl">เลขนำโชค</div><div class="lucky-num" id="res-lucky-num">—</div></div>
+          <div class="lucky-box"><div class="lucky-swatch" id="res-color-swatch"></div><div class="lucky-color-name" id="res-color-name">—</div></div>
+        </div>
+
+        <div class="advice-card"><div class="advice-ico">🌟</div><div class="advice-text" id="res-advice">—</div></div>
+        <div class="disclaimer" style="margin-bottom:16px">ผลดูดวงเพื่อความบันเทิงเท่านั้น โปรดใช้วิจารณญาณในการตัดสินใจ</div>
+
+        <button class="btn btn-dim" onclick="shareResult('res')">📤 แชร์ผลดูดวง</button>
+        <button class="btn btn-pur" onclick="goToRead(true)">🔄 ดูดวงอีกครั้ง</button>
+        <button class="btn btn-dim" onclick="switchTab('home')">🏠 กลับหน้าแรก</button>
       </div>
-      <div class="week-row" id="week-row"></div>
-      <button class="btn btn-grn" style="font-size:18px;padding:22px" onclick="logSweet(true)">🙅 I Resisted a Sweet!</button>
-      <button class="btn btn-red" onclick="logSweet(false)">😔 I Had a Sweet</button>
-      <div class="sec-lbl">Recent Log</div>
-      <div id="sweet-list"></div>
     </div>
 
-    <!-- WEIGHT -->
-    <div class="screen" id="screen-weight">
-      <div class="wt-top">
-        <div class="scr-title" style="padding:0">Weight</div>
-        <div class="unit-pill" id="unit-pill" onclick="toggleUnit()">kg</div>
-      </div>
-      <div id="wt-hero-wrap"></div>
-      <div class="chart-card">
-        <div class="chart-title">Weight Trend</div>
-        <div id="wt-chart"></div>
-      </div>
-      <div class="goal-card" id="goal-card"></div>
-      <button class="btn btn-grn" style="margin-top:4px" onclick="openWtModal()">＋ Log Weight</button>
-      <div class="sec-lbl">Recent Entries</div>
-      <div id="wt-list"></div>
+    <!-- HISTORY -->
+    <div class="screen" id="screen-history">
+      <div class="scr-title">ประวัติการดูดวง</div>
+      <div id="history-list"></div>
     </div>
 
-    <!-- HEALTH -->
-    <div class="screen" id="screen-health">
-      <div class="wt-top">
-        <div class="scr-title" style="padding:0">Health</div>
+    <!-- DASHBOARD -->
+    <div class="screen" id="screen-dash">
+      <div class="dash-top">
+        <div class="scr-title" style="padding:0">แดชบอร์ดร้าน</div>
+        <button class="gear-btn" onclick="openDashSettings()">⚙️</button>
       </div>
-      <div style="color:var(--t2);font-size:13px;margin:-10px 0 16px;line-height:1.5">ประเมินสุขภาพโดยรวม · Overall health assessment from your BodyTrax scans</div>
-      <div id="health-hero-wrap"></div>
-      <div class="sec-lbl">Latest Scan</div>
-      <div class="home-stats" id="health-metrics" style="margin-bottom:16px"></div>
-      <button class="btn btn-pur" onclick="openHealthModal()">🔄 Sync with BodyTrax</button>
-      <div class="chart-card" id="health-chart-card" style="display:none">
-        <div class="chart-title">Health Score Trend</div>
-        <div id="health-chart"></div>
+      <div class="loc-card">
+        <div class="loc-ico">📍</div>
+        <div><div class="loc-name" id="dash-loc">—</div><div class="loc-price" id="dash-price">—</div></div>
       </div>
-      <div class="sec-lbl">Scan History</div>
-      <div id="health-list"></div>
+      <div class="dash-hero">
+        <div class="dh-row">
+          <div><div class="dh-num" id="dash-count">0</div><div class="dh-lbl">คนดูดวงวันนี้</div></div>
+          <div class="dh-right"><div class="dh-num" id="dash-revenue" style="font-size:24px">0</div><div class="dh-lbl">รายได้วันนี้ (฿)</div></div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="dash-bar-fill" style="width:0%"></div></div>
+        <div class="progress-sub"><span id="dash-bar-pct">0%</span> ของ <span id="dash-target">—</span></div>
+      </div>
+      <div class="dash-grid">
+        <div class="dg-card"><div class="dg-lbl">รายได้เดือนนี้</div><div class="dg-val" id="dash-month">0 บาท</div></div>
+        <div class="dg-card"><div class="dg-lbl">ประมาณการ/เดือน*</div><div class="dg-val" id="dash-est-month">0 บาท</div></div>
+        <div class="dg-card"><div class="dg-lbl">รายได้สะสมทั้งหมด</div><div class="dg-val" id="dash-all">0 บาท</div></div>
+        <div class="dg-card"><div class="dg-lbl">จำนวนครั้งสะสม</div><div class="dg-val" id="dash-all-count">0</div></div>
+      </div>
+      <div class="disclaimer" style="margin-bottom:16px">*คำนวณจากเป้าหมายจำนวนคน/วัน คูณ 30 วัน</div>
+      <button class="btn btn-outline-red" onclick="resetAllData()">🗑️ ล้างประวัติทั้งหมด</button>
     </div>
 
   </div>
@@ -375,442 +387,527 @@ body::before {
     <div class="ni on" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>Home
+      </svg>หน้าแรก
     </div>
-    <div class="ni" id="nav-cals" onclick="switchTab('cals')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <path d="M12 2a10 10 0 1010 10"/><path d="M12 6v6l4 2"/><path d="M22 2L12 12"/>
-      </svg>Calories
+    <div class="ni" id="nav-read" onclick="goToRead(false)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/>
+      </svg>ดูดวง
     </div>
-    <div class="ni" id="nav-sweets" onclick="switchTab('sweets')">
+    <div class="ni" id="nav-history" onclick="switchTab('history')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
-      </svg>Sweets
+        <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/>
+      </svg>ประวัติ
     </div>
-    <div class="ni" id="nav-weight" onclick="switchTab('weight')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-      </svg>Weight
-    </div>
-    <div class="ni" id="nav-health" onclick="switchTab('health')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-        <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/>
-      </svg>Health
+    <div class="ni" id="nav-dash" onclick="switchTab('dash')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/>
+      </svg>แดชบอร์ด
     </div>
   </nav>
 
-  <!-- Calorie Settings Modal -->
-  <div class="modal-overlay" id="cal-settings-modal" onclick="closeCalSettings(event)">
+  <!-- History detail modal -->
+  <div class="modal-overlay" id="hist-modal" onclick="closeHistModal(event)">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">Calorie Settings</div>
-      <p class="modal-sub">Your eating budget = TDEE − deficit goal. A 500 cal deficit creates ~0.5 kg loss/week.</p>
+      <div class="res-wrap">
+        <div class="res-name" id="mres-name">—</div>
+        <div class="res-date" id="mres-date">—</div>
+        <div class="res-zodiac" id="mres-zodiac">—</div>
+        <div class="res-overall-badge" id="mres-overall-badge">
+          <div class="res-overall-num" id="mres-overall-num">—</div>
+          <div class="res-overall-lbl">ดวงโดยรวม</div>
+        </div>
+      </div>
+      <div class="res-overall-text" id="mres-overall-text">—</div>
+      <div class="cat-card">
+        <div class="cat-head"><div class="cat-name">💕 ความรัก</div><div class="cat-score" id="mres-love-score">—</div></div>
+        <div class="cat-bar"><div class="cat-bar-fill" id="mres-love-bar" style="width:0%"></div></div>
+        <div class="cat-text" id="mres-love-text">—</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><div class="cat-name">💰 การงาน/การเงิน</div><div class="cat-score" id="mres-career-score">—</div></div>
+        <div class="cat-bar"><div class="cat-bar-fill" id="mres-career-bar" style="width:0%"></div></div>
+        <div class="cat-text" id="mres-career-text">—</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><div class="cat-name">🩺 สุขภาพ</div><div class="cat-score" id="mres-health-score">—</div></div>
+        <div class="cat-bar"><div class="cat-bar-fill" id="mres-health-bar" style="width:0%"></div></div>
+        <div class="cat-text" id="mres-health-text">—</div>
+      </div>
+      <div class="lucky-row">
+        <div class="lucky-box"><div class="lucky-lbl">เลขนำโชค</div><div class="lucky-num" id="mres-lucky-num">—</div></div>
+        <div class="lucky-box"><div class="lucky-swatch" id="mres-color-swatch"></div><div class="lucky-color-name" id="mres-color-name">—</div></div>
+      </div>
+      <div class="advice-card"><div class="advice-ico">🌟</div><div class="advice-text" id="mres-advice">—</div></div>
+      <button class="btn btn-dim" onclick="shareResult('mres')">📤 แชร์ผลดูดวง</button>
+      <button class="btn btn-outline-red" onclick="deleteHistEntry()">🗑️ ลบรายการนี้</button>
+      <button class="btn btn-dim" onclick="closeHistModal()">ปิด</button>
+    </div>
+  </div>
+
+  <!-- Dashboard settings modal -->
+  <div class="modal-overlay" id="dash-settings-modal" onclick="closeDashSettings(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">ตั้งค่าร้าน</div>
+      <p class="modal-sub">ปรับข้อมูลสาขา ราคา และเป้าหมายรายวันของตู้ดูดวง</p>
       <div class="inp-row">
-        <span class="inp-lbl">TDEE</span>
-        <input type="number" id="tdee-inp" class="inp-f" min="1000" max="5000" step="50" placeholder="2000">
-        <span class="inp-unit">cal/day</span>
+        <span class="inp-lbl">สาขา/ที่ตั้ง</span>
+        <input type="text" id="set-loc" class="inp-f" placeholder="เซ็นทรัล ขอนแก่น" maxlength="60">
+      </div>
+      <div class="inp-row">
+        <span class="inp-lbl">ราคา/ครั้ง</span>
+        <input type="number" id="set-price" class="inp-f" min="1" max="9999" step="1" placeholder="59">
+        <span class="inp-unit">บาท</span>
       </div>
       <div class="inp-row" style="margin-bottom:22px">
-        <span class="inp-lbl">Deficit</span>
-        <input type="number" id="deficit-inp" class="inp-f" min="100" max="1000" step="50" placeholder="500">
-        <span class="inp-unit">cal</span>
+        <span class="inp-lbl">เป้าหมาย/วัน</span>
+        <input type="number" id="set-target" class="inp-f" min="1" max="9999" step="1" placeholder="100">
+        <span class="inp-unit">คน</span>
       </div>
-      <button class="btn btn-pur" onclick="saveCalSettings()">Save Settings</button>
-      <button class="btn btn-dim" onclick="closeCalSettings()">Cancel</button>
-    </div>
-  </div>
-
-  <!-- Add Meal Modal -->
-  <div class="modal-overlay" id="cal-modal" onclick="closeCalModal(event)">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title">Log Meal</div>
-      <div class="inp-row">
-        <span class="inp-lbl">Meal</span>
-        <input type="text" id="meal-name" class="inp-f" placeholder="e.g. Chicken salad" maxlength="40" style="font-size:15px">
-      </div>
-      <div class="inp-row" style="margin-bottom:22px">
-        <span class="inp-lbl">Calories</span>
-        <input type="number" id="meal-cals" class="inp-f" min="1" max="5000" step="5" placeholder="400">
-        <span class="inp-unit">cal</span>
-      </div>
-      <button class="btn btn-pur" onclick="logMeal()">Log Meal</button>
-      <button class="btn btn-dim" onclick="closeCalModal()">Cancel</button>
-    </div>
-  </div>
-
-  <!-- Weight Log Modal -->
-  <div class="modal-overlay" id="wt-modal" onclick="closeWtModal(event)">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title">Log Weight</div>
-      <div class="unit-toggle">
-        <div class="ut-btn" id="ut-kg"  onclick="setUnit('kg')">kg</div>
-        <div class="ut-btn" id="ut-lbs" onclick="setUnit('lbs')">lbs</div>
-      </div>
-      <div class="wt-inp-wrap">
-        <input type="number" id="wt-inp" class="wt-inp" step="0.1" min="10" max="700" placeholder="70.0">
-        <span class="wt-inp-unit" id="wt-inp-unit">kg</span>
-      </div>
-      <button class="btn btn-grn" onclick="logWeight()">Log Weight</button>
-      <button class="btn btn-dim" onclick="closeWtModal()">Cancel</button>
-    </div>
-  </div>
-
-  <!-- BodyTrax Sync Modal -->
-  <div class="modal-overlay" id="health-modal" onclick="closeHealthModal(event)">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title">Sync with BodyTrax</div>
-      <p class="modal-sub">Enter your latest BodyTrax scan results.</p>
-      <div class="inp-row"><span class="inp-lbl">Body Fat</span><input type="number" id="bt-bf" class="inp-f" min="3" max="60" step="0.1" placeholder="22.0"><span class="inp-unit">%</span></div>
-      <div class="inp-row"><span class="inp-lbl">Muscle Mass</span><input type="number" id="bt-mm" class="inp-f" min="10" max="120" step="0.1" placeholder="45.0"><span class="inp-unit">kg</span></div>
-      <div class="inp-row"><span class="inp-lbl">BMI</span><input type="number" id="bt-bmi" class="inp-f" min="10" max="60" step="0.1" placeholder="22.5"><span class="inp-unit">&nbsp;</span></div>
-      <div class="inp-row"><span class="inp-lbl">Visceral Fat</span><input type="number" id="bt-vf" class="inp-f" min="1" max="59" step="1" placeholder="7"><span class="inp-unit">rating</span></div>
-      <div class="inp-row"><span class="inp-lbl">Metabolic Age</span><input type="number" id="bt-ma" class="inp-f" min="10" max="99" step="1" placeholder="30"><span class="inp-unit">yrs</span></div>
-      <div class="inp-row" style="margin-bottom:22px"><span class="inp-lbl">Body Water</span><input type="number" id="bt-water" class="inp-f" min="20" max="80" step="0.1" placeholder="55.0"><span class="inp-unit">%</span></div>
-      <button class="btn btn-pur" onclick="logBodytrax()">Save Scan</button>
-      <button class="btn btn-dim" onclick="closeHealthModal()">Cancel</button>
+      <button class="btn btn-pur" onclick="saveDashSettings()">บันทึก</button>
+      <button class="btn btn-dim" onclick="closeDashSettings()">ยกเลิก</button>
     </div>
   </div>
 
 </div>
 <script>
-const KEY = 'leanpath_v1';
-const C   = 2 * Math.PI * 122;
+const KEY = 'duangdee_v1';
 
-const QUOTES = [
-  { q:"Every bite is a choice. Make it count.",                     tag:"Mindful Eating" },
-  { q:"A 500 calorie deficit today is 1 pound lost this week.",     tag:"The Math Works" },
-  { q:"Saying no to sweets now means saying yes to your goals.",    tag:"Discipline" },
-  { q:"Progress, not perfection. Every good choice adds up.",       tag:"Keep Going" },
-  { q:"You are one meal away from getting back on track.",          tag:"Start Fresh" },
-  { q:"Hunger is not an emergency — it's just a feeling.",          tag:"Mindset Shift" },
-  { q:"It's not about being perfect. It's about being consistent.", tag:"Consistency" },
-  { q:"Cravings last minutes. Your goal lasts a lifetime.",         tag:"Big Picture" },
-  { q:"Small daily deficits create massive change over time.",      tag:"Compound Effect" },
-  { q:"Every time you resist a sweet, your future self thanks you.",tag:"Future You" },
-  { q:"Eat like you love yourself.",                                tag:"Self-Care" },
-  { q:"The scale doesn't define you, but your discipline does.",    tag:"Inner Strength" },
-  { q:"You don't have to eat less — you just have to eat right.",   tag:"Smart Choices" },
-  { q:"Weight loss is a journey, not a race. Pace yourself.",       tag:"Be Patient" },
-  { q:"Your body hears everything your mind says. Stay positive.",  tag:"Mindset" },
+const THAI_WEEKDAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const THAI_MONTHS   = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const THAI_MONTHS_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+const DAY_COLORS = [
+  { name:'สีแดง',   hex:'#ef4444' },
+  { name:'สีเหลือง', hex:'#eab308' },
+  { name:'สีชมพู',  hex:'#ec4899' },
+  { name:'สีเขียว',  hex:'#22c55e' },
+  { name:'สีส้ม',    hex:'#f97316' },
+  { name:'สีฟ้า',    hex:'#3b82f6' },
+  { name:'สีม่วง',   hex:'#8b5cf6' },
 ];
 
-const CAL_PHASES = [
-  { min:0,    name:'Start Your Deficit',   emoji:'🌱', color:'#22c55e', desc:'Log your meals to build your 500 cal deficit for today.' },
-  { min:0.01, name:'Deficit Building',     emoji:'⚡',       color:'#8b5cf6', desc:"Great start! You're on your way. Keep logging each meal." },
-  { min:0.5,  name:'Halfway Through',      emoji:'🎯', color:'#f59e0b', desc:"You're halfway through your budget. Stay mindful of portions." },
-  { min:0.75, name:'Choose Wisely',        emoji:'⚠️', color:'#f97316', desc:'Getting close to budget. Every calorie counts now!' },
-  { min:1.0,  name:'Deficit Achieved! 🏆', emoji:'🏆', color:'#14b8a6', desc:"500 cal deficit reached! You're on track to lose weight this week." },
+const ZODIAC = [
+  { name:'ชวด (หนู)',      e:'🐀' },
+  { name:'ฉลู (วัว)',      e:'🐂' },
+  { name:'ขาล (เสือ)',     e:'🐅' },
+  { name:'เถาะ (กระต่าย)', e:'🐇' },
+  { name:'มะโรง (มังกร)',  e:'🐉' },
+  { name:'มะเส็ง (งู)',    e:'🐍' },
+  { name:'มะเมีย (ม้า)',   e:'🐎' },
+  { name:'มะแม (แพะ)',    e:'🐐' },
+  { name:'วอก (ลิง)',      e:'🐒' },
+  { name:'ระกา (ไก่)',     e:'🐓' },
+  { name:'จอ (หมา)',       e:'🐕' },
+  { name:'กุน (หมู)',      e:'🐖' },
 ];
 
-const HEALTH_LEVELS = [
-  { min:0,  label:'Needs Attention', emoji:'⚠️', color:'#f87171' },
-  { min:50, label:'Fair',            emoji:'🙂', color:'#f59e0b' },
-  { min:70, label:'Good',            emoji:'💪', color:'#14b8a6' },
-  { min:85, label:'Excellent',       emoji:'🏆', color:'#22c55e' },
+const HOME_QUOTES = [
+  'ดวงชะตาไม่ใช่สิ่งตายตัว การกระทำในวันนี้จะกำหนดวันพรุ่งนี้',
+  'เชื่อโชคชะตา แต่อย่าลืมลงมือทำด้วยความพยายามของตัวเอง',
+  'ทุกวันคือหน้าใหม่ของชีวิต เริ่มต้นด้วยรอยยิ้ม',
+  'โชคดีเริ่มต้นจากความคิดดี พูดดี และทำดี',
+  'แม้ดวงจะดีแค่ไหน ความขยันก็ยังเป็นสิ่งสำคัญที่สุด',
+  'บางครั้งอุปสรรคก็คือโอกาสที่ยังไม่เปิดเผยตัว',
+  'ใจที่สงบ คือจุดเริ่มต้นของโชคดีที่แท้จริง',
+  'วันนี้เป็นวันที่ดีที่สุดในการเริ่มต้นสิ่งใหม่',
+  'ทำวันนี้ให้ดีที่สุด แล้ววันพรุ่งนี้จะดูแลตัวมันเอง',
+  'ความสุขที่แท้จริงอยู่ในใจ ไม่ใช่ในดวงดาว',
 ];
 
-function blank() {
-  return { tdee:2000, deficitGoal:500, calLog:[], sweetLog:[], weights:[], weightUnit:'kg', goalWeightKg:null, bodytraxLog:[] };
-}
+const OVERALL_TEXTS = [
+  'ช่วงนี้ดวงชะตาเริ่มเปิด สิ่งที่หวังไว้มีโอกาสสำเร็จมากขึ้น ขอเพียงอดทนอีกนิด',
+  'ดวงกำลังอยู่ในช่วงเปลี่ยนผ่าน สิ่งใหม่ๆ กำลังจะเข้ามาในชีวิต เตรียมใจให้พร้อม',
+  'โชคด้านความคิดสร้างสรรค์กำลังโดดเด่น เหมาะกับการเริ่มต้นสิ่งใหม่',
+  'ดวงชะตาสงบนิ่ง เหมาะแก่การพักผ่อนและทบทวนเป้าหมายชีวิต',
+  'มีเกณฑ์ได้รับข่าวดีจากคนรอบข้าง ความสัมพันธ์รอบตัวจะดีขึ้น',
+  'ดวงกำลังรุ่ง งานที่ทำค้างไว้จะเริ่มเห็นผลลัพธ์ที่ชัดเจน',
+  'ช่วงนี้ควรระมัดระวังเรื่องการตัดสินใจใหญ่ๆ ใคร่ครวญให้รอบคอบ',
+  'ดวงเรื่องโชคลาภกำลังแรง อาจมีเรื่องน่ายินดีเข้ามาแบบไม่คาดคิด',
+  'เป็นช่วงเก็บเกี่ยวผลบุญเก่า ความพยายามที่ผ่านมาจะเริ่มออกดอกผล',
+  'ดวงชะตาผันผวนเล็กน้อย แต่โดยรวมยังไปในทิศทางที่ดี',
+];
+
+const LOVE_TEXTS = [
+  'คนโสดมีเกณฑ์ได้พบเจอคนที่ถูกใจในที่ที่ไม่คาดคิด',
+  'คู่รักควรเปิดใจคุยกันมากขึ้น ความเข้าใจจะนำมาซึ่งความสุข',
+  'ความรักช่วงนี้ราบรื่น เหมาะแก่การวางแผนอนาคตร่วมกัน',
+  'อาจมีเรื่องเข้าใจผิดเล็กน้อย ควรใช้คำพูดด้วยความอ่อนโยน',
+  'คนที่แอบชอบใครอยู่ มีโอกาสได้แสดงความรู้สึกออกไป',
+  'ความสัมพันธ์ในครอบครัวจะอบอุ่นขึ้นในช่วงนี้',
+  'เสน่ห์กำลังเพิ่มขึ้น จะมีคนสนใจเข้ามาทักทายมากกว่าปกติ',
+  'ควรให้เวลากับคนรักมากขึ้น ความสัมพันธ์จะแน่นแฟ้นขึ้น',
+];
+
+const CAREER_TEXTS = [
+  'งานที่ทำอยู่เริ่มเห็นผล ผู้ใหญ่ใจดีจะเข้ามาสนับสนุน',
+  'การเงินมีเกณฑ์ดีขึ้น แต่ควรวางแผนการใช้จ่ายให้รอบคอบ',
+  'มีโอกาสได้รับข้อเสนอหรืองานใหม่เข้ามาให้พิจารณา',
+  'ควรระวังเรื่องรายจ่ายจุกจิก เก็บออมไว้จะดีในระยะยาว',
+  'ความคิดสร้างสรรค์กำลังเด่น เหมาะกับงานที่ต้องใช้ไอเดียใหม่',
+  'การเจรจาต่อรองมีเกณฑ์เป็นไปด้วยดี กล้าที่จะขอในสิ่งที่ควรได้',
+  'โชคด้านการเงินปานกลาง รายรับรายจ่ายสมดุลดี',
+  'งานเป็นทีมจะราบรื่น ผู้ร่วมงานพร้อมช่วยเหลือกัน',
+];
+
+const HEALTH_TEXTS = [
+  'ควรพักผ่อนให้เพียงพอ ร่างกายต้องการเวลาฟื้นฟู',
+  'สุขภาพโดยรวมแข็งแรงดี ออกกำลังกายสม่ำเสมอจะยิ่งดีขึ้น',
+  'ระวังเรื่องความเครียดสะสม หาเวลาผ่อนคลายจิตใจบ้าง',
+  'ควรดื่มน้ำให้มากขึ้นและนอนหลับให้เป็นเวลา',
+  'พลังงานกำลังดี เหมาะแก่การเริ่มกิจกรรมออกกำลังกายใหม่ๆ',
+  'ระบบย่อยอาหารอาจอ่อนแอเล็กน้อย ควรเลือกทานอาหารที่ย่อยง่าย',
+  'สุขภาพจิตแจ่มใส ความคิดบวกจะช่วยเสริมพลังชีวิต',
+  'ควรตรวจสุขภาพประจำปีเพื่อความอุ่นใจ',
+];
+
+const ADVICE_TEXTS = [
+  'ทำบุญตักบาตรยามเช้า จะช่วยเสริมสิริมงคลให้ชีวิต',
+  'สวมใส่สีมงคลประจำวันเกิด จะช่วยเพิ่มความมั่นใจ',
+  'หมั่นแผ่เมตตาให้ผู้อื่น จะทำให้จิตใจสงบและโชคดีตาม',
+  'จัดโต๊ะทำงานให้เป็นระเบียบ จะช่วยให้ความคิดปลอดโปร่ง',
+  'พูดคำดีกับคนรอบข้าง พลังบวกจะย้อนกลับมาหาตัวเอง',
+  'หลีกเลี่ยงการทะเลาะเบาะแว้งในช่วงนี้ ใจเย็นไว้จะดีที่สุด',
+  'ให้เวลากับครอบครัวมากขึ้น จะเสริมดวงด้านความสัมพันธ์',
+  'ตั้งเป้าหมายใหม่ให้ชัดเจน จะช่วยให้ชีวิตมีทิศทางมากขึ้น',
+];
+
+function blank(){ return { history:[], settings:{ location:'เซ็นทรัล ขอนแก่น', price:59, targetPerDay:100 } }; }
 let S = blank();
-try { const r=localStorage.getItem(KEY); if(r) S=Object.assign(blank(),JSON.parse(r)); } catch{}
 try {
-  const old=localStorage.getItem('fasttrack_v3');
-  if(old&&!S.weights.length){const od=JSON.parse(old);if(od.weights&&od.weights.length){S.weights=od.weights;S.weightUnit=od.weightUnit||'kg';S.goalWeightKg=od.goalWeightKg||null;save();}}
-} catch{}
-
-const save    = () => { try{localStorage.setItem(KEY,JSON.stringify(S));}catch{} };
-const kgToLbs = kg => +(kg*2.20462).toFixed(1);
-const lbsToKg = lb => +(lb/2.20462).toFixed(2);
-const dispW   = kg => S.weightUnit==='lbs' ? kgToLbs(kg) : +kg.toFixed(1);
-const unitStr = () => S.weightUnit;
-const vibe    = p => { try{navigator.vibrate&&navigator.vibrate(p);}catch{} };
-const todayDS = () => new Date().toDateString();
-const budget  = () => Math.max(200, S.tdee - S.deficitGoal);
-const todayCals = () => S.calLog.filter(e=>new Date(e.ts).toDateString()===todayDS()).reduce((a,e)=>a+e.cals,0);
-
-function sweetStreak() {
-  let n=0; const now=new Date();
-  for(let d=0;d<365;d++) {
-    const dt=new Date(now); dt.setDate(dt.getDate()-d);
-    if(S.sweetLog.some(e=>!e.resisted&&new Date(e.ts).toDateString()===dt.toDateString())) break;
-    n++;
+  const r = localStorage.getItem(KEY);
+  if (r) {
+    const p = JSON.parse(r);
+    S = blank();
+    if (Array.isArray(p.history)) S.history = p.history;
+    if (p.settings) S.settings = Object.assign(S.settings, p.settings);
   }
-  return n;
-}
+} catch {}
 
-function greet() {
-  const h=new Date().getHours();
-  if(h>=5&&h<12)  return '☀️ Good morning';
-  if(h>=12&&h<17) return '🌤 Good afternoon';
-  if(h>=17&&h<21) return '🏙 Good evening';
-  return '🌙 Good night';
-}
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch{} };
+const vibe = p => { try{ navigator.vibrate && navigator.vibrate(p); }catch{} };
 
 function switchTab(t) {
-  ['home','cals','sweets','weight','health'].forEach(x=>{
-    document.getElementById('screen-'+x).classList.toggle('active',x===t);
-    document.getElementById('nav-'+x).classList.toggle('on',x===t);
+  ['home','read','history','dash'].forEach(x=>{
+    document.getElementById('screen-'+x).classList.toggle('active', x===t);
+    document.getElementById('nav-'+x).classList.toggle('on', x===t);
   });
-  if(t==='home')   renderHome();
-  if(t==='cals')   renderCals();
-  if(t==='sweets') renderSweets();
-  if(t==='weight') renderWeight();
-  if(t==='health') renderHealth();
+  if (t==='home')    renderHome();
+  if (t==='history') renderHistory();
+  if (t==='dash')    renderDash();
 }
 
-const fmt12  = ts => { const d=new Date(ts); let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
-const fmtDay = ts => { const d=new Date(ts),td=new Date(),yd=new Date(td); yd.setDate(yd.getDate()-1); if(d.toDateString()===td.toDateString()) return 'Today'; if(d.toDateString()===yd.toDateString()) return 'Yesterday'; return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); };
+function goToRead(reset) {
+  if (reset) resetReadFlow();
+  switchTab('read');
+}
+
+/* ── Read flow state ── */
+let form = { date:'', time:'', noTime:false, name:'' };
+let scanTimer = null;
+
+function resetReadFlow() {
+  form = { date:'', time:'', noTime:false, name:'' };
+  document.getElementById('rd-name').value = '';
+  document.getElementById('rd-date').value = '';
+  document.getElementById('rd-time').value = '';
+  document.getElementById('rd-time').disabled = false;
+  document.getElementById('rd-notime').checked = false;
+  clearInterval(scanTimer);
+  document.getElementById('scan-progress-fill').style.width = '0%';
+  document.getElementById('scan-status').textContent = 'แตะปุ่มด้านล่างเพื่อเริ่มสแกน';
+  document.getElementById('scan-btn').disabled = false;
+  document.getElementById('scan-btn').style.display = 'block';
+  document.getElementById('scan-next-btn').style.display = 'none';
+  document.getElementById('pay-btn').disabled = false;
+  document.getElementById('pay-status').textContent = '';
+  showStep(1);
+}
+
+function showStep(n) {
+  for (let i=1;i<=4;i++) document.getElementById('rd-step-'+i).classList.toggle('active', i===n);
+  for (let i=1;i<=4;i++) {
+    const d = document.getElementById('dot-'+i);
+    d.classList.toggle('on', i===n);
+    d.classList.toggle('done', i<n);
+  }
+}
+
+function goStep2() {
+  const date = document.getElementById('rd-date').value;
+  if (!date) { alert('กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ'); return; }
+  const noTime = document.getElementById('rd-notime').checked;
+  const time = document.getElementById('rd-time').value;
+  if (!noTime && !time) { alert('กรุณาระบุเวลาตกฟาก หรือติ๊ก "ไม่ทราบเวลาเกิด"'); return; }
+  form.date = date;
+  form.time = noTime ? '' : time;
+  form.noTime = noTime;
+  form.name = document.getElementById('rd-name').value.trim();
+  showStep(2);
+}
+
+function startScan() {
+  document.getElementById('scan-btn').disabled = true;
+  document.getElementById('scan-status').textContent = 'กำลังสแกนลายมือ...';
+  let p = 0;
+  clearInterval(scanTimer);
+  scanTimer = setInterval(() => {
+    p += Math.random()*14 + 6;
+    if (p >= 100) {
+      p = 100;
+      clearInterval(scanTimer);
+      document.getElementById('scan-status').textContent = '✅ สแกนลายมือสำเร็จ';
+      vibe([10,30,10]);
+      document.getElementById('scan-btn').style.display = 'none';
+      document.getElementById('scan-next-btn').style.display = 'block';
+    }
+    document.getElementById('scan-progress-fill').style.width = p + '%';
+  }, 180);
+}
+
+function goStep3() {
+  showStep(3);
+  document.getElementById('qr-wrap').innerHTML = qrSVG(seedFromStr(form.date+form.time+form.name+Date.now()));
+}
+
+function qrSVG(seed) {
+  const n = 12, cell = 14;
+  let rnd = seed || 1;
+  const rand = () => { rnd = (rnd*1103515245 + 12345) >>> 0; return (rnd % 1000) / 1000; };
+  let cells = '';
+  for (let y=0;y<n;y++) {
+    for (let x=0;x<n;x++) {
+      const inTL = x<4 && y<4, inTR = x>=n-4 && y<4, inBL = x<4 && y>=n-4;
+      if (inTL||inTR||inBL) continue;
+      if (rand() < 0.46) cells += `<rect x="${x*cell}" y="${y*cell}" width="${cell}" height="${cell}" fill="#111"/>`;
+    }
+  }
+  const size = n*cell;
+  const finder = (ox,oy) => `<rect x="${ox}" y="${oy}" width="${4*cell}" height="${4*cell}" fill="#111"/><rect x="${ox+cell}" y="${oy+cell}" width="${2*cell}" height="${2*cell}" fill="#fff"/>`;
+  return `<svg viewBox="0 0 ${size} ${size}" width="100%" height="100%">${cells}${finder(0,0)}${finder(size-4*cell,0)}${finder(0,size-4*cell)}</svg>`;
+}
+
+function simulatePay() {
+  document.getElementById('pay-btn').disabled = true;
+  document.getElementById('pay-status').textContent = 'กำลังตรวจสอบการชำระเงิน...';
+  setTimeout(() => {
+    document.getElementById('pay-status').textContent = '✅ ชำระเงินสำเร็จ 59 บาท';
+    vibe([10,40,10]);
+    setTimeout(finishReading, 500);
+  }, 1200);
+}
+
+function seedFromStr(str) {
+  let h = 0;
+  for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
+  return h || 1;
+}
+
+function buildResult(f) {
+  let seed = seedFromStr(f.date+'|'+f.time+'|'+f.name);
+  const draw = () => { seed = (seed*1103515245 + 12345) >>> 0; return seed; };
+  const pick = arr => arr[draw() % arr.length];
+  const score = () => 50 + (draw() % 46);
+  const loveScore = score(), careerScore = score(), healthScore = score();
+  const overall = Math.round((loveScore+careerScore+healthScore)/3);
+  const d = new Date(f.date+'T00:00:00');
+  const year = d.getFullYear();
+  const zIdx = ((year-2020) % 12 + 12) % 12;
+  const wIdx = d.getDay();
+  return {
+    overall,
+    overallText: pick(OVERALL_TEXTS),
+    love:   { score:loveScore,   text:pick(LOVE_TEXTS) },
+    career: { score:careerScore, text:pick(CAREER_TEXTS) },
+    health: { score:healthScore, text:pick(HEALTH_TEXTS) },
+    advice: pick(ADVICE_TEXTS),
+    zodiac: ZODIAC[zIdx],
+    color:  DAY_COLORS[wIdx],
+    luckyNum: String(draw() % 100).padStart(2,'0'),
+  };
+}
+
+function formatThaiDate(dateStr) {
+  const d = new Date(dateStr+'T00:00:00');
+  return `วัน${THAI_WEEKDAYS[d.getDay()]}ที่ ${d.getDate()} ${THAI_MONTHS[d.getMonth()]} พ.ศ. ${d.getFullYear()+543}`;
+}
+
+function finishReading() {
+  const result = buildResult(form);
+  const entry = { id:Date.now(), ts:Date.now(), name:form.name, date:form.date, time:form.noTime?null:form.time, result };
+  S.history.unshift(entry);
+  if (S.history.length > 300) S.history = S.history.slice(0,300);
+  save();
+  paintResult('res', entry);
+  showStep(4);
+  document.getElementById('pay-btn').disabled = false;
+  document.getElementById('pay-status').textContent = '';
+}
+
+function paintResult(prefix, entry) {
+  const r = entry.result;
+  document.getElementById(prefix+'-name').textContent = entry.name || 'คุณลูกค้า';
+  document.getElementById(prefix+'-date').textContent = formatThaiDate(entry.date) + (entry.time ? ` เวลา ${entry.time} น.` : '');
+  document.getElementById(prefix+'-zodiac').textContent = r.zodiac.e + ' ปี' + r.zodiac.name;
+  document.getElementById(prefix+'-overall-badge').style.setProperty('--pct', r.overall);
+  document.getElementById(prefix+'-overall-num').textContent = r.overall;
+  document.getElementById(prefix+'-overall-text').textContent = r.overallText;
+  document.getElementById(prefix+'-love-bar').style.width = r.love.score+'%';
+  document.getElementById(prefix+'-love-score').textContent = r.love.score+'%';
+  document.getElementById(prefix+'-love-text').textContent = r.love.text;
+  document.getElementById(prefix+'-career-bar').style.width = r.career.score+'%';
+  document.getElementById(prefix+'-career-score').textContent = r.career.score+'%';
+  document.getElementById(prefix+'-career-text').textContent = r.career.text;
+  document.getElementById(prefix+'-health-bar').style.width = r.health.score+'%';
+  document.getElementById(prefix+'-health-score').textContent = r.health.score+'%';
+  document.getElementById(prefix+'-health-text').textContent = r.health.text;
+  document.getElementById(prefix+'-color-swatch').style.background = r.color.hex;
+  document.getElementById(prefix+'-color-name').textContent = r.color.name;
+  document.getElementById(prefix+'-lucky-num').textContent = r.luckyNum;
+  document.getElementById(prefix+'-advice').textContent = r.advice;
+}
+
+function shareResult(prefix) {
+  const name = document.getElementById(prefix+'-name').textContent;
+  const overall = document.getElementById(prefix+'-overall-num').textContent;
+  const lucky = document.getElementById(prefix+'-lucky-num').textContent;
+  const color = document.getElementById(prefix+'-color-name').textContent;
+  const text = `🔮 ผลดูดวงของ ${name}\nดวงโดยรวม ${overall}/100\nเลขนำโชค ${lucky}\nสีมงคล ${color}\n(จากตู้ดูดวงมูเตลู)`;
+  if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
+  else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('คัดลอกผลดูดวงแล้ว!')).catch(()=>alert(text)); }
+  else alert(text);
+}
+
+/* ── Home ── */
+function greetTH() {
+  const h = new Date().getHours();
+  if (h>=5 && h<12)  return '☀️ อรุณสวัสดิ์';
+  if (h>=12 && h<17) return '🌤 สวัสดีตอนบ่าย';
+  if (h>=17 && h<21) return '🌇 สวัสดีตอนเย็น';
+  return '🌙 สวัสดียามค่ำคืน';
+}
 
 function renderHome() {
-  document.getElementById('greeting').innerHTML=`<b>${greet()}</b>`;
-  const idx=Math.floor(Date.now()/86400000)%QUOTES.length;
-  const q=QUOTES[idx];
-  document.getElementById('quote-tag').textContent=q.tag;
-  document.getElementById('quote-text').textContent=q.q;
-  const rem=Math.max(0,budget()-todayCals());
-  document.getElementById('h-remain').textContent=rem>0?rem+' cal':'✅ done';
-  document.getElementById('h-streak').textContent=sweetStreak();
-  document.getElementById('h-wt').textContent=S.weights.length?dispW(S.weights[0].valueKg)+' '+unitStr():'—';
-  const allTs=[...S.calLog,...S.sweetLog,...S.weights].map(e=>e.ts||e.date||0);
-  const day=allTs.length?Math.floor((Date.now()-Math.min(...allTs))/86400000)+1:1;
-  document.getElementById('day-badge').textContent='Day '+day;
+  document.getElementById('home-greeting').innerHTML = `<b>${greetTH()}</b>`;
+  const now = new Date();
+  document.getElementById('home-date').textContent = `${now.getDate()} ${THAI_MONTHS_SHORT[now.getMonth()]} พ.ศ.${now.getFullYear()+543}`;
+  const idx = Math.floor(Date.now()/86400000) % HOME_QUOTES.length;
+  document.getElementById('home-quote').textContent = HOME_QUOTES[idx];
+  const todayStr = now.toDateString();
+  const todayCount = S.history.filter(e=>new Date(e.ts).toDateString()===todayStr).length;
+  document.getElementById('home-count').textContent = todayCount;
+  document.getElementById('home-revenue').textContent = (todayCount*S.settings.price).toLocaleString('th-TH');
+  const wIdx = now.getDay();
+  const col = DAY_COLORS[wIdx];
+  document.getElementById('home-color-swatch').style.background = col.hex;
+  document.getElementById('home-color-name').textContent = col.name;
+  document.getElementById('home-weekday').textContent = THAI_WEEKDAYS[wIdx];
 }
 
-function renderCals() {
-  const eaten=todayCals(),bud=budget(),prog=Math.min(1,eaten/bud);
-  const rem=Math.max(0,bud-eaten),over=Math.max(0,eaten-bud);
-  const ring=document.getElementById('r-fill');
-  ring.style.strokeDashoffset=C*(1-prog);
-  ring.setAttribute('stroke',prog>=1?'url(#rg2)':'url(#rg)');
-  document.getElementById('ri-pct').textContent=Math.round(prog*100)+'%';
-  if(prog>=1){
-    document.getElementById('ri-emoji').textContent='🏆';
-    document.getElementById('ri-num').textContent=over>0?'+'+over:'✅';
-    document.getElementById('ri-sub').textContent=over>0?'cal over budget':'deficit achieved!';
-  } else {
-    const ph=calPhase(prog);
-    document.getElementById('ri-emoji').textContent=ph.emoji;
-    document.getElementById('ri-num').textContent=rem;
-    document.getElementById('ri-sub').textContent='cal remaining';
-  }
-  const ph=calPhase(prog);
-  const card=document.getElementById('cal-info-card');
-  card.style.setProperty('--ci-clr',ph.color);
-  document.getElementById('ci-ico').textContent=ph.emoji;
-  document.getElementById('ci-name').textContent=ph.name;
-  document.getElementById('ci-desc').textContent=ph.desc;
-  document.getElementById('br-budget').textContent=bud+' cal';
-  document.getElementById('br-eaten').textContent=eaten+' cal';
-  const defEl=document.getElementById('br-deficit');
-  const def=S.tdee-eaten;
-  defEl.textContent=def>=0?'+'+def+' cal':def+' cal';
-  defEl.className='br-val'+(def>=S.deficitGoal?' good':def>0?' warn':' over');
-  const today=S.calLog.filter(e=>new Date(e.ts).toDateString()===todayDS()).sort((a,b)=>b.ts-a.ts);
-  const listEl=document.getElementById('cal-list');
-  if(!today.length){listEl.innerHTML='<div class="empty" style="padding:20px 0"><div class="ee">🍽️</div><p>No meals logged today.<br>Tap Quick Add or Log Meal below.</p></div>';return;}
-  listEl.innerHTML=today.map(e=>`
-    <div class="cal-item">
-      <div class="ci2-ico">${e.icon||'🍽️'}</div>
-      <div class="ci2-inf"><div class="ci2-name">${e.name}</div><div class="ci2-time">${fmt12(e.ts)}</div></div>
-      <div class="ci2-cals">${e.cals}</div>
-      <button class="ci2-del" onclick="deleteMeal(${e.id})">✕</button>
-    </div>`).join('');
-}
-function calPhase(prog){let ph=CAL_PHASES[0];for(const p of CAL_PHASES){if(prog>=p.min)ph=p;else break;}return ph;}
-function quickAdd(name,icon,cals){S.calLog.push({id:Date.now(),name,icon,cals,ts:Date.now()});save();vibe(10);renderCals();}
-function deleteMeal(id){S.calLog=S.calLog.filter(e=>e.id!==id);save();renderCals();}
-let _mIcon='🍽️';
-function openCalModal(name,cals,icon){_mIcon=icon||'🍽️';document.getElementById('meal-name').value=name||'';document.getElementById('meal-cals').value=cals||'';document.getElementById('cal-modal').classList.add('open');setTimeout(()=>document.getElementById(name?'meal-cals':'meal-name').focus(),350);}
-function closeCalModal(e){if(e&&e.target!==document.getElementById('cal-modal'))return;document.getElementById('cal-modal').classList.remove('open');}
-function logMeal(){const name=document.getElementById('meal-name').value.trim()||'Meal';const cals=parseInt(document.getElementById('meal-cals').value);if(!cals||cals<1){document.getElementById('meal-cals').focus();return;}S.calLog.push({id:Date.now(),name,icon:_mIcon,cals,ts:Date.now()});if(S.calLog.length>1000)S.calLog=S.calLog.slice(0,1000);save();vibe(10);document.getElementById('cal-modal').classList.remove('open');renderCals();}
-function openCalSettings(){document.getElementById('tdee-inp').value=S.tdee;document.getElementById('deficit-inp').value=S.deficitGoal;document.getElementById('cal-settings-modal').classList.add('open');}
-function closeCalSettings(e){if(e&&e.target!==document.getElementById('cal-settings-modal'))return;document.getElementById('cal-settings-modal').classList.remove('open');}
-function saveCalSettings(){const t=parseInt(document.getElementById('tdee-inp').value);const d=parseInt(document.getElementById('deficit-inp').value);if(t>=1000&&t<=5000)S.tdee=t;if(d>=100&&d<=1000)S.deficitGoal=d;save();document.getElementById('cal-settings-modal').classList.remove('open');renderCals();}
+/* ── History ── */
+const fmtDay = ts => {
+  const d = new Date(ts), td = new Date(), yd = new Date(td); yd.setDate(yd.getDate()-1);
+  if (d.toDateString()===td.toDateString()) return 'วันนี้';
+  if (d.toDateString()===yd.toDateString()) return 'เมื่อวาน';
+  return d.toLocaleDateString('th-TH', { day:'numeric', month:'short' });
+};
+const fmtTime = ts => new Date(ts).toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' }) + ' น.';
 
-function renderSweets(){
-  const streak=sweetStreak();
-  document.getElementById('sw-streak-wrap').innerHTML=`
-    <div class="sw-streak-card">
-      <div class="sw-str-ico">${streak>7?'🏆':streak>3?'🌟':'🙅'}</div>
-      <div><div class="sw-str-num">${streak}</div><div class="sw-str-lbl">sweet-free day${streak!==1?'s':''}</div></div>
-    </div>`;
-  const todayS=S.sweetLog.filter(e=>new Date(e.ts).toDateString()===todayDS());
-  const had=todayS.filter(e=>!e.resisted).length;
-  const res=todayS.filter(e=>e.resisted).length;
-  const valEl=document.getElementById('sw-today-val');
-  const icoEl=document.getElementById('sw-today-ico');
-  if(!todayS.length){valEl.textContent='No entries yet';valEl.className='sw-today-val';icoEl.textContent='😐';}
-  else if(had===0){valEl.textContent=res+'× resisted! 🙌';valEl.className='sw-today-val good';icoEl.textContent='😇';}
-  else{valEl.textContent=had+' sweet'+(had>1?'s':'')+' today';valEl.className='sw-today-val bad';icoEl.textContent='😅';}
-  const days=['S','M','T','W','T','F','S'];
-  const now=new Date();let wHtml='';
-  for(let i=6;i>=0;i--){
-    const dt=new Date(now);dt.setDate(dt.getDate()-i);
-    const ds=dt.toDateString();
-    const de=S.sweetLog.filter(e=>new Date(e.ts).toDateString()===ds);
-    const dh=de.some(e=>!e.resisted),dr=de.some(e=>e.resisted);
-    wHtml+=`<div class="wd ${dh?'wd-bad':dr?'wd-good':'wd-none'}"><span class="wd-e">${dh?'😔':dr?'🙅':'·'}</span><span class="wd-d">${days[dt.getDay()]}</span></div>`;
-  }
-  document.getElementById('week-row').innerHTML=wHtml;
-  const recent=[...S.sweetLog].sort((a,b)=>b.ts-a.ts).slice(0,20);
-  const listEl=document.getElementById('sweet-list');
-  if(!recent.length){listEl.innerHTML='<div class="empty" style="padding:20px 0"><div class="ee">🍬</div><p>No entries yet.<br>Start tracking your sweet resistance!</p></div>';return;}
-  listEl.innerHTML=recent.map(e=>`
-    <div class="sw-log-item">
-      <span class="sw-log-ico">${e.resisted?'🙅':'🍬'}</span>
-      <div class="sw-log-inf">
-        <div class="sw-log-lbl">${e.resisted?'Resisted a sweet ✊':'Had a sweet'}</div>
-        <div class="sw-log-time">${fmtDay(e.ts)} · ${fmt12(e.ts)}</div>
-      </div>
-      <button class="sw-log-del" onclick="deleteSweet(${e.id})">✕</button>
-    </div>`).join('');
-}
-function logSweet(resisted){S.sweetLog.push({id:Date.now(),ts:Date.now(),resisted});if(S.sweetLog.length>500)S.sweetLog=S.sweetLog.slice(0,500);save();vibe(resisted?[10,40,10]:20);renderSweets();}
-function deleteSweet(id){S.sweetLog=S.sweetLog.filter(e=>e.id!==id);save();renderSweets();}
-
-function renderWeight(){document.getElementById('unit-pill').textContent=unitStr();renderWtHero();renderWtChart();renderGoalCard();renderWtList();}
-function renderWtHero(){
-  const el=document.getElementById('wt-hero-wrap');
-  if(!S.weights.length){el.innerHTML='';return;}
-  const cur=S.weights[0],first=S.weights[S.weights.length-1];
-  const delta=cur.valueKg-first.valueKg;let dh='';
-  if(Math.abs(delta)<0.05)dh=`<span class="delta-pill same">→ No change</span>`;
-  else if(delta<0)dh=`<span class="delta-pill down">↓ ${dispW(Math.abs(delta))} ${unitStr()} lost</span>`;
-  else dh=`<span class="delta-pill up">↑ ${dispW(Math.abs(delta))} ${unitStr()} gained</span>`;
-  el.innerHTML=`<div class="wt-hero"><div class="wth-left">
-    <div class="wth-cur"><div class="wth-num">${dispW(cur.valueKg)}</div><div class="wth-unit">${unitStr()}</div></div>
-    <div class="wth-sub">Current weight</div>
-    <div class="wth-delta">${dh}</div>
-  </div><div class="wth-right"><div class="wth-days">${S.weights.length}</div><div class="wth-days-lbl">entries<br>logged</div></div></div>`;
-}
-function renderWtChart(){
-  const el=document.getElementById('wt-chart');
-  const ws=[...S.weights].reverse();
-  if(ws.length<2){el.innerHTML=`<div class="chart-empty">${ws.length===0?'Log your first weight entry below':'Log one more entry to see your chart'}</div>`;return;}
-  const W=360,H=150,PL=32,PR=8,PT=8,PB=20,cW=W-PL-PR,cH=H-PT-PB;
-  const vals=ws.map(w=>w.valueKg),dates=ws.map(w=>w.date);
-  const minV=Math.min(...vals),maxV=Math.max(...vals),vRange=maxV-minV||0.5,vPad=vRange*0.18;
-  const minVP=minV-vPad,maxVP=maxV+vPad,minD=dates[0],maxD=dates[dates.length-1],dRange=maxD-minD||1;
-  const px=ts=>PL+((ts-minD)/dRange)*cW,py=v=>PT+cH-((v-minVP)/(maxVP-minVP))*cH;
-  const pts=ws.map(w=>({x:px(w.date),y:py(w.valueKg)}));
-  let line=`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-  for(let i=1;i<pts.length;i++){const dx=(pts[i].x-pts[i-1].x)/2.8;line+=` C ${(pts[i-1].x+dx).toFixed(1)} ${pts[i-1].y.toFixed(1)} ${(pts[i].x-dx).toFixed(1)} ${pts[i].y.toFixed(1)} ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`;}
-  const fill=line+` L ${pts[pts.length-1].x.toFixed(1)} ${PT+cH} L ${pts[0].x.toFixed(1)} ${PT+cH} Z`;
-  let yL='';for(let i=0;i<=2;i++){const v=minVP+(maxVP-minVP)*(i/2);yL+=`<text x="${PL-5}" y="${py(v)+4}" text-anchor="end" fill="rgba(255,255,255,.25)" font-size="9">${dispW(v)}</text>`;}
-  let gl='';if(S.goalWeightKg){const gy=py(S.goalWeightKg);if(gy>=PT&&gy<=PT+cH)gl=`<line x1="${PL}" y1="${gy.toFixed(1)}" x2="${W-PR}" y2="${gy.toFixed(1)}" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,4" opacity=".7"/><text x="${W-PR-2}" y="${(gy-4).toFixed(1)}" text-anchor="end" fill="#22c55e" font-size="9" opacity=".8">Goal ${dispW(S.goalWeightKg)}</text>`;}
-  const step=Math.max(1,Math.floor(pts.length/12));
-  const di=new Set([0,...pts.map((_,i)=>i).filter(i=>i%step===0),pts.length-1]);
-  const dots=[...di].map(i=>`<circle cx="${pts[i].x.toFixed(1)}" cy="${pts[i].y.toFixed(1)}" r="3" fill="#8b5cf6" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible"><defs><linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity=".28"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient><linearGradient id="wline" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#d946ef"/></linearGradient></defs><line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/><line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>${yL}${gl}<path d="${fill}" fill="url(#wfill)"/><path d="${line}" fill="none" stroke="url(#wline)" stroke-width="2.5" stroke-linecap="round"/>${dots}</svg>`;
-}
-function renderGoalCard(){
-  const el=document.getElementById('goal-card');
-  if(!S.goalWeightKg){el.innerHTML=`<div class="goal-unset"><span class="goal-unset-txt">🎯 Set a goal weight</span><button class="goal-set-btn" onclick="showGoalInput()">Set Goal</button></div><div id="goal-input-row" style="display:none"><div class="goal-input-row"><input type="number" id="goal-inp" class="goal-inp" step="0.1" min="10" max="700" placeholder="${S.weightUnit==='lbs'?'150':'70'}"><span style="color:var(--t2);font-size:15px;font-weight:600">${unitStr()}</span><button class="goal-save-btn" onclick="saveGoal()">Save</button></div></div>`;}
-  else{const cur=S.weights.length?S.weights[0].valueKg:S.goalWeightKg;const first=S.weights.length?S.weights[S.weights.length-1].valueKg:S.goalWeightKg;const need=Math.abs(first-S.goalWeightKg)||0.001;const done=Math.abs(first-cur);const pct=Math.min(100,Math.round((done/need)*100));el.innerHTML=`<div class="goal-header"><div class="goal-title">🎯 Goal Weight</div><button class="goal-edit" onclick="clearGoal()">Clear Goal</button></div><div class="goal-display"><div class="goal-num">${dispW(S.goalWeightKg)} ${unitStr()}</div><div class="goal-bar-wrap"><div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%"></div></div><div class="goal-pct">${pct}% there</div></div></div>`;}
-}
-function renderWtList(){
-  const el=document.getElementById('wt-list');
-  if(!S.weights.length){el.innerHTML='<div class="empty" style="padding:32px 16px"><div class="ee">⚖️</div><p>No weight entries yet.<br>Tap <b>Log Weight</b> to start tracking.</p></div>';return;}
-  el.innerHTML=S.weights.map((w,i)=>{const prev=S.weights[i+1];let dh='';if(prev){const d=w.valueKg-prev.valueKg;const dd=+(Math.abs(dispW(Math.abs(d)))).toFixed(1);if(Math.abs(d)>0.04)dh=`<span class="wt-item-delta ${d<0?'dn':'up'}">${d<0?'↓':'↑'} ${dd} ${unitStr()}</span>`;}return `<div class="wt-item"><div class="wt-item-ico">⚖️</div><div class="wt-item-inf"><div class="wt-item-date">${fmtDay(w.date)} · ${fmt12(w.date)}</div><div class="wt-item-val">${dispW(w.valueKg)} ${unitStr()} ${dh}</div></div><button class="wt-item-del" onclick="deleteWeight(${w.id})">✕</button></div>`;}).join('');
-}
-function showGoalInput(){const r=document.getElementById('goal-input-row');r.style.display=r.style.display==='none'?'block':'none';if(r.style.display==='block')document.getElementById('goal-inp').focus();}
-function saveGoal(){const v=parseFloat(document.getElementById('goal-inp').value);if(!v||v<10)return;S.goalWeightKg=S.weightUnit==='lbs'?lbsToKg(v):v;save();renderGoalCard();renderWtChart();}
-function clearGoal(){if(!confirm('Clear goal weight?'))return;S.goalWeightKg=null;save();renderGoalCard();renderWtChart();}
-function deleteWeight(id){S.weights=S.weights.filter(w=>w.id!==id);save();renderWeight();}
-function toggleUnit(){S.weightUnit=S.weightUnit==='kg'?'lbs':'kg';save();renderWeight();}
-function openWtModal(){updateUnitBtns();const last=S.weights.length?dispW(S.weights[0].valueKg):'';document.getElementById('wt-inp').value=last||'';document.getElementById('wt-inp-unit').textContent=unitStr();document.getElementById('wt-modal').classList.add('open');setTimeout(()=>document.getElementById('wt-inp').focus(),350);}
-function closeWtModal(e){if(e&&e.target!==document.getElementById('wt-modal'))return;document.getElementById('wt-modal').classList.remove('open');}
-function setUnit(u){S.weightUnit=u;save();updateUnitBtns();document.getElementById('wt-inp-unit').textContent=unitStr();document.getElementById('unit-pill').textContent=unitStr();}
-function updateUnitBtns(){document.getElementById('ut-kg').classList.toggle('on',S.weightUnit==='kg');document.getElementById('ut-lbs').classList.toggle('on',S.weightUnit==='lbs');}
-function logWeight(){const v=parseFloat(document.getElementById('wt-inp').value);if(!v||v<10||v>700){document.getElementById('wt-inp').focus();return;}const vk=S.weightUnit==='lbs'?lbsToKg(v):v;S.weights.unshift({id:Date.now(),date:Date.now(),valueKg:vk});if(S.weights.length>365)S.weights=S.weights.slice(0,365);save();vibe(10);document.getElementById('wt-modal').classList.remove('open');renderWeight();}
-
-function healthLevel(score){let l=HEALTH_LEVELS[0];for(const x of HEALTH_LEVELS){if(score>=x.min)l=x;else break;}return l;}
-function compScore(v,lo,hi){if(v==null||isNaN(v))return null;if(v>=lo&&v<=hi)return 100;const dist=v<lo?lo-v:v-hi;const range=(hi-lo)||1;return Math.max(0,100-(dist/range)*60);}
-function computeHealthScore(e){
-  const parts=[
-    compScore(e.bmi,18.5,24.9),
-    compScore(e.bodyFatPct,10,25),
-    (e.visceralFat!=null&&!isNaN(e.visceralFat))?(e.visceralFat<=9?100:Math.max(0,100-(e.visceralFat-9)*8)):null,
-    compScore(e.bodyWaterPct,45,60),
-  ].filter(x=>x!=null);
-  if(!parts.length)return null;
-  return Math.round(parts.reduce((a,b)=>a+b,0)/parts.length);
-}
-
-function openHealthModal(){['bt-bf','bt-mm','bt-bmi','bt-vf','bt-ma','bt-water'].forEach(id=>document.getElementById(id).value='');document.getElementById('health-modal').classList.add('open');setTimeout(()=>document.getElementById('bt-bf').focus(),350);}
-function closeHealthModal(e){if(e&&e.target!==document.getElementById('health-modal'))return;document.getElementById('health-modal').classList.remove('open');}
-function logBodytrax(){
-  const bf=parseFloat(document.getElementById('bt-bf').value);
-  if(!bf||bf<3||bf>60){document.getElementById('bt-bf').focus();return;}
-  const mm=parseFloat(document.getElementById('bt-mm').value);
-  const bmi=parseFloat(document.getElementById('bt-bmi').value);
-  const vf=parseFloat(document.getElementById('bt-vf').value);
-  const ma=parseFloat(document.getElementById('bt-ma').value);
-  const water=parseFloat(document.getElementById('bt-water').value);
-  const entry={id:Date.now(),ts:Date.now(),bodyFatPct:bf,muscleMassKg:isNaN(mm)?null:mm,bmi:isNaN(bmi)?null:bmi,visceralFat:isNaN(vf)?null:vf,metabolicAge:isNaN(ma)?null:ma,bodyWaterPct:isNaN(water)?null:water};
-  entry.score=computeHealthScore(entry);
-  S.bodytraxLog.unshift(entry);
-  if(S.bodytraxLog.length>365)S.bodytraxLog=S.bodytraxLog.slice(0,365);
-  save();vibe(10);
-  document.getElementById('health-modal').classList.remove('open');
-  renderHealth();
-}
-function deleteBodytrax(id){S.bodytraxLog=S.bodytraxLog.filter(e=>e.id!==id);save();renderHealth();}
-
-function renderHealth(){
-  const heroEl=document.getElementById('health-hero-wrap');
-  const metricsEl=document.getElementById('health-metrics');
-  const listEl=document.getElementById('health-list');
-  const chartCard=document.getElementById('health-chart-card');
-  if(!S.bodytraxLog.length){
-    heroEl.innerHTML='<div class="card empty"><div class="ee">🔄</div><p>No BodyTrax scans yet.<br>Tap <b>Sync with BodyTrax</b> to log your first body composition scan.</p></div>';
-    metricsEl.innerHTML='';
-    chartCard.style.display='none';
-    listEl.innerHTML='';
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if (!S.history.length) {
+    el.innerHTML = `<div class="empty"><div class="ee">🔮</div><p>ยังไม่มีประวัติการดูดวง<br>เริ่มดูดวงครั้งแรกที่แท็บ "ดูดวง"</p></div>`;
     return;
   }
-  const latest=S.bodytraxLog[0];
-  const lvl=healthLevel(latest.score??0);
-  heroEl.innerHTML=`<div class="wt-hero"><div class="wth-left">
-    <div class="wth-cur"><div class="wth-num">${latest.score??'—'}</div><div class="wth-unit">/100</div></div>
-    <div class="wth-sub">${lvl.label} · Last synced ${fmtDay(latest.ts)}</div>
-  </div><div class="wth-right"><div style="font-size:40px">${lvl.emoji}</div></div></div>`;
-  metricsEl.innerHTML=`
-    <div class="sc"><div class="sv">${latest.bodyFatPct??'—'}%</div><div class="sl">Body Fat</div></div>
-    <div class="sc"><div class="sv">${latest.muscleMassKg??'—'}</div><div class="sl">Muscle kg</div></div>
-    <div class="sc"><div class="sv">${latest.bmi??'—'}</div><div class="sl">BMI</div></div>
-    <div class="sc"><div class="sv">${latest.visceralFat??'—'}</div><div class="sl">Visceral Fat</div></div>
-    <div class="sc"><div class="sv">${latest.metabolicAge??'—'}</div><div class="sl">Metabolic Age</div></div>
-    <div class="sc"><div class="sv">${latest.bodyWaterPct??'—'}%</div><div class="sl">Body Water</div></div>`;
-  if(S.bodytraxLog.filter(e=>e.score!=null).length<2){chartCard.style.display='none';}
-  else{chartCard.style.display='block';renderHealthChart();}
-  listEl.innerHTML=S.bodytraxLog.map(e=>{const l=healthLevel(e.score??0);return `<div class="wt-item"><div class="wt-item-ico">${l.emoji}</div><div class="wt-item-inf"><div class="wt-item-date">${fmtDay(e.ts)} · ${fmt12(e.ts)}</div><div class="wt-item-val">${e.score??'—'} <span style="color:var(--t2);font-weight:500;font-size:12px">/100 · ${l.label}</span></div></div><button class="wt-item-del" onclick="deleteBodytrax(${e.id})">✕</button></div>`;}).join('');
+  el.innerHTML = S.history.map(e => `
+    <div class="hist-item" onclick="openHistModal(${e.id})">
+      <div class="hist-ico">${e.result.zodiac.e}</div>
+      <div class="hist-inf">
+        <div class="hist-name">${e.name || 'คุณลูกค้า'}</div>
+        <div class="hist-date">${fmtDay(e.ts)} · ${fmtTime(e.ts)}</div>
+      </div>
+      <div class="hist-score">${e.result.overall}<span>/100</span></div>
+    </div>`).join('');
 }
 
-function renderHealthChart(){
-  const el=document.getElementById('health-chart');
-  const es=[...S.bodytraxLog].filter(e=>e.score!=null).reverse();
-  if(es.length<2){el.innerHTML='<div class="chart-empty">Log one more scan to see your trend</div>';return;}
-  const W=360,H=150,PL=32,PR=8,PT=8,PB=20,cW=W-PL-PR,cH=H-PT-PB;
-  const vals=es.map(e=>e.score),dates=es.map(e=>e.ts);
-  const minV=Math.min(...vals),maxV=Math.max(...vals),vRange=maxV-minV||10,vPad=vRange*0.18;
-  const minVP=Math.max(0,minV-vPad),maxVP=Math.min(100,maxV+vPad||100);
-  const minD=dates[0],maxD=dates[dates.length-1],dRange=maxD-minD||1;
-  const px=ts=>PL+((ts-minD)/dRange)*cW,py=v=>PT+cH-((v-minVP)/((maxVP-minVP)||1))*cH;
-  const pts=es.map(e=>({x:px(e.ts),y:py(e.score)}));
-  let line=`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-  for(let i=1;i<pts.length;i++){const dx=(pts[i].x-pts[i-1].x)/2.8;line+=` C ${(pts[i-1].x+dx).toFixed(1)} ${pts[i-1].y.toFixed(1)} ${(pts[i].x-dx).toFixed(1)} ${pts[i].y.toFixed(1)} ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`;}
-  const fill=line+` L ${pts[pts.length-1].x.toFixed(1)} ${PT+cH} L ${pts[0].x.toFixed(1)} ${PT+cH} Z`;
-  let yL='';for(let i=0;i<=2;i++){const v=minVP+(maxVP-minVP)*(i/2);yL+=`<text x="${PL-5}" y="${py(v)+4}" text-anchor="end" fill="rgba(255,255,255,.25)" font-size="9">${Math.round(v)}</text>`;}
-  const step=Math.max(1,Math.floor(pts.length/12));
-  const di=new Set([0,...pts.map((_,i)=>i).filter(i=>i%step===0),pts.length-1]);
-  const dots=[...di].map(i=>`<circle cx="${pts[i].x.toFixed(1)}" cy="${pts[i].y.toFixed(1)}" r="3" fill="#14b8a6" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible"><defs><linearGradient id="hfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#14b8a6" stop-opacity=".28"/><stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/></linearGradient><linearGradient id="hline" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#14b8a6"/><stop offset="100%" stop-color="#22c55e"/></linearGradient></defs><line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/><line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>${yL}<path d="${fill}" fill="url(#hfill)"/><path d="${line}" fill="none" stroke="url(#hline)" stroke-width="2.5" stroke-linecap="round"/>${dots}</svg>`;
+let _histId = null;
+function openHistModal(id) {
+  const entry = S.history.find(e=>e.id===id);
+  if (!entry) return;
+  _histId = id;
+  paintResult('mres', entry);
+  document.getElementById('hist-modal').classList.add('open');
+}
+function closeHistModal(e) {
+  if (e && e.target !== document.getElementById('hist-modal')) return;
+  document.getElementById('hist-modal').classList.remove('open');
+}
+function deleteHistEntry() {
+  if (!confirm('ลบประวัติการดูดวงนี้?')) return;
+  S.history = S.history.filter(e=>e.id!==_histId);
+  save();
+  document.getElementById('hist-modal').classList.remove('open');
+  renderHistory();
+  renderDash();
+}
+
+/* ── Dashboard ── */
+function renderDash() {
+  const now = new Date();
+  const todayStr = now.toDateString();
+  const todayEntries = S.history.filter(e=>new Date(e.ts).toDateString()===todayStr);
+  const count = todayEntries.length;
+  const price = S.settings.price;
+  const revenue = count*price;
+  const target = S.settings.targetPerDay;
+  const targetRevenue = target*price;
+  const pct = Math.min(100, Math.round((count/target)*100));
+  const monthEntries = S.history.filter(e=>{ const d=new Date(e.ts); return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); });
+  const monthRevenue = monthEntries.length*price;
+  const allRevenue = S.history.length*price;
+
+  document.getElementById('dash-loc').textContent = S.settings.location;
+  document.getElementById('dash-price').textContent = price + ' บาท/ครั้ง';
+  document.getElementById('dash-count').textContent = count;
+  document.getElementById('dash-revenue').textContent = revenue.toLocaleString('th-TH');
+  document.getElementById('dash-target').textContent = `${target} คน/วัน (${targetRevenue.toLocaleString('th-TH')} บาท)`;
+  document.getElementById('dash-bar-fill').style.width = pct+'%';
+  document.getElementById('dash-bar-pct').textContent = pct+'%';
+  document.getElementById('dash-month').textContent = monthRevenue.toLocaleString('th-TH') + ' บาท';
+  document.getElementById('dash-est-month').textContent = (targetRevenue*30).toLocaleString('th-TH') + ' บาท';
+  document.getElementById('dash-all').textContent = allRevenue.toLocaleString('th-TH') + ' บาท';
+  document.getElementById('dash-all-count').textContent = S.history.length;
+}
+
+function openDashSettings() {
+  document.getElementById('set-loc').value = S.settings.location;
+  document.getElementById('set-price').value = S.settings.price;
+  document.getElementById('set-target').value = S.settings.targetPerDay;
+  document.getElementById('dash-settings-modal').classList.add('open');
+}
+function closeDashSettings(e) {
+  if (e && e.target !== document.getElementById('dash-settings-modal')) return;
+  document.getElementById('dash-settings-modal').classList.remove('open');
+}
+function saveDashSettings() {
+  const loc = document.getElementById('set-loc').value.trim();
+  const price = parseInt(document.getElementById('set-price').value);
+  const target = parseInt(document.getElementById('set-target').value);
+  if (loc) S.settings.location = loc;
+  if (price>0) S.settings.price = price;
+  if (target>0) S.settings.targetPerDay = target;
+  save();
+  document.getElementById('dash-settings-modal').classList.remove('open');
+  renderDash();
+}
+function resetAllData() {
+  if (!confirm('ล้างประวัติการดูดวงทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  S.history = [];
+  save();
+  renderDash();
+  renderHistory();
 }
 
 renderHome();
