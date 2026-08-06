@@ -553,6 +553,7 @@ body::before {
 
         <button class="btn btn-gold" onclick="openAskModal('res')">🗣️ ถามอาจารย์จรัส</button>
         <button class="btn btn-dim" onclick="openLifePlan('res')">🗓️ วางแผนชีวิต</button>
+        <button class="btn btn-dim" onclick="openInvestStyle('res')">🧠 สไตล์การลงทุน</button>
         <button class="btn btn-dim" onclick="exportPDF('res')">📄 บันทึกเป็น PDF</button>
         <button class="btn btn-dim" onclick="shareResult('res')">📤 แชร์ผลดูดวง</button>
         <button class="btn btn-pur" onclick="goToRead(true)">🔄 ดูดวงอีกครั้ง</button>
@@ -702,6 +703,7 @@ body::before {
 
       <button class="btn btn-gold" onclick="openAskModal('mres')">🗣️ ถามอาจารย์จรัส</button>
       <button class="btn btn-dim" onclick="openLifePlan('mres')">🗓️ วางแผนชีวิต</button>
+      <button class="btn btn-dim" onclick="openInvestStyle('mres')">🧠 สไตล์การลงทุน</button>
       <button class="btn btn-dim" onclick="exportPDF('mres')">📄 บันทึกเป็น PDF</button>
       <button class="btn btn-dim" onclick="shareResult('mres')">📤 แชร์ผลดูดวง</button>
       <button class="btn btn-outline-red" onclick="deleteHistEntry()">🗑️ ลบรายการนี้</button>
@@ -813,6 +815,23 @@ body::before {
       <div class="disclaimer" style="margin-bottom:16px">เนื้อหาทั้งหมดเพื่อความบันเทิงเท่านั้น ไม่ใช่คำแนะนำทางการเงิน การลงทุน หรือบริการวางแผนการเงินที่มีใบอนุญาต โปรดปรึกษาผู้เชี่ยวชาญที่ได้รับใบอนุญาตสำหรับการตัดสินใจทางการเงินจริง</div>
 
       <button class="btn btn-dim" onclick="closeLifePlan()">ปิด</button>
+    </div>
+  </div>
+
+  <!-- Investment psychology modal -->
+  <div class="modal-overlay" id="investstyle-modal" onclick="closeInvestStyle(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🧠 สไตล์การลงทุนตามพื้นดวง</div>
+      <p class="modal-sub">อ่านนิสัยและจิตวิทยาการลงทุนจากธาตุเด่นในดวงชะตาของคุณ เหมือนเพื่อนนักลงทุนมาดูดวงให้ฟัง</p>
+
+      <div class="advice-card"><div class="advice-ico" id="is-style-icon">🌳</div><div><div class="advice-title">สไตล์การลงทุนที่เข้ากับนิสัยคุณ</div><div class="advice-text" id="is-style-text">—</div></div></div>
+      <div class="advice-card"><div class="advice-ico">⚠️</div><div><div class="advice-title">จุดอ่อนเรื่องเงินๆ ทองๆ ที่ต้องระวัง</div><div class="advice-text" id="is-weak-text">—</div></div></div>
+      <div class="advice-card"><div class="advice-ico">👕</div><div><div class="advice-title">สีเสื้อมงคลเวลาลงทุน</div><div class="advice-text" id="is-color-text">—</div></div></div>
+
+      <div class="disclaimer" style="margin-bottom:16px">เนื้อหานี้เป็นการสะท้อนบุคลิกและจิตวิทยาการลงทุนเพื่อความบันเทิงเท่านั้น ไม่ได้ระบุหรือแนะนำหุ้น กลุ่มธุรกิจ หรือสินทรัพย์ใดๆ ทั้งสิ้น การลงทุนมีความเสี่ยง ผู้ลงทุนควรศึกษาข้อมูลและประเมินความเสี่ยงที่ตัวเองรับได้ก่อนตัดสินใจลงทุนเสมอ</div>
+
+      <button class="btn btn-dim" onclick="closeInvestStyle()">ปิด</button>
     </div>
   </div>
 
@@ -1229,6 +1248,34 @@ const ELEMENT_DESC = [
   'มีระเบียบวินัย เด็ดขาด และรักความยุติธรรม ทำอะไรทำจริง เหมือนโลหะที่แข็งแกร่งและคมชัด',
   'ยืดหยุ่น ปรับตัวเก่ง และมีไหวพริบสูง ไหลลื่นไปตามสถานการณ์ได้อย่างชาญฉลาดเหมือนสายน้ำ',
 ];
+
+const INVEST_STYLES = {
+  'ไม้': {
+    style: 'เป็นสายเติบโต (Growth) ตัวจริง! ชอบมองหาของที่กำลังขยายตัวและมีอนาคตไกล มีไอเดียใหม่ๆ อยู่ในหัวตลอดเวลา เหมาะกับการวางแผนระยะยาวมากกว่าเก็งกำไรวันต่อวัน',
+    weak: 'ใจร้อนอยากเห็นผลเร็ว บางทีสับเปลี่ยนแผนกลางทางบ่อยเกินไปจนพลาดจังหวะดีๆ ไปเฉยๆ ลองใจเย็นและอยู่กับแผนที่วางไว้ให้นานขึ้นอีกนิด',
+    color: 'สีเขียว — ช่วยเสริมความคิดสร้างสรรค์และการเติบโตให้เป็นระบบมากขึ้น',
+  },
+  'ไฟ': {
+    style: 'เป็นสายไฟแรง ตัดสินใจเร็ว ชอบความเร้าใจของการเข้าออกไม้ถี่ๆ อ่านสถานการณ์ไวและกล้าลงมือก่อนคนอื่น',
+    weak: 'หุนหันพลันแล่น ตัดสินใจตามอารมณ์มากกว่าข้อมูล พอร์ตแกว่งง่ายเวลาสถานการณ์ผันผวน ลองตั้งกฎให้ตัวเองก่อนลงมือทุกครั้ง',
+    color: 'สีแดงหรือสีส้ม — ช่วยให้พลังที่มีอยู่แล้วถูกใช้อย่างมีทิศทางมากขึ้น',
+  },
+  'ดิน': {
+    style: 'เป็นสายมั่นคง เน้นความสบายใจมากกว่าความเร้าใจ ชอบถือของที่เข้าใจและเชื่อใจได้ยาวๆ ให้เวลาทำงานมากกว่ารีบเก็งกำไร',
+    weak: 'ยึดติดกับความคุ้นเคยมากไป บางทีไม่กล้าตัดสินใจเปลี่ยนแผนเมื่อสถานการณ์เปลี่ยนไปแล้ว ลองเปิดใจรับข้อมูลใหม่ๆ ให้มากขึ้น',
+    color: 'สีเหลืองหรือสีน้ำตาล — ช่วยเสริมความมั่นคงและความมั่นใจในการตัดสินใจ',
+  },
+  'ทอง': {
+    style: 'เป็นสายมีระบบระเบียบ ตั้งเป้าและกฎของตัวเองไว้ชัดเจน ทำตามแผนที่วางไว้แบบเป๊ะๆ ไม่ตัดสินใจเพราะกระแสสังคม',
+    weak: 'เข้มงวดกับตัวเองเกินไปจนเครียด บางทีพลาดจังหวะดีๆ เพราะยึดกฎที่ตั้งไว้ตายตัวเกินไป ลองผ่อนปรนกับตัวเองบ้าง',
+    color: 'สีขาวหรือสีเทา — ช่วยให้ความมีระเบียบที่มีอยู่แล้วรู้สึกผ่อนคลายมากขึ้น',
+  },
+  'น้ำ': {
+    style: 'เป็นสายปรับตัวเก่ง มองเกมยาว ไม่ยึดติดรูปแบบเดียว ปรับกลยุทธ์ไปตามสถานการณ์ได้อย่างชาญฉลาด',
+    weak: 'บางทีลื่นไหลจนไม่มีจุดยืนที่แน่นอน เปลี่ยนใจบ่อยตามกระแสรอบตัวมากเกินไป ลองหาหลักยึดบางอย่างให้ตัวเองไว้',
+    color: 'สีดำหรือสีน้ำเงิน — ช่วยเสริมสมาธิและความหนักแน่นในการตัดสินใจ',
+  },
+};
 
 const GEMSTONES = [
   { e:'❤️', name:'ทับทิม' },
@@ -2528,6 +2575,23 @@ function openLifePlan(prefix) {
 function closeLifePlan(e) {
   if (e && e.target !== document.getElementById('lifeplan-modal')) return;
   document.getElementById('lifeplan-modal').classList.remove('open');
+}
+
+function openInvestStyle(prefix) {
+  const entry = _paintedEntry[prefix];
+  if (!entry) return;
+  const r = entry.result;
+  const dominant = r.bazi.dominant;
+  const info = INVEST_STYLES[dominant.name] || INVEST_STYLES['ไม้'];
+  document.getElementById('is-style-icon').textContent = dominant.e;
+  document.getElementById('is-style-text').textContent = `ธาตุเด่นในดวงชะตาคือธาตุ${dominant.name} ${info.style}`;
+  document.getElementById('is-weak-text').textContent = info.weak;
+  document.getElementById('is-color-text').textContent = info.color;
+  document.getElementById('investstyle-modal').classList.add('open');
+}
+function closeInvestStyle(e) {
+  if (e && e.target !== document.getElementById('investstyle-modal')) return;
+  document.getElementById('investstyle-modal').classList.remove('open');
 }
 
 renderHome();
